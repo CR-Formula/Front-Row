@@ -4,17 +4,18 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class TimeDomain implements GLEventListener {
+public class TimeDomain extends PrimaryGraph {
     private double maxYValue = Double.MIN_VALUE;
     private double minYValue = Double.MAX_VALUE;
-    private List<Dataset> datasets;
-    private int sampleCount = 10000;
-    private static List<TimeDomain> selfList = new ArrayList<>();
+
     @Override
     public void display(GLAutoDrawable drawable) {
         if (datasets == null) return;
@@ -52,49 +53,35 @@ public class TimeDomain implements GLEventListener {
                     gl.glVertex2d(sample1x, sample1y);
                     gl.glVertex2d(sample2x, sample2y);
                 }
+
                 gl.glEnd();
-
-
             }
+            if (mouseOnCanvas) {
+                gl.glBegin(GL2.GL_LINES);
+                gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+
+                Color mouseColor = new Color(255, 255, 255);
+                gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
+
+                double realMouseX = MouseInfo.getPointerInfo().getLocation().x;
+                double mouseX = (((realMouseX - graphX) / (graphWidth)) * 2) + -1;
+                System.out.println(graphX + " | " + graphWidth);
+                System.out.println(realMouseX + " || " + mouseX);
+
+                gl.glVertex2d(mouseX, 1);
+                gl.glVertex2d(mouseX, -1);
+
+                gl.glEnd();
+            }
+
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
         }
     }
 
-    @Override
-    public void dispose(GLAutoDrawable arg0) {
-
-    }
-
-    @Override
-    public void init(GLAutoDrawable arg0) {
-
-    }
-
-    @Override
-    public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-
-    }
-
-    public void setDatasets(List<Dataset> datasets) {
-        this.datasets.addAll(datasets);
-    }
-
-    public TimeDomain() {
+    public TimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
+        super(graphX, graphY, graphWidth, graphHeight);
         this.datasets = new ArrayList<Dataset>();
-        selfList.add(this);
-//        updateSampleCount();
-    }
-
-    public static void updateSampleCount() {
-        int sampleCountDefault = 40000;
-        selfList.forEach(td -> {
-           td.setSampleCount(sampleCountDefault / selfList.size());
-        });
-    }
-
-    private void setSampleCount(int sampleCount) {
-        this.sampleCount = sampleCount;
     }
 
 }
