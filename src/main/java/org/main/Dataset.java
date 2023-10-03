@@ -1,4 +1,4 @@
-package org.basics;
+package org.main;
 
 import java.awt.*;
 import java.util.ArrayList;

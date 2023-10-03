@@ -1,4 +1,4 @@
-package org.basics;
+package org.main;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;

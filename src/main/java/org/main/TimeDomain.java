@@ -1,16 +1,11 @@
-package org.basics;
+package org.main;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.List;
 
 public class TimeDomain extends PrimaryGraph {
     private double maxYValue = Double.MIN_VALUE;

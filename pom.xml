@@ -52,7 +52,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.basics.Line</mainClass>
+                            <mainClass>org.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

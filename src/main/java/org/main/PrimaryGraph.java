@@ -1,4 +1,4 @@
-package org.basics;
+package org.main;
 
 public class PrimaryGraph extends Graph {
 
