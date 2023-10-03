@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.basics</groupId>
-    <artifactId>OpenGL-Testing</artifactId>
+    <artifactId>Front-Row</artifactId>
     <version>1.0.0</version>
 
     <properties>
