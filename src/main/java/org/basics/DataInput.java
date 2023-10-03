@@ -1,5 +1,7 @@
 package org.basics;
 
+import java.awt.*;
+
 public class DataInput {
     public static final String TEST = "TEST";
     public static final String UART = "UART";
@@ -53,9 +55,9 @@ public class DataInput {
 
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
-            DatasetController.addDataset(new Dataset("sinA"));
-            DatasetController.addDataset(new Dataset("sinB"));
-            DatasetController.addDataset(new Dataset("sinC"));
+            DatasetController.addDataset(new Dataset("sinA", new Color(255, 0, 0)));
+            DatasetController.addDataset(new Dataset("sinB", new Color(0, 255, 0)));
+            DatasetController.addDataset(new Dataset("sinC", new Color(0, 0, 255)));
         }
 
         testThread = new Thread(() -> {

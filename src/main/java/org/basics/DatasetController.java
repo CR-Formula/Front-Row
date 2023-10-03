@@ -24,14 +24,18 @@ public class DatasetController {
 
     public static Dataset removeDataset(String datasetName) {
         try {
-            return datasets.remove(findDataset(datasetName));
+            return datasets.remove(findDatasetIndex(datasetName));
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Yeah that -1 ain't workin pal");
             throw e;
         }
     }
 
-    private static int findDataset(String datasetName) {
+    private static Dataset findDataset(String datasetName) {
+        return datasets.stream().filter(d -> d.getName().equals(datasetName)).findFirst().get();
+    }
+
+    private static int findDatasetIndex(String datasetName) {
         for (int i = 0; i < datasets.size(); i++)
             if (datasets.get(i).getName().equals(datasetName))
                 return i;

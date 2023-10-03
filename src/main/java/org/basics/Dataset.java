@@ -1,15 +1,22 @@
 package org.basics;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Dataset {
     private List<Float> values;
     private String name;
+    private Color color;
 
     public Dataset(String name) {
         this.name = name;
         this.values = new ArrayList<Float>();
+    }
+    public Dataset(String name, Color color) {
+        this.name = name;
+        this.values = new ArrayList<Float>();
+        this.color = color;
     }
 
     public void add(float value) {
@@ -26,6 +33,10 @@ public class Dataset {
 
     public String getName() {
         return name;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public Float getSample(int i) {
