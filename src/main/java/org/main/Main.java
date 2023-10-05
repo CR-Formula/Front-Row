@@ -24,8 +24,8 @@ public class Main {
 
         TimeDomain td1 = new TimeDomain(0, 0, graphWidth, graphHeight);
         TimeDomain td2 = new TimeDomain(graphWidth, 0, graphWidth, graphHeight);
-        TimeDomain td3 = new TimeDomain(0, graphHeight, graphWidth, graphHeight);
-        TimeDomain td4 = new TimeDomain(graphWidth, graphHeight, graphWidth, graphHeight);
+        Dial d1 = new Dial(graphWidth, 0, graphHeight, graphHeight);
+        Dial d2 = new Dial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);
@@ -35,13 +35,13 @@ public class Main {
         glCanvas2.addMouseListener(td2);
         glCanvas2.setSize(graphWidth, graphHeight);
 
-        glCanvas3.addGLEventListener(td3);
-        glCanvas3.addMouseListener(td3);
-        glCanvas3.setSize(graphWidth, graphHeight);
+        glCanvas3.addGLEventListener(d1);
+        glCanvas3.addMouseListener(d1);
+        glCanvas3.setSize(graphHeight, graphHeight);
 
-        glCanvas4.addGLEventListener(td4);
-        glCanvas4.addMouseListener(td4);
-        glCanvas4.setSize(graphWidth, graphHeight);
+        glCanvas4.addGLEventListener(d2);
+        glCanvas4.addMouseListener(d2);
+        glCanvas4.setSize(graphHeight, graphHeight);
 
         Animator animator1 = new Animator(glCanvas1);
         animator1.setUpdateFPSFrames(1, null);
@@ -61,32 +61,32 @@ public class Main {
 
         final JFrame frame = new JFrame("Drawing");
 
-        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent event) {
-                int width=event.getComponent().getWidth();
-                int height=event.getComponent().getHeight();
-                glCanvas1.setSize((width / 2),(height / 2));
-                ((TimeDomain) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
-                glCanvas2.setSize((width / 2),(height / 2));
-                ((TimeDomain) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
-                glCanvas3.setSize((width / 2),(height / 2));
-                ((TimeDomain) glCanvas3.getGLEventListener(0)).setPosition(glCanvas3.getX(), glCanvas3.getY(), glCanvas3.getSize());
-                glCanvas4.setSize((width / 2),(height / 2));
-                ((TimeDomain) glCanvas4.getGLEventListener(0)).setPosition(glCanvas4.getX(), glCanvas4.getY(), glCanvas4.getSize());
-            }
-        });
+//        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
+//            public void componentResized(java.awt.event.ComponentEvent event) {
+//                int width=event.getComponent().getWidth();
+//                int height=event.getComponent().getHeight();
+//                glCanvas1.setSize((width / 2),(height / 2));
+//                ((TimeDomain) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
+//                glCanvas2.setSize((width / 2),(height / 2));
+//                ((TimeDomain) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
+//                glCanvas3.setSize((height / 2),(height / 2));
+//                ((TimeDomain) glCanvas3.getGLEventListener(0)).setPosition(glCanvas3.getX(), glCanvas3.getY(), glCanvas3.getSize());
+//                glCanvas4.setSize((height / 2),(height / 2));
+//                ((TimeDomain) glCanvas4.getGLEventListener(0)).setPosition(glCanvas4.getX(), glCanvas4.getY(), glCanvas4.getSize());
+//            }
+//        });
 
         Box graphs1 = new Box(BoxLayout.X_AXIS);
-        graphs1.add(glCanvas1);
-        graphs1.add(glCanvas2);
+//        graphs1.add(glCanvas1);
+        graphs1.add(glCanvas3);
 
         Box graphs2 = new Box(BoxLayout.X_AXIS);
-        graphs2.add(glCanvas3);
+        graphs2.add(glCanvas2);
         graphs2.add(glCanvas4);
 
         Box screen = new Box(BoxLayout.Y_AXIS);
         screen.add(graphs1);
-        screen.add(graphs2);
+//        screen.add(graphs2);
 
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
@@ -95,17 +95,16 @@ public class Main {
         DataInput.connect(DataInput.TEST);
         List<Dataset> l = new ArrayList<>();
         l.add(DatasetController.getDataset(0));
-        td1.setDatasets(l);
-        td2.setDatasets(l);
-        td3.setDatasets(l);
-        td4.setDatasets(l);
+//        td1.setDatasets(l);
+//        td2.setDatasets(l);
+        d1.setDataset(l.get(0));
+//        d2.setDataset(l.get(1));
         l.add(DatasetController.getDataset(1));
-        td2.setDatasets(l);
-        td3.setDatasets(l);
+//        td2.setDatasets(l);
 
         Thread.sleep(10000);
 
         l.add(DatasetController.getDataset(2));
-        td1.setDatasets(l);
+//        td1.setDatasets(l);
     }
 }

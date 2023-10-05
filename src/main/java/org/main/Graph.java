@@ -1,7 +1,10 @@
 package org.main;
 
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLCanvas;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -19,8 +22,13 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     protected boolean mouseOnCanvas;
 
-    public Graph(int graphX, int graphY, int graphWidth, int graphHeight) {
+    private GLCanvas canvas;
 
+    public Graph(int graphX, int graphY, int graphWidth, int graphHeight) {
+        this.graphX = graphX;
+        this.graphY = graphY;
+        this.graphWidth = graphWidth;
+        this.graphHeight = graphHeight;
     }
 
     @Override
@@ -50,6 +58,11 @@ public class Graph extends MouseAdapter implements GLEventListener {
     }
 
     @Override
+    public void display(GLAutoDrawable glAutoDrawable) {
+
+    }
+
+    @Override
     public void init(GLAutoDrawable glAutoDrawable) {
 
     }
@@ -60,12 +73,23 @@ public class Graph extends MouseAdapter implements GLEventListener {
     }
 
     @Override
-    public void display(GLAutoDrawable glAutoDrawable) {
+    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
     }
 
-    @Override
-    public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+    protected double convertPointOverHeight(double value) {
+        return ((value / graphHeight) * (2)) + -1;
+    }
 
+    protected double convertPointOverWidth(double value) {
+        return ((value / graphWidth) * (2)) + -1;
+    }
+
+    protected double convertValueOverHeight(double value) {
+        return ((value / graphHeight) * (2));
+    }
+
+    protected double convertValueOverWidth(double value) {
+        return ((value / graphWidth) * (2));
     }
 }

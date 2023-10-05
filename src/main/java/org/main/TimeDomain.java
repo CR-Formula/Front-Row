@@ -11,6 +11,11 @@ public class TimeDomain extends PrimaryGraph {
     private double maxYValue = Double.MIN_VALUE;
     private double minYValue = Double.MAX_VALUE;
 
+    public TimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
+        super(graphX, graphY, graphWidth, graphHeight);
+        this.datasets = new ArrayList<Dataset>();
+    }
+
     @Override
     public void display(GLAutoDrawable drawable) {
         if (datasets == null) return;
@@ -74,9 +79,7 @@ public class TimeDomain extends PrimaryGraph {
         }
     }
 
-    public TimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
-        super(graphX, graphY, graphWidth, graphHeight);
-        this.datasets = new ArrayList<Dataset>();
+    public String toString() {
+        return "Time Domain";
     }
-
 }
