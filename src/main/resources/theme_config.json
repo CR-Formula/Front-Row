@@ -1,6 +1,18 @@
 {
-  "name": "basics",
-  "version": "1.0.0",
-  "dependencies": {
+  "paddings": {
+    "graphPadding": 10
+  },
+
+  "colors": {
+    "pageBackground": "#504f61",
+    "graphBackground": "#000000",
+    "graphBorder": "#FFFFFF"
+  },
+
+  "font":{
+    "name": "Courier",
+    "largeFontSize": 16,
+    "normalFontSize": 12,
+    "smallFontSize": 8
   }
 }

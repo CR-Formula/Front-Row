@@ -6,11 +6,13 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
 
@@ -77,7 +79,7 @@ public class Main {
 //        });
 
         Box graphs1 = new Box(BoxLayout.X_AXIS);
-//        graphs1.add(glCanvas1);
+        graphs1.add(glCanvas1);
         graphs1.add(glCanvas3);
 
         Box graphs2 = new Box(BoxLayout.X_AXIS);
@@ -86,7 +88,7 @@ public class Main {
 
         Box screen = new Box(BoxLayout.Y_AXIS);
         screen.add(graphs1);
-//        screen.add(graphs2);
+        screen.add(graphs2);
 
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
@@ -95,16 +97,16 @@ public class Main {
         DataInput.connect(DataInput.TEST);
         List<Dataset> l = new ArrayList<>();
         l.add(DatasetController.getDataset(0));
-//        td1.setDatasets(l);
-//        td2.setDatasets(l);
+        td1.setDatasets(l);
+        td2.setDatasets(l);
         d1.setDataset(l.get(0));
-//        d2.setDataset(l.get(1));
         l.add(DatasetController.getDataset(1));
-//        td2.setDatasets(l);
+        d2.setDataset(l.get(1));
+        td2.setDatasets(l);
 
         Thread.sleep(10000);
 
         l.add(DatasetController.getDataset(2));
-//        td1.setDatasets(l);
+        td1.setDatasets(l);
     }
 }

@@ -38,7 +38,7 @@ public class Dial extends SecondaryGraph {
 //        gl.glClearColor(backgroundColor.getRed() / 255.0f, backgroundColor.getBlue() / 255.0f, backgroundColor.getGreen() / 255.0f, backgroundColor.getAlpha() / 255.0f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
-        double radius = Math.min(graphHeight, graphWidth) * 0.4;
+        double radius = Math.min(graphHeight, graphWidth) * 0.45;
         final double range = 2;
 
         float value = dataset.hasValues() ? dataset.getLastSample() : minValue;
@@ -48,8 +48,8 @@ public class Dial extends SecondaryGraph {
 
         try {
             gl.glBegin(GL.GL_TRIANGLE_FAN);
-            Color c = dataset.getColor();
-            gl.glColor3d(c.getRed() / 255.0, c.getBlue() / 255.0, c.getGreen() / 255.0);
+            Color c1 = dataset.getColor();
+            gl.glColor3d(c1.getRed() / 255.0, c1.getBlue() / 255.0, c1.getGreen() / 255.0);
 
             double originX = convertPointOverWidth((graphWidth / 2));
             double originY = convertPointOverHeight((graphHeight / 2) - (radius / 2));
@@ -57,6 +57,20 @@ public class Dial extends SecondaryGraph {
             gl.glVertex2d(originX, originY);
 
             double increment = Math.PI / sampleCount;
+            for (double angle = 0; angle < (Math.PI * ((double) drawSampleCount / sampleCount)); angle += increment) {
+                gl.glVertex2d(-1 * (originX + ((float)Math.cos(angle) * convertValueOverWidth(radius))),originY + ((float)Math.sin(angle) * convertValueOverHeight(radius)));
+            }
+            gl.glEnd();
+
+            gl.glBegin(GL.GL_TRIANGLE_FAN);
+
+            Color c2 = new Color(0, 0, 0);
+            gl.glColor3d(c2.getRed() / 255.0, c2.getBlue() / 255.0, c2.getGreen() / 255.0);
+
+            gl.glVertex2d(originX, originY);
+
+            radius = radius * 0.75;
+
             for (double angle = 0; angle < (Math.PI * ((double) drawSampleCount / sampleCount)); angle += increment) {
                 gl.glVertex2d(-1 * (originX + ((float)Math.cos(angle) * convertValueOverWidth(radius))),originY + ((float)Math.sin(angle) * convertValueOverHeight(radius)));
             }
