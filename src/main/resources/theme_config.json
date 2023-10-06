@@ -14,5 +14,11 @@
     "largeFontSize": 16,
     "normalFontSize": 12,
     "smallFontSize": 8
+  },
+
+  "lineDetails": {
+    "smallLineWidth": 1,
+    "mediumLineWidth": 3,
+    "largeLineWidth": 5
   }
 }

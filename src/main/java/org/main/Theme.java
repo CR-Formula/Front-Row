@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -17,16 +16,16 @@ public class Theme {
     }
 
     private static void loadConfig() throws IOException, ParseException {
-        String filePath = new File("src/main/java/resources/theme_config.json").getAbsolutePath();
+        // TODO: Put each json info into respective global variables
 
         JSONParser parser = new JSONParser();
         try {
-            Object configObject = parser.parse(new FileReader("./src/main/java/resources/theme_config.json"));
+            Object configObject = parser.parse(new FileReader(".\\src\\main\\resources\\theme_config.json"));
 
             JSONObject config =  (JSONObject) configObject;
             System.out.println(config.toString());
-        } catch (Exception e) {
-            System.out.println(filePath + " bruh");
+        } catch (ParseException e) {
+            System.out.println("MISSING FILE: theme_config.json");
         }
     }
 }
