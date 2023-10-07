@@ -1,24 +1,17 @@
 {
-  "paddings": {
-    "graphPadding": 10
-  },
+    "graphPadding": 10,
 
-  "colors": {
     "pageBackground": "#504f61",
     "graphBackground": "#000000",
-    "graphBorder": "#FFFFFF"
-  },
+    "graphBorder": "#FFFFFF",
 
-  "font":{
+
     "name": "Courier",
     "largeFontSize": 16,
     "normalFontSize": 12,
-    "smallFontSize": 8
-  },
+    "smallFontSize": 8,
 
-  "lineDetails": {
     "smallLineWidth": 1,
     "mediumLineWidth": 3,
     "largeLineWidth": 5
-  }
 }
