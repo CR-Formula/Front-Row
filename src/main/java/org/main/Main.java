@@ -5,13 +5,30 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
 import javax.swing.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
+
+        try {
+            // Initialize JSON Theme
+            Gson gson = new Gson();
+            FileReader reader = new FileReader(".\\\\src\\\\main\\\\resources\\\\theme_config.json"); // Provide the correct path to your JSON file
+
+            // Replace Config class with Theme
+            Theme configSettings = gson.fromJson(reader, Theme.class);
+        } catch (FileNotFoundException e) {
+            System.out.println("MISSING FILE: theme_config.json");
+        }
 
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
