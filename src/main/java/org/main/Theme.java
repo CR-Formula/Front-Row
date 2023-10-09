@@ -1,34 +1,26 @@
 package org.main;
 
+import com.google.gson.annotations.Expose;
 
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.*;
 
 public class Theme {
-    private static org.json.simple.JSONObject simpleJSONObject;
-    private static org.json.JSONObject JSONObject;
 
-    public static void main(String[] args) throws IOException, ParseException {
-        loadConfig();
-    }
-    public Theme() throws IOException, ParseException {
-        loadConfig();
-    }
+    // Font info
+    public final static String fontName = "Courier";
+    public final static int graphPadding = 10;
+    public final static int largeFontSize = 16;
+    public final static int normalFontSize = 12;
+    public final static int smallFontSize = 8;
 
-    private static void loadConfig() throws IOException {
-        // TODO: Put each json info into respective global variables
+    // Lines
+    public final static int smallLineWidth = 1;
+    public final static int mediumLineWidth = 3;
+    public final static int largeLineWidth = 5;
 
-        JSONParser parser = new JSONParser();
-        try {
-            Object configObject = parser.parse(new FileReader(".\\src\\main\\resources\\theme_config.json"));
-
-        } catch (ParseException e) {
-            System.out.println("MISSING FILE: theme_config.json");
-        }
-
-    }
+    // Colors
+    public final static Color pageBackground = new Color(0x504f61);
+    public final static Color graphBackground = new Color(0x000000);
+    public final static Color graphBorder = new Color(0xFFFFFF);
+    public final static Color graphInfo = new Color(0xFFD677);
 }

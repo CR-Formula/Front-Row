@@ -1,5 +1,6 @@
 package org.main;
 
+import com.google.gson.stream.JsonReader;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -16,20 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    private static final String defaultThemeConfig = ".\\src\\main\\resources\\theme_config.json";
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
-
-        try {
-            // Initialize JSON Theme
-            Gson gson = new Gson();
-            FileReader reader = new FileReader(".\\\\src\\\\main\\\\resources\\\\theme_config.json"); // Provide the correct path to your JSON file
-
-            // Replace Config class with Theme
-            Theme configSettings = gson.fromJson(reader, Theme.class);
-        } catch (FileNotFoundException e) {
-            System.out.println("MISSING FILE: theme_config.json");
-        }
-
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
 
