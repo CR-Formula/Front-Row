@@ -1,8 +1,6 @@
 package org.main;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 public class Theme {
     // Paddings
@@ -23,23 +21,4 @@ public class Theme {
     public static int smallLineWidth = 1;
     public static int mediumLineWidth = 3;
     public static int largeLineWidth = 15;
-
-    public static void main(String[] args) throws IOException {
-        loadConfig();
-    }
-    public Theme() throws IOException {
-//        loadConfig();
-    }
-
-    private static void loadConfig() throws IOException {
-        // TODO: Put each json info into respective global variables
-        // new File(".\\src\\main\\resources\\theme_config.json")
-//        System.out.println(graphPadding);
-//        ObjectMapper objectMapper = new ObjectMapper();
-////        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-//        File file = new File("src\\main\\resources\\theme_config.json");
-//        System.out.println(file.getAbsoluteFile());
-//        objectMapper.readValue(file, Theme.class);
-//        System.out.println(graphPadding);
-    }
 }
