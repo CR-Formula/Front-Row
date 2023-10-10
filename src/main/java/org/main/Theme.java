@@ -13,7 +13,7 @@ public class Theme {
     public final static Color graphInfo = new Color(0xFFD677);
 
     // Font details
-    public final static String fontName = "Courier";
+    public final static String fontName = "Courier"; // Other fonts to look at "DialogInput", "Dialog", "Serif"
     public final static Font largeFont = new Font(fontName, Font.PLAIN, 16);
     public final static Font normalFont = new Font(fontName, Font.PLAIN, 12);
     public final static Font smallFont = new Font(fontName, Font.PLAIN, 8);

@@ -23,6 +23,8 @@ public class DataInput {
 
     private static double counter = 0.0001;
 
+    private static String[] latestTokens;
+
     public static void connect(String type) {
         if (type.equals(TEST)) {
             if (connectionType != null && !connectionType.equals(TEST))
@@ -146,11 +148,11 @@ public class DataInput {
                     if (!reader.ready()) uartThread.sleep(1);
 
                     String line = reader.readLine();
-                    String[] tokens = line.split(",");
-                    for (String token : tokens) {
-                        System.out.print(Float.parseFloat(token) + " ");
+                    latestTokens = line.split(",");
+                    for (String token : latestTokens) {
+//                        System.out.print(Float.parseFloat(token) + " ");
                     }
-                    System.out.println();
+//                    System.out.println();
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -166,11 +168,16 @@ public class DataInput {
     }
 
     private static void disableUARTConnection() {
+        latestTokens = null;
         if (uartThread.isAlive())
             uartThread.interrupt();
     }
 
     public static boolean isConnected() {
         return connected;
+    }
+
+    public static String[] getLatestTokens() {
+        return latestTokens;
     }
 }
