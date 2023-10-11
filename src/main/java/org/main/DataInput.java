@@ -20,6 +20,7 @@ public class DataInput {
 
     private static SerialPort uartPort = null;
     private static int uartBaudRate = 115200;
+    private static String selectedUARTPort;
 
     private static double counter = 0.0001;
 
@@ -114,13 +115,15 @@ public class DataInput {
     }
 
     private static void enableUARTConnection() {
+        if (selectedUARTPort == null || selectedUARTPort.equals(""))
+            return;
+
         if (uartPort != null && uartPort.isOpen())
             uartPort.closePort();
 
-        for (SerialPort port : SerialPort.getCommPorts())
-            System.out.println(port.getSystemPortName());
+        System.out.println(selectedUARTPort);
 
-        uartPort = SerialPort.getCommPort(SerialPort.getCommPorts()[0].getSystemPortName());
+        uartPort = SerialPort.getCommPort(selectedUARTPort);
         uartPort.setBaudRate(uartBaudRate);
         uartPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
 
@@ -149,10 +152,9 @@ public class DataInput {
 
                     String line = reader.readLine();
                     latestTokens = line.split(",");
-                    for (String token : latestTokens) {
-//                        System.out.print(Float.parseFloat(token) + " ");
+                    for (Dataset dataset : DatasetController.getDatasets()) {
+                        dataset.add(Float.parseFloat(latestTokens[dataset.getIndex()]));
                     }
-//                    System.out.println();
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -179,5 +181,18 @@ public class DataInput {
 
     public static String[] getLatestTokens() {
         return latestTokens;
+    }
+
+    public static String[] getOpenUARTPorts() {
+        SerialPort[] openSerialPorts = SerialPort.getCommPorts();
+        String[] openPortNames = new String[openSerialPorts.length];
+        for (int i = 0; i < openSerialPorts.length; i++)
+            openPortNames[i] = openSerialPorts[i].getSystemPortName();
+
+        return openPortNames;
+    }
+
+    public static void setUARTPort(String portName) {
+        selectedUARTPort = portName;
     }
 }

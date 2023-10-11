@@ -45,7 +45,7 @@ public class Dataset {
     }
 
     public Float getLastSample() {
-        return values.get(values.size() - 1);
+        return values.size() > 0 ? values.get(values.size() - 1) : 0.0f;
     }
 
     public boolean hasValues() {

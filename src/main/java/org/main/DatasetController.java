@@ -69,7 +69,6 @@ public class DatasetController {
         }
 
         Color[] colors = generateRandomColors(tokens.length);
-        System.out.println(tokens.length);
         for (int i = 0; i < tokens.length; i++) {
             addDataset(new Dataset(Integer.toString(i), i, colors[i]));
         }
