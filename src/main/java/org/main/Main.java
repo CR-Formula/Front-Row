@@ -1,23 +1,15 @@
 package org.main;
 
-import com.google.gson.stream.JsonReader;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-
 import javax.swing.*;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static final String defaultThemeConfig = ".\\src\\main\\resources\\theme_config.json";
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
         final GLProfile profile = GLProfile.get(GLProfile.GL2);

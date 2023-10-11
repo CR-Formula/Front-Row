@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
 public class TimeDomain extends PrimaryGraph {
-    private double maxYValue = Double.MIN_VALUE;
-    private double minYValue = Double.MAX_VALUE;
+    private double maxYValue = 1;
+    private double minYValue = -1;
 
     public TimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);

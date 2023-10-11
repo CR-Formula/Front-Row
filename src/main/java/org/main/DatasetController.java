@@ -2,6 +2,7 @@ package org.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.*;
 
 public class DatasetController {
     private static List<Dataset> datasets = new ArrayList<Dataset>();
@@ -55,5 +56,30 @@ public class DatasetController {
             min = Math.min(min, n.getLength());
 
         return min - 1;
+    }
+
+    public static void autoDetectDatasets(String port) throws InterruptedException {
+        if (!port.equals(DataInput.UART) || !DataInput.isConnected())
+            return;
+
+        String[] tokens = DataInput.getLatestTokens();
+        while (tokens == null) {
+            tokens = DataInput.getLatestTokens();
+            Thread.sleep(1);
+        }
+
+        Color[] colors = generateRandomColors(tokens.length);
+        for (int i = 0; i < tokens.length; i++) {
+            addDataset(new Dataset(Integer.toString(i), i, colors[i]));
+        }
+    }
+
+    private static Color[] generateRandomColors(int length) {
+        Color[] colors = new Color[length];
+        for (int i = 0; i < length; i++) {
+            float h = (float) i / (length - 1);
+            colors[i] = HSLColor.toRGB(h * 360.0f, 100.0f, 50.0f);
+        }
+        return colors;
     }
 }

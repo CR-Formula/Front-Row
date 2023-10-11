@@ -51,7 +51,7 @@ public class Graph extends MouseAdapter implements GLEventListener {
         this.graphHeight = location.height;
     }
 
-    private void setSampleCount(int sampleCount) {
+    public void setSampleCount(int sampleCount) {
         this.sampleCount = sampleCount;
     }
 

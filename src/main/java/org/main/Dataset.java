@@ -8,12 +8,13 @@ public class Dataset {
     private List<Float> values;
     private String name;
     private Color color;
+    private int index;
 
     public Dataset(String name) {
         this.name = name;
         this.values = new ArrayList<Float>();
     }
-    public Dataset(String name, Color color) {
+    public Dataset(String name, int index, Color color) {
         this.name = name;
         this.values = new ArrayList<Float>();
         this.color = color;
@@ -44,10 +45,14 @@ public class Dataset {
     }
 
     public Float getLastSample() {
-        return values.get(values.size() - 1);
+        return values.size() > 0 ? values.get(values.size() - 1) : 0.0f;
     }
 
     public boolean hasValues() {
         return values.size() > 0;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

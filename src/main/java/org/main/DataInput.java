@@ -1,16 +1,30 @@
 package org.main;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import com.fazecast.jSerialComm.SerialPort;
 
 public class DataInput {
     public static final String TEST = "TEST";
     public static final String UART = "UART";
     private static boolean connected;
     private static String connectionType;
+
+    private static Thread uartThread;
     private static Thread testThread;
-    private static Thread[] threads = {testThread};
+    private static Thread[] threads = {testThread, uartThread};
+
+    private static SerialPort uartPort = null;
+    private static int uartBaudRate = 115200;
+    private static String selectedUARTPort;
 
     private static double counter = 0.0001;
+
+    private static String[] latestTokens;
 
     public static void connect(String type) {
         if (type.equals(TEST)) {
@@ -55,9 +69,9 @@ public class DataInput {
 
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
-            DatasetController.addDataset(new Dataset("sinA", new Color(255, 0, 0)));
-            DatasetController.addDataset(new Dataset("sinB", new Color(0, 255, 0)));
-            DatasetController.addDataset(new Dataset("sinC", new Color(0, 0, 255)));
+            DatasetController.addDataset(new Dataset("sinA", 0, new Color(255, 0, 0)));
+            DatasetController.addDataset(new Dataset("sinB", 1, new Color(0, 255, 0)));
+            DatasetController.addDataset(new Dataset("sinC", 2, new Color(0, 0, 255)));
         }
 
         testThread = new Thread(() -> {
@@ -101,14 +115,84 @@ public class DataInput {
     }
 
     private static void enableUARTConnection() {
+        if (selectedUARTPort == null || selectedUARTPort.equals(""))
+            return;
 
+        if (uartPort != null && uartPort.isOpen())
+            uartPort.closePort();
+
+        System.out.println(selectedUARTPort);
+
+        uartPort = SerialPort.getCommPort(selectedUARTPort);
+        uartPort.setBaudRate(uartBaudRate);
+        uartPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
+
+        // try 3 times before giving up
+        if (!uartPort.openPort()) {
+            if (!uartPort.openPort()) {
+                if (!uartPort.openPort()) {
+                    System.out.println("Unable to connect to UART port.");
+                    return;
+                }
+            }
+        }
+
+        connected = true;
+
+        startReceivingUARTData(uartPort.getInputStream());
+    }
+
+    private static void startReceivingUARTData(InputStream stream) {
+        uartThread = new Thread(() -> {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+            while(true) {
+                try {
+                    if (!reader.ready()) uartThread.sleep(1);
+
+                    String line = reader.readLine();
+                    latestTokens = line.split(",");
+                    for (Dataset dataset : DatasetController.getDatasets()) {
+                        dataset.add(Float.parseFloat(latestTokens[dataset.getIndex()]));
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        });
+
+        uartThread.setPriority(Thread.MAX_PRIORITY);
+        uartThread.setName("UART Input Thread");
+        uartThread.start();
     }
 
     private static void disableUARTConnection() {
-
+        latestTokens = null;
+        if (uartThread.isAlive())
+            uartThread.interrupt();
     }
 
     public static boolean isConnected() {
         return connected;
+    }
+
+    public static String[] getLatestTokens() {
+        return latestTokens;
+    }
+
+    public static String[] getOpenUARTPorts() {
+        SerialPort[] openSerialPorts = SerialPort.getCommPorts();
+        String[] openPortNames = new String[openSerialPorts.length];
+        for (int i = 0; i < openSerialPorts.length; i++)
+            openPortNames[i] = openSerialPorts[i].getSystemPortName();
+
+        return openPortNames;
+    }
+
+    public static void setUARTPort(String portName) {
+        selectedUARTPort = portName;
     }
 }

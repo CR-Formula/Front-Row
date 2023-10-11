@@ -1,7 +1,5 @@
 package org.main;
 
-import com.google.gson.annotations.Expose;
-
 import java.awt.*;
 
 public class Theme {
@@ -15,13 +13,13 @@ public class Theme {
     public final static Color graphInfo = new Color(0xFFD677);
 
     // Font details
-    public final static String fontName = "Courier";
-    public final  static Font largeFont = new Font(fontName, Font.PLAIN, 16);
-    public final  static Font normalFont = new Font(fontName, Font.PLAIN, 12);
-    public final  static Font smallFont = new Font(fontName, Font.PLAIN, 8);
+    public final static String fontName = "Courier"; // Other fonts to look at "DialogInput", "Dialog", "Serif"
+    public final static Font largeFont = new Font(fontName, Font.PLAIN, 16);
+    public final static Font normalFont = new Font(fontName, Font.PLAIN, 12);
+    public final static Font smallFont = new Font(fontName, Font.PLAIN, 8);
 
     // Line details
-    public final  static int smallLineWidth = 1;
-    public final  static int mediumLineWidth = 3;
-    public final  static int largeLineWidth = 15;
+    public final static int smallLineWidth = 1;
+    public final static int mediumLineWidth = 3;
+    public final static int largeLineWidth = 15;
 }
