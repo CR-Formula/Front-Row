@@ -56,6 +56,7 @@ public class TimeDomain extends PrimaryGraph {
 
                 gl.glEnd();
             }
+            
             if (mouseOnCanvas) {
                 gl.glBegin(GL2.GL_LINES);
                 gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
@@ -63,13 +64,16 @@ public class TimeDomain extends PrimaryGraph {
                 Color mouseColor = new Color(255, 255, 255);
                 gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
 
-                double realMouseX = MouseInfo.getPointerInfo().getLocation().x;
-                realMouseX = realMouseX - (frameLocation.x - graphX) - 6;
-                double mouseX = (((realMouseX - graphX) / (graphWidth)) * 2) + -1;
-                System.out.println(realMouseX + " || " + (frameLocation.x - graphX));
+                double mouseXReal = 0.0;
+                Point mousePos = Frame.getWindows()[0].getMousePosition();
+                if (mousePos != null) {
+                    // -6 if windows, need more testing though
+                    // will need to determine OS then make difference fix
+                    mouseXReal = convertPointOverWidth(mousePos.getX()); 
+                }
 
-                gl.glVertex2d(mouseX, 1);
-                gl.glVertex2d(mouseX, -1);
+                gl.glVertex2d(mouseXReal, 1);
+                gl.glVertex2d(mouseXReal, -1);
 
                 gl.glEnd();
             }
