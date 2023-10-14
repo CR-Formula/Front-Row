@@ -6,6 +6,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Main {
         final GLCanvas glCanvas4 = new GLCanvas(capabilities);
 
         TimeDomain td1 = new TimeDomain(0, 0, graphWidth, graphHeight);
-        TimeDomain td2 = new TimeDomain(graphWidth, 0, graphWidth, graphHeight);
+        TimeDomain td2 = new TimeDomain(0, graphHeight, graphWidth, graphHeight);
         Dial d1 = new Dial(graphWidth, 0, graphHeight, graphHeight);
         Dial d2 = new Dial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
 
@@ -62,21 +63,6 @@ public class Main {
 
         final JFrame frame = new JFrame("Drawing");
 
-//        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
-//            public void componentResized(java.awt.event.ComponentEvent event) {
-//                int width=event.getComponent().getWidth();
-//                int height=event.getComponent().getHeight();
-//                glCanvas1.setSize((width / 2),(height / 2));
-//                ((TimeDomain) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
-//                glCanvas2.setSize((width / 2),(height / 2));
-//                ((TimeDomain) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
-//                glCanvas3.setSize((height / 2),(height / 2));
-//                ((TimeDomain) glCanvas3.getGLEventListener(0)).setPosition(glCanvas3.getX(), glCanvas3.getY(), glCanvas3.getSize());
-//                glCanvas4.setSize((height / 2),(height / 2));
-//                ((TimeDomain) glCanvas4.getGLEventListener(0)).setPosition(glCanvas4.getX(), glCanvas4.getY(), glCanvas4.getSize());
-//            }
-//        });
-
         Box graphs1 = new Box(BoxLayout.X_AXIS);
         graphs1.add(glCanvas1);
         graphs1.add(glCanvas3);
@@ -92,6 +78,26 @@ public class Main {
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
+
+        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent event) {
+                Point location = frame.getLocationOnScreen();
+                Graph.setFrameLocation(location);
+            }
+
+            public void componentResized(java.awt.event.ComponentEvent event) {
+                int width=event.getComponent().getWidth();
+                int height=event.getComponent().getHeight();
+                glCanvas1.setSize((int) (width * 0.65),(int) (height * 0.45));
+                ((Graph) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
+                glCanvas2.setSize((int) (width * 0.65),(int) (height * 0.45));
+                ((Graph) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
+                glCanvas3.setSize((int) (width * 0.35),(int) (height * 0.45));
+                ((Graph) glCanvas3.getGLEventListener(0)).setPosition((int) (glCanvas3.getX() * 1.1), glCanvas3.getY(), glCanvas3.getSize());
+                glCanvas4.setSize((int) (width * 0.35),(int) (height * 0.45));
+                ((Graph) glCanvas4.getGLEventListener(0)).setPosition((int) (glCanvas4.getX() * 1.1), glCanvas4.getY(), glCanvas4.getSize());
+            }
+        });
 
         DataInput.connect(DataInput.TEST);
         List<Dataset> l = new ArrayList<>();

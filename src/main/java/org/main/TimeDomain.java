@@ -64,9 +64,9 @@ public class TimeDomain extends PrimaryGraph {
                 gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
 
                 double realMouseX = MouseInfo.getPointerInfo().getLocation().x;
+                realMouseX = realMouseX - (frameLocation.x - graphX) - 6;
                 double mouseX = (((realMouseX - graphX) / (graphWidth)) * 2) + -1;
-                System.out.println(graphX + " | " + graphWidth);
-                System.out.println(realMouseX + " || " + mouseX);
+                System.out.println(realMouseX + " || " + (frameLocation.x - graphX));
 
                 gl.glVertex2d(mouseX, 1);
                 gl.glVertex2d(mouseX, -1);
