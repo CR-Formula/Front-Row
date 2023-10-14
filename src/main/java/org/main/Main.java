@@ -1,9 +1,11 @@
 package org.main;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
+import org.example.buttonPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -18,15 +20,22 @@ public class Main {
         final int graphWidth = 600;
         final int graphHeight = 200;
 
+
+        // Make space for the canvas
+        // 1 and 2 Time Domain curves
+        // 3 and 4 Dial graphs
         final GLCanvas glCanvas1 = new GLCanvas(capabilities);
         final GLCanvas glCanvas2 = new GLCanvas(capabilities);
         final GLCanvas glCanvas3 = new GLCanvas(capabilities);
         final GLCanvas glCanvas4 = new GLCanvas(capabilities);
+        final GLCanvas glCanvas5 = new GLCanvas(capabilities);
 
+        // Make a TimeDomain
         TimeDomain td1 = new TimeDomain(0, 0, graphWidth, graphHeight);
         TimeDomain td2 = new TimeDomain(graphWidth, 0, graphWidth, graphHeight);
         Dial d1 = new Dial(graphWidth, 0, graphHeight, graphHeight);
         Dial d2 = new Dial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
+        buttonPanel panel = new buttonPanel();
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);
@@ -44,6 +53,8 @@ public class Main {
         glCanvas4.addMouseListener(d2);
         glCanvas4.setSize(graphHeight, graphHeight);
 
+        glCanvas5.setSize(graphHeight, graphWidth);
+
         Animator animator1 = new Animator(glCanvas1);
         animator1.setUpdateFPSFrames(1, null);
         animator1.start();
@@ -59,6 +70,10 @@ public class Main {
         Animator animator4 = new Animator(glCanvas4);
         animator4.setUpdateFPSFrames(1, null);
         animator4.start();
+
+        Animator animator5 = new Animator(glCanvas5);
+        animator5.setUpdateFPSFrames(1, null);
+        animator5.start();
 
         final JFrame frame = new JFrame("Drawing");
 
@@ -85,9 +100,13 @@ public class Main {
         graphs2.add(glCanvas2);
         graphs2.add(glCanvas4);
 
+        Box graphs3 = new Box(BoxLayout.X_AXIS);
+        graphs3.add(glCanvas5);
+
         Box screen = new Box(BoxLayout.Y_AXIS);
         screen.add(graphs1);
         screen.add(graphs2);
+        screen.add(graphs3);
 
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
