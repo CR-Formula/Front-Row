@@ -56,6 +56,7 @@ public class TimeDomain extends PrimaryGraph {
 
                 gl.glEnd();
             }
+            
             if (mouseOnCanvas) {
                 gl.glBegin(GL2.GL_LINES);
                 gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
@@ -63,13 +64,14 @@ public class TimeDomain extends PrimaryGraph {
                 Color mouseColor = new Color(255, 255, 255);
                 gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
 
-                double realMouseX = MouseInfo.getPointerInfo().getLocation().x;
-                double mouseX = (((realMouseX - graphX) / (graphWidth)) * 2) + -1;
-                System.out.println(graphX + " | " + graphWidth);
-                System.out.println(realMouseX + " || " + mouseX);
+                double mouseXReal = 0.0;
+                Point mousePos = Frame.getWindows()[0].getMousePosition();
+                if (mousePos != null) {
+                    mouseXReal = (((mousePos.getX() - graphX) / (graphWidth)) * 2) - 1;
+                }
 
-                gl.glVertex2d(mouseX, 1);
-                gl.glVertex2d(mouseX, -1);
+                gl.glVertex2d(mouseXReal, 1);
+                gl.glVertex2d(mouseXReal, -1);
 
                 gl.glEnd();
             }

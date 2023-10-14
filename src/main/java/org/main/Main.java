@@ -62,20 +62,20 @@ public class Main {
 
         final JFrame frame = new JFrame("Drawing");
 
-//        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
-//            public void componentResized(java.awt.event.ComponentEvent event) {
-//                int width=event.getComponent().getWidth();
-//                int height=event.getComponent().getHeight();
-//                glCanvas1.setSize((width / 2),(height / 2));
-//                ((TimeDomain) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
-//                glCanvas2.setSize((width / 2),(height / 2));
-//                ((TimeDomain) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
-//                glCanvas3.setSize((height / 2),(height / 2));
-//                ((TimeDomain) glCanvas3.getGLEventListener(0)).setPosition(glCanvas3.getX(), glCanvas3.getY(), glCanvas3.getSize());
-//                glCanvas4.setSize((height / 2),(height / 2));
-//                ((TimeDomain) glCanvas4.getGLEventListener(0)).setPosition(glCanvas4.getX(), glCanvas4.getY(), glCanvas4.getSize());
-//            }
-//        });
+        /*frame.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent event) {
+                int width=event.getComponent().getWidth();
+                int height=event.getComponent().getHeight();
+                glCanvas1.setSize((width / 2),(height / 2));
+                ((TimeDomain) glCanvas1.getGLEventListener(0)).setPosition(glCanvas1.getX(), glCanvas1.getY(), glCanvas1.getSize());
+                glCanvas2.setSize((width / 2),(height / 2));
+                ((TimeDomain) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
+                glCanvas3.setSize((height / 2),(height / 2));
+                ((TimeDomain) glCanvas3.getGLEventListener(0)).setPosition(glCanvas3.getX(), glCanvas3.getY(), glCanvas3.getSize());
+                glCanvas4.setSize((height / 2),(height / 2));
+                ((TimeDomain) glCanvas4.getGLEventListener(0)).setPosition(glCanvas4.getX(), glCanvas4.getY(), glCanvas4.getSize());
+            }
+        });*/
 
         Box graphs1 = new Box(BoxLayout.X_AXIS);
         graphs1.add(glCanvas1);
