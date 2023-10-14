@@ -67,7 +67,7 @@ public class TimeDomain extends PrimaryGraph {
                 double mouseXReal = 0.0;
                 Point mousePos = Frame.getWindows()[0].getMousePosition();
                 if (mousePos != null) {
-                    mouseXReal = convertPointOverWidth(mousePos.getX());
+                    mouseXReal = convertPointOverWidth(mousePos.getX()); // -6 if windows, need more testing though
                 }
 
                 gl.glVertex2d(mouseXReal, 1);
