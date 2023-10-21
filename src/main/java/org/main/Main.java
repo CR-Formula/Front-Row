@@ -7,6 +7,9 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import org.example.buttonPanel;
 
+import java.awt.BorderLayout;
+//import java.awt.Dimension;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class Main {
         TimeDomain td2 = new TimeDomain(graphWidth, 0, graphWidth, graphHeight);
         Dial d1 = new Dial(graphWidth, 0, graphHeight, graphHeight);
         Dial d2 = new Dial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
-        buttonPanel panel = new buttonPanel();
+//        buttonPanel panel = new buttonPanel();
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);
@@ -106,8 +109,10 @@ public class Main {
         Box screen = new Box(BoxLayout.Y_AXIS);
         screen.add(graphs1);
         screen.add(graphs2);
-        screen.add(graphs3);
+//        screen.add(graphs3);
 
+        frame.setLayout(new BorderLayout());
+        frame.add(buttonPanel.instance, BorderLayout.SOUTH);
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);

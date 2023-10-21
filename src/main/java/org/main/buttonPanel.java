@@ -1,24 +1,26 @@
 package org.example;
 
-import org.main.SecondaryGraph;
+import org.main.Theme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class buttonPanel extends JPanel {
 
-    static buttonPanel instance = new buttonPanel();
+    public static buttonPanel instance = new buttonPanel();
     private GroupLayout layout;
     private JButton buttonA;
     private JButton buttonB;
 
-    public buttonPanel(int graphX, int graphY, int graphWidth, int graphHeight) {
-        super(graphX, graphY, graphWidth, graphHeight);
+    private buttonPanel() {
+//        super();
 
         layout = new GroupLayout(this);
 
         setLayout(layout);
         setBorder(new EmptyBorder(10, 10, 10, 10));
+        setBackground(Theme.pageBackground);
 
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
