@@ -1,4 +1,4 @@
-package org.example;
+package org.main;
 
 import org.main.Theme;
 
@@ -6,14 +6,15 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class buttonPanel extends JPanel {
+public class ToolBarPanel extends JPanel {
 
-    public static buttonPanel instance = new buttonPanel();
+    public static ToolBarPanel instance = new ToolBarPanel();
     private GroupLayout layout;
     private JButton buttonA;
     private JButton buttonB;
+    private JComboBox listA;
 
-    private buttonPanel() {
+    private ToolBarPanel() {
 //        super();
 
         layout = new GroupLayout(this);
@@ -36,8 +37,20 @@ public class buttonPanel extends JPanel {
             System.out.println(buttonB.getText());
         });
 
+        listA = new JComboBox<>(new String[]{"ListONe", "ListTwo"});
+        listA.setBounds(10, 10, 50, 10);
+        listA.addActionListener(event -> {
+            System.out.println(listA.getSelectedItem());
+        });
+
+
+        add(listA);
+
+
+
         add(buttonA);
         add(buttonB);
+//        add(box);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
@@ -45,6 +58,10 @@ public class buttonPanel extends JPanel {
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonB)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(listA)
+
         );
 
         layout.setVerticalGroup(
@@ -52,6 +69,7 @@ public class buttonPanel extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(buttonA)
                                 .addComponent(buttonB)
+                                .addComponent(listA)
                         )
         );
     }

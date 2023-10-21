@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class MainTwo {
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
