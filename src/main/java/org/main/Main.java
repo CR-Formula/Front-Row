@@ -93,9 +93,9 @@ public class Main {
                 glCanvas2.setSize((int) (width * 0.65),(int) (height * 0.45));
                 ((Graph) glCanvas2.getGLEventListener(0)).setPosition(glCanvas2.getX(), glCanvas2.getY(), glCanvas2.getSize());
                 glCanvas3.setSize((int) (width * 0.35),(int) (height * 0.45));
-                ((Graph) glCanvas3.getGLEventListener(0)).setPosition((int) (glCanvas3.getX() * 1.1), glCanvas3.getY(), glCanvas3.getSize());
+                ((Graph) glCanvas3.getGLEventListener(0)).setPosition(glCanvas1.getX() + glCanvas1.getWidth(), glCanvas3.getY(), glCanvas3.getSize());
                 glCanvas4.setSize((int) (width * 0.35),(int) (height * 0.45));
-                ((Graph) glCanvas4.getGLEventListener(0)).setPosition((int) (glCanvas4.getX() * 1.1), glCanvas4.getY(), glCanvas4.getSize());
+                ((Graph) glCanvas4.getGLEventListener(0)).setPosition(glCanvas2.getX() + glCanvas2.getWidth(), glCanvas4.getY(), glCanvas4.getSize());
             }
         });
 
