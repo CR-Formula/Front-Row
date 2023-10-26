@@ -5,7 +5,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class ToolBarTesting {
+public class ToolbarTesting {
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
         try {
@@ -17,7 +17,7 @@ public class ToolBarTesting {
         final JFrame frame = new JFrame("ToolBarTesting");
 
         frame.setLayout(new BorderLayout());
-        frame.add(ToolBarPanel.instance, BorderLayout.SOUTH);
+        frame.add(ToolbarPanel.instance, BorderLayout.SOUTH);
 
         int width = 192 * 2;
         int height = 144 * 2;

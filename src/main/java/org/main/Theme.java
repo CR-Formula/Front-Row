@@ -5,6 +5,7 @@ import java.awt.*;
 public class Theme {
     // Paddings
     public static int graphPadding = 10;
+    public static int toolbarPadding = 10;
 
     // Colors
     public final static Color pageBackground = new Color(0x504f61);

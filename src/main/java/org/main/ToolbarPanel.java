@@ -4,15 +4,15 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class ToolBarPanel extends JPanel {
+public class ToolbarPanel extends JPanel {
 
-    public static ToolBarPanel instance = new ToolBarPanel();
+    public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
     private JButton buttonA;
     private JButton buttonB;
     private JComboBox<String> comboBoxA;
 
-    private ToolBarPanel() {
+    private ToolbarPanel() {
         super();
 
         layout = new GroupLayout(this);
@@ -23,7 +23,6 @@ public class ToolBarPanel extends JPanel {
 
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
-
 
         buttonA = new JButton("Button A");
         buttonA.addActionListener(event -> {
@@ -50,21 +49,19 @@ public class ToolBarPanel extends JPanel {
                 layout.createSequentialGroup()
                         .addComponent(buttonA)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(buttonB)
-                                .addGap(10)
+                                .addGap(Theme.toolbarPadding)
                                 .addComponent(comboBoxA)
                         )
         );
 
         layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(buttonA)
-                                .addComponent(buttonB)
-                                .addComponent(comboBoxA)
-                        )
+                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonA)
+                        .addComponent(buttonB)
+                        .addComponent(comboBoxA)
         );
     }
 }

@@ -120,7 +120,7 @@ public class Main {
 
 
         frame.setLayout(new BorderLayout());
-        frame.add(ToolBarPanel.instance, BorderLayout.SOUTH);
+        frame.add(ToolbarPanel.instance, BorderLayout.SOUTH);
 
         frame.add(screen,BorderLayout.CENTER);
         frame.setSize(frame.getContentPane().getPreferredSize());
