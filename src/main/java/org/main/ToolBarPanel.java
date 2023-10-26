@@ -1,7 +1,5 @@
 package org.main;
 
-import org.main.Theme;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -12,10 +10,10 @@ public class ToolBarPanel extends JPanel {
     private GroupLayout layout;
     private JButton buttonA;
     private JButton buttonB;
-    private JComboBox listA;
+    private JComboBox<String> comboBoxA;
 
     private ToolBarPanel() {
-//        super();
+        super();
 
         layout = new GroupLayout(this);
 
@@ -37,31 +35,27 @@ public class ToolBarPanel extends JPanel {
             System.out.println(buttonB.getText());
         });
 
-        listA = new JComboBox<>(new String[]{"ListONe", "ListTwo"});
-        listA.setBounds(10, 10, 50, 10);
-        listA.addActionListener(event -> {
-            System.out.println(listA.getSelectedItem());
+        comboBoxA = new JComboBox<>(new String[] {"String A", "String B", "String C"});
+        Dimension comboBoxAMaxSize = new Dimension((int) (comboBoxA.getPreferredSize().getWidth()  * 1.1), (int) comboBoxA.getPreferredSize().getHeight());
+        comboBoxA.setMaximumSize(comboBoxAMaxSize);
+        comboBoxA.addActionListener(event -> {
+            System.out.println(comboBoxA.getSelectedItem());
         });
-
-
-        add(listA);
-
-
 
         add(buttonA);
         add(buttonB);
-//        add(box);
+        add(comboBoxA);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                         .addComponent(buttonA)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonB)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(listA)
-
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(buttonB)
+                                .addGap(10)
+                                .addComponent(comboBoxA)
+                        )
         );
 
         layout.setVerticalGroup(
@@ -69,7 +63,7 @@ public class ToolBarPanel extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(buttonA)
                                 .addComponent(buttonB)
-                                .addComponent(listA)
+                                .addComponent(comboBoxA)
                         )
         );
     }

@@ -15,6 +15,12 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         // TODO: Optimize the main and adding graphs
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e){
+            System.out.println("OS Not Detected");
+        };
+
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
 
