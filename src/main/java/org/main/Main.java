@@ -83,7 +83,7 @@ public class Main {
 //        animator5.setUpdateFPSFrames(1, null);
 //        animator5.start();
 
-        final JFrame frame = new JFrame("Drawing");
+        final JFrame frame = new JFrame("Front Row");
 
 //        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
 //            public void componentResized(java.awt.event.ComponentEvent event) {
