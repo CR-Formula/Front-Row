@@ -2,6 +2,7 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.xml.crypto.Data;
 import java.awt.*;
 
 public class ToolbarPanel extends JPanel {
@@ -9,8 +10,8 @@ public class ToolbarPanel extends JPanel {
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
     private JButton connectButton;
+    private JButton disconnectButton;
     private JComboBox<String> inputTypeOptions;
-
     private String selectedOption;
 
     private ToolbarPanel() {
@@ -42,9 +43,21 @@ public class ToolbarPanel extends JPanel {
 
         });
 
-        connectButton = new JButton("Button B");
+        connectButton = new JButton("Connect");
         connectButton.addActionListener(event -> {
-            System.out.println(connectButton.getText());
+            if (selectedOption.equals(DataInput.TEST)) {
+                DataInput.connect(selectedOption);
+            } else {
+                DataInput.setUARTPort(selectedOption);
+                DataInput.connect(DataInput.UART);
+            }
+            layout.replace(connectButton, disconnectButton);
+        });
+
+        disconnectButton = new JButton("Disconnect");
+        disconnectButton.addActionListener(event -> {
+            DataInput.disconnect();
+            layout.replace(disconnectButton, connectButton);
         });
 
         add(inputTypeOptions);

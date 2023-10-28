@@ -117,7 +117,7 @@ public class DataInput {
     }
 
     private static void enableUARTConnection() {
-        if (selectedUARTPort == null || selectedUARTPort.equals(""))
+        if (selectedUARTPort == null || selectedUARTPort.isEmpty())
             return;
 
         if (uartPort != null && uartPort.isOpen())
@@ -175,6 +175,7 @@ public class DataInput {
         latestTokens = null;
         if (uartThread.isAlive())
             uartThread.interrupt();
+        while (uartThread.isAlive());
     }
 
     public static boolean isConnected() {
@@ -196,5 +197,9 @@ public class DataInput {
 
     public static void setUARTPort(String portName) {
         selectedUARTPort = portName;
+    }
+
+    public static String connectionType() {
+        return selectedUARTPort.equals(TEST) ? TEST : UART;
     }
 }
