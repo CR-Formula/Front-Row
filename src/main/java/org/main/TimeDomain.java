@@ -30,11 +30,8 @@ public class TimeDomain extends PrimaryGraph {
         try {
             for (Dataset dataset : datasets) {
                 final int drawSampleCount = Math.min(minSampleCount, sampleCount);
-                if (drawSampleCount < 2){
-//                    System.out.println("DrawSample less than 2");
+                if (drawSampleCount < 2)
                     return;
-                }
-
 
 
                 gl.glBegin(GL2.GL_LINE_STRIP);
@@ -53,13 +50,13 @@ public class TimeDomain extends PrimaryGraph {
                     Color c = dataset.getColor();
                     gl.glColor3d(c.getRed() / 255.0, c.getBlue() / 255.0, c.getGreen() / 255.0);
 
-//                    System.out.println(sample1y);
                     gl.glVertex2d(sample1x, sample1y);
                     gl.glVertex2d(sample2x, sample2y);
                 }
 
                 gl.glEnd();
             }
+            
             if (mouseOnCanvas) {
                 gl.glBegin(GL2.GL_LINES);
                 gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
@@ -67,13 +64,16 @@ public class TimeDomain extends PrimaryGraph {
                 Color mouseColor = new Color(255, 255, 255);
                 gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
 
-                double realMouseX = MouseInfo.getPointerInfo().getLocation().x;
-                double mouseX = (((realMouseX - graphX) / (graphWidth)) * 2) + -1;
-                System.out.println(graphX + " | " + graphWidth);
-                System.out.println(realMouseX + " || " + mouseX);
+                double mouseXReal = 0.0;
+                Point mousePos = Frame.getWindows()[0].getMousePosition();
+                if (mousePos != null) {
+                    // -6 if windows, need more testing though
+                    // will need to determine OS then make difference fix
+                    mouseXReal = convertPointOverWidth(mousePos.getX()); 
+                }
 
-                gl.glVertex2d(mouseX, 1);
-                gl.glVertex2d(mouseX, -1);
+                gl.glVertex2d(mouseXReal, 1);
+                gl.glVertex2d(mouseXReal, -1);
 
                 gl.glEnd();
             }

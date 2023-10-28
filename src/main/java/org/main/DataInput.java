@@ -69,9 +69,11 @@ public class DataInput {
 
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
-            DatasetController.addDataset(new Dataset("sinA", 0, new Color(255, 0, 0)));
-            DatasetController.addDataset(new Dataset("sinB", 1, new Color(0, 255, 0)));
-            DatasetController.addDataset(new Dataset("sinC", 2, new Color(0, 0, 255)));
+            Color[] colors = DatasetController.generateRandomColors(3);
+            System.out.println(colors.length);
+            DatasetController.addDataset(new Dataset("sinA", 0, colors[0]));
+            DatasetController.addDataset(new Dataset("sinB", 1, colors[1]));
+            DatasetController.addDataset(new Dataset("sinC", 2, colors[2]));
         }
 
         testThread = new Thread(() -> {

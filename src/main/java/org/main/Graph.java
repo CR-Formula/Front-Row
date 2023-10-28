@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class Graph extends MouseAdapter implements GLEventListener {
+    protected static Point frameLocation;
+
     protected int sampleCount = 10000;
     protected List<Dataset> datasets;
 
@@ -18,7 +20,7 @@ public class Graph extends MouseAdapter implements GLEventListener {
     protected double graphWidth;
     protected  double graphHeight;
 
-    protected boolean mouseOnCanvas;
+    protected static boolean mouseOnCanvas;
 
     private GLCanvas canvas;
 
@@ -90,4 +92,6 @@ public class Graph extends MouseAdapter implements GLEventListener {
     protected double convertValueOverWidth(double value) {
         return ((value / graphWidth) * (2));
     }
+
+    protected static void setFrameLocation(Point location) { frameLocation = location; }
 }
