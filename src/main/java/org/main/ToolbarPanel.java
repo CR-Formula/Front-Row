@@ -11,6 +11,8 @@ public class ToolbarPanel extends JPanel {
     private JButton connectButton;
     private JComboBox<String> inputTypeOptions;
 
+    private String selectedOption;
+
     private ToolbarPanel() {
         super();
 
@@ -23,11 +25,21 @@ public class ToolbarPanel extends JPanel {
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
 
-        inputTypeOptions = new JComboBox<>(new String[] {"String A", "String B", "String C"});
+        String[] openPorts = DataInput.getOpenUARTPorts();
+        int optionsLength = openPorts.length + 1;
+        String[] options = new String[optionsLength];
+        options[0] = DataInput.TEST;
+
+        for (int i = 1; i < options.length; i++) {
+            options[i] = openPorts[i-1];
+        }
+
+        inputTypeOptions = new JComboBox<>(options);
         Dimension comboBoxAMaxSize = new Dimension((int) (inputTypeOptions.getPreferredSize().getWidth()  * 1.1), (int) inputTypeOptions.getPreferredSize().getHeight());
         inputTypeOptions.setMaximumSize(comboBoxAMaxSize);
         inputTypeOptions.addActionListener(event -> {
-            System.out.println(inputTypeOptions.getSelectedItem());
+            selectedOption = inputTypeOptions.getSelectedItem().toString();
+
         });
 
         connectButton = new JButton("Button B");
