@@ -8,9 +8,8 @@ public class ToolbarPanel extends JPanel {
 
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
-    private JButton buttonA;
-    private JButton buttonB;
-    private JComboBox<String> comboBoxA;
+    private JButton connectButton;
+    private JComboBox<String> inputTypeOptions;
 
     private ToolbarPanel() {
         super();
@@ -24,44 +23,36 @@ public class ToolbarPanel extends JPanel {
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
 
-        buttonA = new JButton("Button A");
-        buttonA.addActionListener(event -> {
-            System.out.println(buttonA.getText());
+        inputTypeOptions = new JComboBox<>(new String[] {"String A", "String B", "String C"});
+        Dimension comboBoxAMaxSize = new Dimension((int) (inputTypeOptions.getPreferredSize().getWidth()  * 1.1), (int) inputTypeOptions.getPreferredSize().getHeight());
+        inputTypeOptions.setMaximumSize(comboBoxAMaxSize);
+        inputTypeOptions.addActionListener(event -> {
+            System.out.println(inputTypeOptions.getSelectedItem());
         });
 
-        buttonB = new JButton("Button B");
-        buttonB.addActionListener(event -> {
-            System.out.println(buttonB.getText());
+        connectButton = new JButton("Button B");
+        connectButton.addActionListener(event -> {
+            System.out.println(connectButton.getText());
         });
 
-        comboBoxA = new JComboBox<>(new String[] {"String A", "String B", "String C"});
-        Dimension comboBoxAMaxSize = new Dimension((int) (comboBoxA.getPreferredSize().getWidth()  * 1.1), (int) comboBoxA.getPreferredSize().getHeight());
-        comboBoxA.setMaximumSize(comboBoxAMaxSize);
-        comboBoxA.addActionListener(event -> {
-            System.out.println(comboBoxA.getSelectedItem());
-        });
-
-        add(buttonA);
-        add(buttonB);
-        add(comboBoxA);
+        add(inputTypeOptions);
+        add(connectButton);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
-                        .addComponent(buttonA)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(buttonB)
+                                .addComponent(inputTypeOptions)
                                 .addGap(Theme.toolbarPadding)
-                                .addComponent(comboBoxA)
+                                .addComponent(connectButton)
                         )
         );
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(buttonA)
-                        .addComponent(buttonB)
-                        .addComponent(comboBoxA)
+                        .addComponent(inputTypeOptions)
+                        .addComponent(connectButton)
         );
     }
 }

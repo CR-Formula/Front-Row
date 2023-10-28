@@ -27,8 +27,5 @@ public class ToolbarTesting {
         frame.setMinimumSize(resolution144p);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-
-
     }
 }
