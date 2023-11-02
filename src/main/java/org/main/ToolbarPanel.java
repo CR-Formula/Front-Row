@@ -12,7 +12,7 @@ public class ToolbarPanel extends JPanel {
     private JButton connectButton;
     private JButton disconnectButton;
     private JComboBox<String> inputTypeOptions;
-    private String selectedOption;
+    private String selectedOption = DataInput.TEST;
 
     private ToolbarPanel() {
         super();
@@ -21,7 +21,7 @@ public class ToolbarPanel extends JPanel {
 
         setLayout(layout);
         setBorder(new EmptyBorder(10, 10, 10, 10));
-        setBackground(Theme.pageBackground);
+        setBackground(Theme.toolbarBackground);
 
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
@@ -40,7 +40,6 @@ public class ToolbarPanel extends JPanel {
         inputTypeOptions.setMaximumSize(comboBoxAMaxSize);
         inputTypeOptions.addActionListener(event -> {
             selectedOption = inputTypeOptions.getSelectedItem().toString();
-
         });
 
         connectButton = new JButton("Connect");

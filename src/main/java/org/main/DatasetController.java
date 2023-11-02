@@ -76,9 +76,9 @@ public class DatasetController {
 
     public static Color[] generateRandomColors(int length) {
         Color[] colors = new Color[length];
-        for (int i = 1; i <= length; i++) {
+        for (int i = 0; i < length; i++) {
             float h = (float) i / (length);
-            colors[i - 1] = HSLColor.toRGB(h * 360.0f, 100.0f, 50.0f);
+            colors[i] = HSLColor.toRGB(h * 360.0f, 100.0f, 50.0f);
         }
         return colors;
     }

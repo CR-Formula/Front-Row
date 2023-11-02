@@ -24,10 +24,10 @@ public class Main {
         final GLCanvas glCanvas3 = new GLCanvas(capabilities);
         final GLCanvas glCanvas4 = new GLCanvas(capabilities);
 
-        TimeDomain td1 = new TimeDomain(0, 0, graphWidth, graphHeight);
-        TimeDomain td2 = new TimeDomain(0, graphHeight, graphWidth, graphHeight);
-        Dial d1 = new Dial(graphWidth, 0, graphHeight, graphHeight);
-        Dial d2 = new Dial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
+        OpenGLTimeDomain td1 = new OpenGLTimeDomain(0, 0, graphWidth, graphHeight);
+        OpenGLTimeDomain td2 = new OpenGLTimeDomain(0, graphHeight, graphWidth, graphHeight);
+        OpenGLDial d1 = new OpenGLDial(graphWidth, 0, graphHeight, graphHeight);
+        OpenGLDial d2 = new OpenGLDial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);
@@ -78,6 +78,8 @@ public class Main {
         frame.getContentPane().add(screen);
         frame.setSize(frame.getContentPane().getPreferredSize());
         frame.setVisible(true);
+
+        frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 
         frame.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent event) {

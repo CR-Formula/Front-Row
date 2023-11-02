@@ -15,14 +15,12 @@ public class Graph extends MouseAdapter implements GLEventListener {
     protected int sampleCount = 10000;
     protected List<Dataset> datasets;
 
-    protected double graphX;
-    protected double graphY;
-    protected double graphWidth;
-    protected  double graphHeight;
+    protected int graphX;
+    protected int graphY;
+    protected int graphWidth;
+    protected int graphHeight;
 
     protected static boolean mouseOnCanvas;
-
-    private GLCanvas canvas;
 
     public Graph(int graphX, int graphY, int graphWidth, int graphHeight) {
         this.graphX = graphX;

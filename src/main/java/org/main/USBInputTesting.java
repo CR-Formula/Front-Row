@@ -31,7 +31,7 @@ public class USBInputTesting {
 
         final GLCanvas glCanvas1 = new GLCanvas(capabilities);
 
-        TimeDomain td1 = new TimeDomain(0, 0, graphWidth, graphHeight);
+        OpenGLTimeDomain td1 = new OpenGLTimeDomain(0, 0, graphWidth, graphHeight);
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);
