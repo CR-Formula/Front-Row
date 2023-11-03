@@ -7,6 +7,7 @@ import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,10 @@ public class CanvasPanel extends JPanel {
     private List<JPanel> secondaryGraphs;
 
     public Dimension canvasDimension = new Dimension(2, 4);
+
+    private int index = 0;
+
+    private StringBuilder columnConstraints;
 
     private CanvasPanel() {
         StringBuilder columnConstraints = new StringBuilder(Theme.graphPadding + "[][][][][]" + Theme.graphPadding);
@@ -43,25 +48,52 @@ public class CanvasPanel extends JPanel {
         setBackground(Theme.canvasBackground);
         setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
+        initializeGraphs();
         setupCanvasLayout();
     }
 
     public void setupCanvasLayout() {
-        initializeGraphs();
         removeAll();
+//        initializeGraphs();
 
-        int index = 0;
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new BorderLayout());
+//        int index = 0;
 
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new BorderLayout());
+//        JPanel panel1 = new JPanel();
+//        panel1.setLayout(new BorderLayout());
+//
+//        JPanel panel2 = new JPanel();
+//        panel2.setLayout(new BorderLayout());
+//
+//        panel1.add(getDefaultTDCanvas(0), BorderLayout.CENTER);
+//        panel2.add(getDefaultTDCanvas(1), BorderLayout.CENTER);
 
-        panel1.add(getDefaultTDCanvas(0), BorderLayout.CENTER);
-        panel2.add(getDefaultTDCanvas(1), BorderLayout.CENTER);
+//        primaryGraphs.get(0).removeAll();
+//        primaryGraphs.get(0).add(getDefaultTDCanvas(0), BorderLayout.CENTER);
+//        primaryGraphs.get(1).removeAll();
+//        primaryGraphs.get(1).add(getDefaultTDCanvas(1), BorderLayout.CENTER);
+//        index++;
 
-        primaryGraphs.set(0, panel1);
-        primaryGraphs.set(1, panel2);
+//        System.out.println(index);
+        if (index == 0) {
+            primaryGraphs.get(0).removeAll();
+            primaryGraphs.get(0).add(getDefaultTDCanvas(0), BorderLayout.CENTER);
+        }
+        if (index == 1) {
+            primaryGraphs.get(1).removeAll();
+            primaryGraphs.get(1).add(getDefaultTDCanvas(1), BorderLayout.CENTER);
+        }
+        for (int i = 0; i < 4; i++) {
+            Component prevComp = primaryGraphs.get(i).getComponent(0);
+            primaryGraphs.get(i).removeAll();
+            if (prevComp.getClass().equals(GLCanvas.class)) {
+//                System.out.println("yeah its a canvas");
+                primaryGraphs.get(i).add(replacementGraph(primaryGraphs.get(i), (GLCanvas) prevComp), BorderLayout.CENTER);
+            } else {
+                primaryGraphs.get(i).add(prevComp, BorderLayout.CENTER);
+            }
+            System.out.println(prevComp.getClass());
+        }
+        index++;
 
         add(primaryGraphs.get(0), "cell 0 0 5 1, grow");
         add(primaryGraphs.get(1), "cell 0 1 5 1, grow");
@@ -75,6 +107,13 @@ public class CanvasPanel extends JPanel {
         repaint();
         revalidate();
 
+//        if (index == 0) {
+//            index++;
+//            primaryGraphs.get(2).removeAll();
+//            primaryGraphs.get(2).add(getDefaultTDCanvas(2), BorderLayout.CENTER);
+//
+//            setupCanvasLayout();
+//        }
 //        for (int column = 0; column < canvasDimension.getWidth(); column++) {
 //            List<Component> components = column == 0 ? primaryGraphs : secondaryGraphs;
 //            for (int row = 0; row < canvasDimension.getHeight(); row++) {
@@ -97,6 +136,7 @@ public class CanvasPanel extends JPanel {
                 int index = column == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
                 try {
                     if (graphs.get(index) == null) throw new IndexOutOfBoundsException("Null Graph");
+
                     System.out.println("Drawing somethin ---------------------------------------");
                     JPanel panel = new JPanel();
                     panel.setLayout(new BorderLayout());
@@ -118,21 +158,16 @@ public class CanvasPanel extends JPanel {
 
                     graphColumns.get(column).add(panel);
                     System.out.println(index);
-                    System.out.println("Creating Known: " + "C= " + column + " | I= " + index);
+//                    System.out.println("Creating Known: " + "C=" + column + " | I=" + index);
                 } catch (IndexOutOfBoundsException e1) {
                     try {
                         if (graphColumns.get(column).get(index) == null)
                             graphColumns.get(column).add(createNullButton(graphs, graphColumns, column, index));
                         else {
-                            JPanel panel = new JPanel();
-                            panel.setLayout(new BorderLayout());
-
-                            panel.add(graphColumns.get(column).get(index).getComponent(0));
-                            String panelClass = panel.getComponent(0).getClass().toString();
-                            panelClass = panelClass.split("\\.")[panelClass.split("\\.").length - 1];
-
-                            graphColumns.get(column).set(index, panel);
-                            System.out.println(panelClass + ": C=" + column + " | I=" + index);
+//                            System.out.println("Creating Uh this one...: " + "C=" + column + " | I=" + index);
+                            Component previousComponent = graphColumns.get(column).get(index).getComponent(0);
+                            graphColumns.get(column).get(index).removeAll();
+                            graphColumns.get(column).get(index).add(previousComponent, BorderLayout.CENTER);
                         }
                     } catch (IndexOutOfBoundsException e2) {
                         graphColumns.get(column).add(createNullButton(graphs, graphColumns, column, index));
@@ -143,27 +178,45 @@ public class CanvasPanel extends JPanel {
     }
 
     private JPanel createNullButton(List<? extends Graph> graphs, List<List<JPanel>> graphColumns, int column, int index) {
-        System.out.println("Creating Null: " + "C= " + column + " | I= " + index);
+//        System.out.println("Creating Null: " + "C=" + column + " | I=" + index);
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        JButton temp = new JButton("+");
-        temp.addActionListener(event -> {
-            JPanel tempPanel = graphColumns.get(column).get(index);
-            tempPanel.removeAll();
+        JButton button = new JButton("+");
+        button.addActionListener(event -> {
+            graphColumns.get(column).get(index).removeAll();
 
-            tempPanel.add(getDefaultTDCanvas(index), BorderLayout.CENTER);
+            graphColumns.get(column).get(index).add(getDefaultTDCanvas(index), BorderLayout.CENTER);
 
-            graphColumns.get(column).set(index, tempPanel);
             setupCanvasLayout();
         });
-        panel.add(temp, BorderLayout.CENTER);
-        temp.setFont(Theme.largeFont);
-        temp.setBackground(Theme.nullGraphColor);
-        temp.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        temp.setBorder(BorderFactory.createEmptyBorder());
+        panel.add(button, BorderLayout.CENTER);
+        button.setFont(Theme.largeFont);
+        button.setBackground(Theme.nullGraphColor);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        button.setBorder(BorderFactory.createEmptyBorder());
 
-        panel.add(temp);
+        panel.add(button);
         return panel;
+    }
+
+    public GLCanvas replacementGraph(JPanel container, GLCanvas oldCanvas) {
+        final GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities capabilities = new GLCapabilities(profile);
+
+        GLCanvas replacement = new GLCanvas(capabilities);
+
+        ((Graph) oldCanvas.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
+
+        replacement.addGLEventListener(oldCanvas.getGLEventListener(0));
+        replacement.addMouseListener(oldCanvas.getMouseListeners()[0]);
+
+        replacement.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        Animator animator = new Animator(replacement);
+        animator.setUpdateFPSFrames(1, null);
+        animator.start();
+
+        return replacement;
     }
 
     public void toggleGraphs() {

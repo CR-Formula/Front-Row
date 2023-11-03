@@ -70,7 +70,7 @@ public class DataInput {
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
             Color[] colors = DatasetController.generateRandomColors(3);
-            System.out.println(colors.length);
+
             DatasetController.addDataset(new Dataset("sinA", 0, colors[0]));
             DatasetController.addDataset(new Dataset("sinB", 1, colors[1]));
             DatasetController.addDataset(new Dataset("sinC", 2, colors[2]));
