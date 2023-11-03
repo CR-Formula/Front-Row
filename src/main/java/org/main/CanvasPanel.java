@@ -56,29 +56,6 @@ public class CanvasPanel extends JPanel {
         runningSetup = true;
         removeAll();
 
-//        for (int i = 0; i < 4; i++) {
-//            Component prevComp = primaryGraphs.get(i).getComponent(0);
-//            primaryGraphs.get(i).removeAll();
-//            if (prevComp.getClass().equals(GLCanvas.class)) {
-//                primaryGraphs.get(i).add(replacementGraph(primaryGraphs.get(i), (GLCanvas) prevComp), BorderLayout.CENTER);
-//            } else {
-//                primaryGraphs.get(i).add(prevComp, BorderLayout.CENTER);
-//            }
-//            System.out.println(prevComp.getClass());
-//        }
-//
-//        add(primaryGraphs.get(0), "cell 0 0 5 1, grow");
-//        add(primaryGraphs.get(1), "cell 0 1 5 1, grow");
-//        add(primaryGraphs.get(2), "cell 0 2 5 1, grow");
-//        add(primaryGraphs.get(3), "cell 0 3 5 1, grow");
-//
-//        add(secondaryGraphs.get(0), "cell 5 0, grow");
-//        add(secondaryGraphs.get(1), "cell 5 1, grow");
-//        add(secondaryGraphs.get(2), "cell 5 2, grow");
-//        add(secondaryGraphs.get(3), "cell 5 3, grow");
-//        repaint();
-//        revalidate();
-
         for (int i = 0; i < canvasDimension.getWidth(); i++) {
             int column = i == 0 ? i : i + 4;
             List<JPanel> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
