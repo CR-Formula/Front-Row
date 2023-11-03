@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CanvasPanel extends JPanel {
-
+    /* TODO: Create default which will display one add button,
+     *     then add another below it which is thinner add button below it.
+     *     Creation panel needed to select which Graph is wanted as well!!!
+    */
     public static CanvasPanel instance = new CanvasPanel();
 
     private MigLayout layout;
@@ -22,7 +25,7 @@ public class CanvasPanel extends JPanel {
     private List<JPanel> primaryGraphs;
     private List<JPanel> secondaryGraphs;
 
-    public Dimension canvasDimension = new Dimension(2, 4);
+    public Dimension canvasDimension = new Dimension(2, 6);
 
     private StringBuilder columnConstraints;
 
@@ -61,7 +64,6 @@ public class CanvasPanel extends JPanel {
             List<JPanel> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
             for (int j = 0; j < canvasDimension.getHeight(); j++) {
                 int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
-                System.out.println(i + " | " + index + " : " + componentList.get(index).getComponentCount());
 
                 Component component = componentList.get(index).getComponent(0);
                 componentList.get(index).removeAll();
@@ -73,9 +75,6 @@ public class CanvasPanel extends JPanel {
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
                     location = "cell " + column + " " + j + " 5 1 , grow";
-                System.out.println(location);
-                System.out.println(i + " | " + index + " : " + componentList.get(index).getComponent(0).getClass());
-                System.out.println("----------");
 
                 add(componentList.get(index), location);
             }
@@ -96,8 +95,6 @@ public class CanvasPanel extends JPanel {
                 int index = column == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
                 try {
                     if (graphs.get(index) == null) throw new IndexOutOfBoundsException("Null Graph");
-
-                    System.out.println("Drawing somethin ---------------------------------------");
                     JPanel panel = new JPanel();
                     panel.setLayout(new BorderLayout());
 
@@ -117,14 +114,11 @@ public class CanvasPanel extends JPanel {
                     panel.add(glCanvas, BorderLayout.CENTER);
 
                     graphColumns.get(column).add(panel);
-                    System.out.println(index);
-//                    System.out.println("Creating Known: " + "C=" + column + " | I=" + index);
                 } catch (IndexOutOfBoundsException e1) {
                     try {
                         if (graphColumns.get(column).get(index) == null)
                             graphColumns.get(column).add(createNullButton(graphs, graphColumns, column, index));
                         else {
-//                            System.out.println("Creating Uh this one...: " + "C=" + column + " | I=" + index);
                             Component previousComponent = graphColumns.get(column).get(index).getComponent(0);
                             graphColumns.get(column).get(index).removeAll();
                             graphColumns.get(column).get(index).add(previousComponent, BorderLayout.CENTER);
@@ -138,7 +132,6 @@ public class CanvasPanel extends JPanel {
     }
 
     private JPanel createNullButton(List<? extends Graph> graphs, List<List<JPanel>> graphColumns, int column, int index) {
-//        System.out.println("Creating Null: " + "C=" + column + " | I=" + index);
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JButton button = new JButton("+");

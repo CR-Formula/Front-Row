@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class ToolbarTesting {
     public static void main(String[] args) throws InterruptedException {
-        // TODO: Optimize the main and adding graphs
+        // TODO: Optimize the main
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch(Exception e){
