@@ -25,9 +25,12 @@ public class CanvasPanel extends JPanel {
     private List<JPanel> primaryGraphs;
     private List<JPanel> secondaryGraphs;
 
-    public Dimension canvasDimension = new Dimension(2, 6);
+    public Dimension canvasDimension = new Dimension(2, 4);
 
-    private StringBuilder columnConstraints;
+    private List<Thread> threads = new ArrayList<>();
+
+    final GLProfile profile = GLProfile.get(GLProfile.GL2);
+    GLCapabilities capabilities = new GLCapabilities(profile);
 
     private boolean runningSetup = false;
 
@@ -48,7 +51,6 @@ public class CanvasPanel extends JPanel {
 
         setLayout(layout);
         setBackground(Theme.canvasBackground);
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         initializeGraphs();
         setupCanvasLayout();
@@ -97,9 +99,6 @@ public class CanvasPanel extends JPanel {
                     if (graphs.get(index) == null) throw new IndexOutOfBoundsException("Null Graph");
                     JPanel panel = new JPanel();
                     panel.setLayout(new BorderLayout());
-
-                    final GLProfile profile = GLProfile.get(GLProfile.GL2);
-                    GLCapabilities capabilities = new GLCapabilities(profile);
 
                     GLCanvas glCanvas = new GLCanvas(capabilities);
                     glCanvas.addGLEventListener(graphs.get(index));
@@ -153,9 +152,6 @@ public class CanvasPanel extends JPanel {
     }
 
     public GLCanvas replacementGraph(JPanel container, GLCanvas oldCanvas) {
-        final GLProfile profile = GLProfile.get(GLProfile.GL2);
-        GLCapabilities capabilities = new GLCapabilities(profile);
-
         GLCanvas replacement = new GLCanvas(capabilities);
 
         ((Graph) oldCanvas.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
@@ -188,9 +184,6 @@ public class CanvasPanel extends JPanel {
 
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
-        final GLProfile profile = GLProfile.get(GLProfile.GL2);
-        GLCapabilities capabilities = new GLCapabilities(profile);
-
         GLCanvas glCanvas = new GLCanvas(capabilities);
         glCanvas.addGLEventListener(td);
         glCanvas.addMouseListener(td);
@@ -211,9 +204,6 @@ public class CanvasPanel extends JPanel {
         dial.toggleAutoDetectMaxMin();
 
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
-
-        final GLProfile profile = GLProfile.get(GLProfile.GL2);
-        GLCapabilities capabilities = new GLCapabilities(profile);
 
         GLCanvas glCanvas = new GLCanvas(capabilities);
         glCanvas.addGLEventListener(dial);

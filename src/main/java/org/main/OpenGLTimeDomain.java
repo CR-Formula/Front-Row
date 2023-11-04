@@ -33,25 +33,29 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 if (drawSampleCount < 2)
                     return;
 
+                maxYValue = Math.max(maxYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
+                minYValue = Math.min(minYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
+                double range = maxYValue - minYValue;
 
                 gl.glBegin(GL2.GL_LINE_STRIP);
+                double initialX = -1.0;
+                double initialY = dataset.getSample(dataset.getLength() - drawSampleCount);
+                initialY = (((initialY - minYValue) / range) * 2) + -1;
+                gl.glVertex2d(initialX, initialY);
+
                 for (int i = 1; i < drawSampleCount - 1; i++) {
                     maxYValue = Math.max(maxYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
                     minYValue = Math.min(minYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
-                    final double range = maxYValue - minYValue;
+                    range = maxYValue - minYValue;
 
-                    double sample1x = -1.0 + ((i - 1) * diff);
-                    double sample2x = -1.0 + ((i) * diff);
-                    double sample1y = dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1)));
-                    sample1y = (((sample1y - minYValue) / range) * 2) + -1;
-                    double sample2y = dataset.getSample((dataset.getLength()) - (drawSampleCount - (i)));
-                    sample2y = (((sample2y - minYValue) / range) * 2) + -1;
+                    double sampleX = -1.0 + ((i) * diff);
+                    double sampleY = dataset.getSample((dataset.getLength()) - (drawSampleCount - (i)));
+                    sampleY = (((sampleY - minYValue) / range) * 2) + -1;
 
                     Color c = dataset.getColor();
                     gl.glColor3d(c.getRed() / 255.0, c.getBlue() / 255.0, c.getGreen() / 255.0);
 
-                    gl.glVertex2d(sample1x, sample1y);
-                    gl.glVertex2d(sample2x, sample2y);
+                    gl.glVertex2d(sampleX, sampleY);
                 }
 
                 gl.glEnd();

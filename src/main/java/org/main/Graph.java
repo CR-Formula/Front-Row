@@ -2,7 +2,6 @@ package org.main;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
