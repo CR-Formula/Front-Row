@@ -25,11 +25,13 @@ public class DatasetPanel extends JPanel {
         int min = 0;
 
         JTextField nameField = new JTextField(name);
+        nameField.setMaximumSize(nameField.getPreferredSize());
         nameField.addActionListener(event -> {
             System.out.println(nameField.getText());
         });
 
         JTextField labelField = new JTextField(label);
+        labelField.setMaximumSize(labelField.getPreferredSize());
         nameField.addActionListener(event -> {
             System.out.println(labelField.getText());
         });
@@ -37,6 +39,7 @@ public class DatasetPanel extends JPanel {
 
         SpinnerNumberModel numberModel = new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
         JSpinner maxField = new JSpinner(numberModel);
+        maxField.setMaximumSize(maxField.getPreferredSize());
         maxField.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -45,6 +48,7 @@ public class DatasetPanel extends JPanel {
         });
 
         JSpinner minField = new JSpinner(numberModel);
+        minField.setMaximumSize(minField.getPreferredSize());
         minField.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
