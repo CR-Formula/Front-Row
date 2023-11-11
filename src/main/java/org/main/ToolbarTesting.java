@@ -1,8 +1,6 @@
 package org.main;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 //import java.awt.Dimension;
 
 import javax.swing.*;
@@ -18,17 +16,7 @@ public class ToolbarTesting {
 
         DataInput.connect(DataInput.TEST);
 
-        final JFrame frame = new JFrame("ToolBarTesting");
-
-        frame.setLayout(new BorderLayout());
-        frame.add(ToolbarPanel.instance, BorderLayout.SOUTH);
-        frame.add(CanvasPanel.instance, BorderLayout.CENTER); // Can only show once datasets are built
-
-        frame.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent event) {
-                CanvasPanel.instance.setupCanvasLayout();
-            }
-        });
+        final JFrame frame = PanelManager.instance;
 
         int width = 192 * 2;
         int height = 144 * 2;

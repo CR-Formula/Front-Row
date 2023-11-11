@@ -2,7 +2,6 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.xml.crypto.Data;
 import java.awt.*;
 
 public class ToolbarPanel extends JPanel {
@@ -50,12 +49,14 @@ public class ToolbarPanel extends JPanel {
                 DataInput.setUARTPort(selectedOption);
                 DataInput.connect(DataInput.UART);
             }
+            PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(connectButton, disconnectButton);
         });
 
         disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(event -> {
             DataInput.disconnect();
+            PanelManager.instance.removeComponent(DatasetPanel.instance);
             layout.replace(disconnectButton, connectButton);
         });
 
