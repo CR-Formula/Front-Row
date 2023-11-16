@@ -9,6 +9,7 @@ public class ToolbarPanel extends JPanel {
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
     private JButton connectButton;
+    private JButton continueButton;
     private JButton disconnectButton;
     private JComboBox<String> inputTypeOptions;
     private String selectedOption = DataInput.TEST;
@@ -50,14 +51,21 @@ public class ToolbarPanel extends JPanel {
                 DataInput.connect(DataInput.UART);
             }
             PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
-            layout.replace(connectButton, disconnectButton);
+            layout.replace(connectButton, continueButton);
+        });
+
+        continueButton = new JButton("Continue");
+        continueButton.addActionListener(event -> {
+            DataInput.disconnect();
+            PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
+            layout.replace(continueButton, disconnectButton);
         });
 
         disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(event -> {
             DataInput.disconnect();
             PanelManager.instance.removeComponent(DatasetPanel.instance);
-            layout.replace(disconnectButton, connectButton);
+            layout.replace(disconnectButton, continueButton);
         });
 
         add(inputTypeOptions);
