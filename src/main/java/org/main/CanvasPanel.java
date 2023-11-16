@@ -179,7 +179,7 @@ public class CanvasPanel extends JPanel {
     private GLCanvas getDefaultTDCanvas(int i) {
         OpenGLTimeDomain td = new OpenGLTimeDomain(0, 0, 0, 0);
         td.setDatasets(List.of(DatasetController.getDataset(i % DatasetController.getDatasets().size())));
-
+        td.toggleAutoDetectMaxMin();
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
         GLCanvas glCanvas = new GLCanvas(capabilities);

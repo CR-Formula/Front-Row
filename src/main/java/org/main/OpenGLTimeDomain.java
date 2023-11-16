@@ -44,8 +44,14 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 gl.glVertex2d(initialX, initialY);
 
                 for (int i = 1; i < drawSampleCount - 1; i++) {
-                    maxYValue = Math.max(maxYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
-                    minYValue = Math.min(minYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
+                    if (autoDetectMaxMin) {
+                        maxYValue = Math.max(maxYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
+                        minYValue = Math.min(minYValue, dataset.getSample((dataset.getLength()) - (drawSampleCount - (i - 1))));
+                    }
+                    else {
+                        maxYValue = dataset.getMax();
+                        minYValue = dataset.getMin();
+                    }
                     range = maxYValue - minYValue;
 
                     double sampleX = -1.0 + ((i) * diff);

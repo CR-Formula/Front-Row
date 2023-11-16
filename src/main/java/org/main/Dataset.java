@@ -40,6 +40,18 @@ public class Dataset {
         return name;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
     public Color getColor() {
         return color;
     }

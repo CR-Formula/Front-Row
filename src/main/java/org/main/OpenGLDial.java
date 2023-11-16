@@ -11,8 +11,6 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
     private float maxValue;
     private float minValue;
 
-    private boolean autoDetectMaxMin = false;
-
     public OpenGLDial(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.maxValue = 1;
@@ -46,6 +44,10 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
         float value = dataset.hasValues() ? dataset.getLastSample() : minValue;
         if (autoDetectMaxMin && value > maxValue) maxValue = value;
         else if (autoDetectMaxMin && value < minValue) minValue = value;
+        else if (!autoDetectMaxMin) {
+            maxValue = dataset.getMax();
+            minValue = dataset.getMin();
+        }
 
         final int minSampleCount = (int) (((value - minValue) / (maxValue - minValue)) * sampleCount);
         final int drawSampleCount = Math.min(minSampleCount, sampleCount);
@@ -86,9 +88,5 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
 
     public String toString() {
         return "Dial";
-    }
-
-    public void toggleAutoDetectMaxMin() {
-        autoDetectMaxMin = !autoDetectMaxMin;
     }
 }
