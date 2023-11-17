@@ -5,9 +5,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatasetPanel extends JPanel {
     public static DatasetPanel instance = new DatasetPanel();
+
+    private List<DatasetRowPanel> datasetRowPanels = new ArrayList<>();
 
     private GroupLayout layout;
     public DatasetPanel() {
@@ -19,65 +23,32 @@ public class DatasetPanel extends JPanel {
         setLayout(layout);
         setBackground(Theme.canvasBackground);
 
-        String name = "RPM";
-        String label = "Hz";
-        int max = 15500;
-        int min = 0;
+        for (int i = 0; i < DatasetController.getDatasets().size(); i++) {
+            datasetRowPanels.add(new DatasetRowPanel(i, DatasetController.getDataset(i)));
+        }
 
-        JTextField nameField = new JTextField(name);
-        nameField.setMaximumSize(nameField.getPreferredSize());
-        nameField.addActionListener(event -> {
-            System.out.println(nameField.getText());
-        });
+        GroupLayout.ParallelGroup horizontalGroup = layout.createParallelGroup();
+        for (int i = 0; i < DatasetController.getDatasets().size(); i++) {
+            horizontalGroup.addComponent(datasetRowPanels.get(i));
+        }
 
-        JTextField labelField = new JTextField(label);
-        labelField.setMaximumSize(labelField.getPreferredSize());
-        nameField.addActionListener(event -> {
-            System.out.println(labelField.getText());
-        });
-
-
-        SpinnerNumberModel numberModel = new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-        JSpinner maxField = new JSpinner(numberModel);
-        maxField.setMaximumSize(maxField.getPreferredSize());
-        maxField.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                System.out.println(maxField.getValue());
-            }
-        });
-
-        JSpinner minField = new JSpinner(numberModel);
-        minField.setMaximumSize(minField.getPreferredSize());
-        minField.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                System.out.println(minField.getValue());
-            }
-        });
-
-        add(nameField);
-        add(labelField);
-        add(maxField);
-        add(minField);
+        GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
+        verticalGroup.addGap(Theme.datasetRowPadding);
+        for (int i = 0; i < DatasetController.getDatasets().size(); i++) {
+            verticalGroup.addComponent(datasetRowPanels.get(i));
+        }
+        verticalGroup.addGap(Theme.datasetRowPadding);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(nameField)
-                                .addComponent(labelField)
-                                .addComponent(maxField)
-                                .addComponent(minField)
-                        )
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+                        .addGroup(horizontalGroup)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
         );
 
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(nameField)
-                        .addComponent(labelField)
-                        .addComponent(maxField)
-                        .addComponent(minField)
-        );
+        layout.setVerticalGroup(verticalGroup);
     }
 
 
