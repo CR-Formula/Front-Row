@@ -16,12 +16,16 @@ public class Dataset {
     public Dataset(String name) {
         this.name = name;
         this.values = new ArrayList<Float>();
+        this.max = 1;
+        this.min = -1;
     }
     public Dataset(String name, int index, Color color) {
         this.name = name;
         this.values = new ArrayList<Float>();
         this.color = color;
         this.label = "";
+        this.max = 1;
+        this.min = -1;
     }
 
     public void add(float value) {

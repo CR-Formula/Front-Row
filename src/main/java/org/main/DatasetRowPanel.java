@@ -40,36 +40,22 @@ public class DatasetRowPanel extends JPanel {
 
         nameField = new JTextField(dataset.getName());
         nameField.setMaximumSize(new Dimension(100, (int) nameField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> {
-            System.out.println(nameField.getText());
-        });
+        nameField.addActionListener(event -> dataset.setName(nameField.getText()));
 
         labelField = new JTextField(dataset.getLabel().equals("") ? "<Label>" : dataset.getLabel());
         labelField.setMaximumSize(new Dimension(100, (int) labelField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> {
-            System.out.println(labelField.getText());
-        });
+        nameField.addActionListener(event -> dataset.setLabel(labelField.getText()));
 
 
         SpinnerNumberModel maxNumberModel = new SpinnerNumberModel(dataset.getMax(), Integer.MIN_VALUE / 100, Integer.MAX_VALUE / 100, 1);
         maxField = new JSpinner(maxNumberModel);
         maxField.setMaximumSize(maxField.getPreferredSize());
-        maxField.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                System.out.println(maxField.getValue());
-            }
-        });
+        maxField.addChangeListener(e -> dataset.setMax((int) maxField.getValue()));
 
         SpinnerNumberModel minNumberModel = new SpinnerNumberModel(dataset.getMin(), Integer.MIN_VALUE / 100, Integer.MAX_VALUE / 100, 1);
         minField = new JSpinner(minNumberModel);
         minField.setMaximumSize(minField.getPreferredSize());
-        minField.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                System.out.println(minField.getValue());
-            }
-        });
+        minField.addChangeListener(e -> dataset.setMin((int) minField.getValue()));
 
         indexLabel = new JLabel(index + ":");
         nameFieldLabel = new JLabel("Name: ");

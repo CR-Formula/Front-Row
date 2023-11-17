@@ -32,7 +32,7 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        System.out.println(e);
+//        System.out.println(e);
         mouseOnCanvas = true;
     }
 

@@ -2,7 +2,7 @@ package org.main;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
@@ -67,8 +67,8 @@ public class CanvasPanel extends JPanel {
 
                 Component component = componentList.get(index).getComponent(0);
                 componentList.get(index).removeAll();
-                if (component.getClass().equals(GLCanvas.class)) {
-                    componentList.get(index).add(replacementGraph(componentList.get(index), (GLCanvas) component), BorderLayout.CENTER);
+                if (component.getClass().equals(GLJPanel.class)) {
+                    componentList.get(index).add(replacementGraph(componentList.get(index), (GLJPanel) component), BorderLayout.CENTER);
                 } else {
                     componentList.get(index).add(component, BorderLayout.CENTER);
                 }
@@ -98,17 +98,17 @@ public class CanvasPanel extends JPanel {
                     JPanel panel = new JPanel();
                     panel.setLayout(new BorderLayout());
 
-                    GLCanvas glCanvas = new GLCanvas(capabilities);
-                    glCanvas.addGLEventListener(graphs.get(index));
-                    glCanvas.addMouseListener(graphs.get(index));
+                    GLJPanel glJPanel = new GLJPanel(capabilities);
+                    glJPanel.addGLEventListener(graphs.get(index));
+                    glJPanel.addMouseListener(graphs.get(index));
 
-                    Animator animator = new Animator(glCanvas);
+                    Animator animator = new Animator(glJPanel);
                     animator.setUpdateFPSFrames(1, null);
                     animator.start();
 
-                    glCanvas.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+                    glJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-                    panel.add(glCanvas, BorderLayout.CENTER);
+                    panel.add(glJPanel, BorderLayout.CENTER);
 
                     graphColumns.get(column).add(panel);
                 } catch (IndexOutOfBoundsException e1) {
@@ -149,8 +149,8 @@ public class CanvasPanel extends JPanel {
         return panel;
     }
 
-    public GLCanvas replacementGraph(JPanel container, GLCanvas oldCanvas) {
-        GLCanvas replacement = new GLCanvas(capabilities);
+    public GLJPanel replacementGraph(JPanel container, GLJPanel oldCanvas) {
+        GLJPanel replacement = new GLJPanel(capabilities);
 
         ((Graph) oldCanvas.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
 
@@ -176,26 +176,26 @@ public class CanvasPanel extends JPanel {
         return displayGraphs;
     }
 
-    private GLCanvas getDefaultTDCanvas(int i) {
+    private GLJPanel getDefaultTDCanvas(int i) {
         OpenGLTimeDomain td = new OpenGLTimeDomain(0, 0, 0, 0);
         td.setDatasets(List.of(DatasetController.getDataset(i % DatasetController.getDatasets().size())));
-        td.toggleAutoDetectMaxMin();
+//        td.toggleAutoDetectMaxMin();
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
-        GLCanvas glCanvas = new GLCanvas(capabilities);
-        glCanvas.addGLEventListener(td);
-        glCanvas.addMouseListener(td);
+        GLJPanel glJPanel = new GLJPanel(capabilities);
+        glJPanel.addGLEventListener(td);
+        glJPanel.addMouseListener(td);
 
-        Animator animator = new Animator(glCanvas);
+        Animator animator = new Animator(glJPanel);
         animator.setUpdateFPSFrames(1, null);
         animator.start();
 
-        glCanvas.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        glJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        return glCanvas;
+        return glJPanel;
     }
 
-    private GLCanvas getDefaultDialCanvas(int i) {
+    private GLJPanel getDefaultDialCanvas(int i) {
         OpenGLDial dial = new OpenGLDial(0, 0, 0, 0);
         dial.setDataset(DatasetController.getDataset(i % DatasetController.getDatasets().size()));
 
@@ -203,16 +203,16 @@ public class CanvasPanel extends JPanel {
 
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
-        GLCanvas glCanvas = new GLCanvas(capabilities);
-        glCanvas.addGLEventListener(dial);
-        glCanvas.addMouseListener(dial);
+        GLJPanel glJPanel = new GLJPanel(capabilities);
+        glJPanel.addGLEventListener(dial);
+        glJPanel.addMouseListener(dial);
 
-        Animator animator = new Animator(glCanvas);
+        Animator animator = new Animator(glJPanel);
         animator.setUpdateFPSFrames(1, null);
         animator.start();
 
-        glCanvas.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        glJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        return glCanvas;
+        return glJPanel;
     }
 }
