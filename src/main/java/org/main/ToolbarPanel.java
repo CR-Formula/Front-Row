@@ -64,7 +64,7 @@ public class ToolbarPanel extends JPanel {
         disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(event -> {
             DataInput.disconnect();
-            PanelManager.instance.removeComponent(DatasetPanel.instance);
+            PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(disconnectButton, continueButton);
         });
 
