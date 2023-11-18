@@ -86,6 +86,7 @@ public class Dataset {
 
     public void setColor(Color color) {
         this.color = color;
+        System.out.println("Dataset: " + color.getRGB());
     }
 
     public void setMax(int max) {

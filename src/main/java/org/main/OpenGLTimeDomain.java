@@ -59,7 +59,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     sampleY = (((sampleY - minYValue) / range) * 2) + -1;
 
                     Color c = dataset.getColor();
-                    gl.glColor3d(c.getRed() / 255.0, c.getBlue() / 255.0, c.getGreen() / 255.0);
+                    gl.glColor3d(c.getRed() / 255.0, c.getGreen() / 255.0, c.getBlue() / 255.0);
 
                     gl.glVertex2d(sampleX, sampleY);
                 }

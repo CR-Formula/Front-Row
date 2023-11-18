@@ -1,6 +1,7 @@
 package org.main;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -14,6 +15,7 @@ public class DatasetRowPanel extends JPanel {
 
     private JLabel indexLabel;
     private JColorChooser colorChooser;
+    private JButton colorButton;
     private JTextField nameField;
     private JLabel nameFieldLabel;
     private JTextField labelField;
@@ -38,14 +40,27 @@ public class DatasetRowPanel extends JPanel {
         setBackground(new Color(0xFFFFFF));
         setBorder(BorderFactory.createLineBorder(new Color(0x000000)));
 
+        colorButton = new JButton(" ■ ");
+        colorButton.setFont(Theme.normalFont);
+        colorButton.setForeground(dataset.getColor());
+        colorButton.setBorder(new LineBorder(Color.BLACK));
+        colorButton.setFocusPainted(false);
+        colorButton.addActionListener(event -> {
+            Color color = JColorChooser.showDialog(this, "Pick a Color for " + dataset.getName(), dataset.getColor());
+            if(color != null) {
+                colorButton.setForeground(color);
+                System.out.println("Dialog: " + color.getRGB());
+                dataset.setColor(new Color(color.getRGB()));
+            }
+        });
+
         nameField = new JTextField(dataset.getName());
         nameField.setMaximumSize(new Dimension(100, (int) nameField.getPreferredSize().getHeight()));
         nameField.addActionListener(event -> dataset.setName(nameField.getText()));
 
-        labelField = new JTextField(dataset.getLabel().equals("") ? "<Label>" : dataset.getLabel());
+        labelField = new JTextField(dataset.getLabel().equals("") ? "" : dataset.getLabel());
         labelField.setMaximumSize(new Dimension(100, (int) labelField.getPreferredSize().getHeight()));
         nameField.addActionListener(event -> dataset.setLabel(labelField.getText()));
-
 
         SpinnerNumberModel maxNumberModel = new SpinnerNumberModel(dataset.getMax(), Integer.MIN_VALUE / 100, Integer.MAX_VALUE / 100, 1);
         maxField = new JSpinner(maxNumberModel);
@@ -64,6 +79,7 @@ public class DatasetRowPanel extends JPanel {
         minFieldLabel = new JLabel("Min: ");
 
         add(indexLabel);
+        add(colorButton);
         add(nameFieldLabel);
         add(labelFieldLabel);
         add(maxFieldLabel);
@@ -79,7 +95,10 @@ public class DatasetRowPanel extends JPanel {
                                 .addGap(Theme.datasetRowHorizontalPadding)
                                 .addComponent(indexLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding)
+                                        GroupLayout.DEFAULT_SIZE, Theme.datasetRowPadding)
+                                .addComponent(colorButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                        GroupLayout.DEFAULT_SIZE, Theme.datasetRowPadding)
                                 .addComponent(nameFieldLabel)
                                 .addComponent(nameField)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
@@ -103,6 +122,7 @@ public class DatasetRowPanel extends JPanel {
                         .addGap(Theme.datasetRowVerticalPadding)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                 .addComponent(indexLabel)
+                                .addComponent(colorButton)
                                 .addComponent(nameFieldLabel)
                                 .addComponent(nameField)
                                 .addComponent(labelFieldLabel)

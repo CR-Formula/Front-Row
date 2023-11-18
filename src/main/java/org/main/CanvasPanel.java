@@ -132,6 +132,7 @@ public class CanvasPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JButton button = new JButton("+");
+        button.setFocusPainted(false);
         button.addActionListener(event -> {
             graphColumns.get(column).get(index).removeAll();
 
