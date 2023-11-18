@@ -21,6 +21,8 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     protected static boolean mouseOnCanvas;
 
+    protected boolean autoDetectMaxMin = false;
+
     public Graph(int graphX, int graphY, int graphWidth, int graphHeight) {
         this.graphX = graphX;
         this.graphY = graphY;
@@ -30,7 +32,7 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        System.out.println(e);
+//        System.out.println(e);
         mouseOnCanvas = true;
     }
 
@@ -91,4 +93,8 @@ public class Graph extends MouseAdapter implements GLEventListener {
     }
 
     protected static void setFrameLocation(Point location) { frameLocation = location; }
+
+    public void toggleAutoDetectMaxMin() {
+        autoDetectMaxMin = !autoDetectMaxMin;
+    }
 }

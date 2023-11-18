@@ -11,8 +11,6 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
     private float maxValue;
     private float minValue;
 
-    private boolean autoDetectMaxMin = false;
-
     public OpenGLDial(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.maxValue = 1;
@@ -46,6 +44,10 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
         float value = dataset.hasValues() ? dataset.getLastSample() : minValue;
         if (autoDetectMaxMin && value > maxValue) maxValue = value;
         else if (autoDetectMaxMin && value < minValue) minValue = value;
+        else if (!autoDetectMaxMin) {
+            maxValue = dataset.getMax();
+            minValue = dataset.getMin();
+        }
 
         final int minSampleCount = (int) (((value - minValue) / (maxValue - minValue)) * sampleCount);
         final int drawSampleCount = Math.min(minSampleCount, sampleCount);
@@ -53,7 +55,7 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
         try {
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             Color c1 = dataset.getColor();
-            gl.glColor3d(c1.getRed() / 255.0, c1.getBlue() / 255.0, c1.getGreen() / 255.0);
+            gl.glColor3d(c1.getRed() / 255.0, c1.getGreen() / 255.0, c1.getBlue() / 255.0);
 
             double originX = convertPointOverWidth((graphWidth / 2));
             double originY = convertPointOverHeight((graphHeight / 2) - (radius / 2));
@@ -69,7 +71,7 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
             gl.glBegin(GL.GL_TRIANGLE_FAN);
 
             Color c2 = new Color(0, 0, 0);
-            gl.glColor3d(c2.getRed() / 255.0, c2.getBlue() / 255.0, c2.getGreen() / 255.0);
+            gl.glColor3d(c2.getRed() / 255.0, c2.getGreen() / 255.0, c2.getBlue() / 255.0);
 
             gl.glVertex2d(originX, originY);
 
@@ -86,9 +88,5 @@ public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
 
     public String toString() {
         return "Dial";
-    }
-
-    public void toggleAutoDetectMaxMin() {
-        autoDetectMaxMin = !autoDetectMaxMin;
     }
 }

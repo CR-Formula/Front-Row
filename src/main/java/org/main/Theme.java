@@ -6,12 +6,17 @@ public class Theme {
     // Paddings
     public static int graphPadding = 8;
     public static int toolbarPadding = 10;
+    public static int datasetRowPadding = 5;
+    public static int datasetRowHorizontalPadding = 10;
+    public static int datasetRowVerticalPadding = 5;
+    public static int maxDatasetRowHorizontalPadding = 50;
 
     // Colors
     public final static Color canvasBackground = new Color(0x6C6B7C);
     public final static Color toolbarBackground = new Color(0x464552);
     public final static Color graphBackground = new Color(0x000000);
     public final static Color graphBorder = new Color(0xFFFFFF);
+    public final static Color datasetRowBackground = new Color(0xBEBEBE);
     public final static Color graphInfo = new Color(0xFFD677);
     public final static Color nullGraphColor = new Color(0xBDBDBD);
 

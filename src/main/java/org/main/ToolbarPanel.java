@@ -2,7 +2,6 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.xml.crypto.Data;
 import java.awt.*;
 
 public class ToolbarPanel extends JPanel {
@@ -10,6 +9,7 @@ public class ToolbarPanel extends JPanel {
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
     private JButton connectButton;
+    private JButton continueButton;
     private JButton disconnectButton;
     private JComboBox<String> inputTypeOptions;
     private String selectedOption = DataInput.TEST;
@@ -49,14 +49,32 @@ public class ToolbarPanel extends JPanel {
             } else {
                 DataInput.setUARTPort(selectedOption);
                 DataInput.connect(DataInput.UART);
+                try {
+                    DatasetController.autoDetectDatasets(DataInput.UART);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            layout.replace(connectButton, disconnectButton);
+            JScrollPane scrollPane = new JScrollPane(DatasetPanel.instance);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            PanelManager.instance.replaceComponent(scrollPane, BorderLayout.CENTER);
+            layout.replace(connectButton, continueButton);
+        });
+
+        continueButton = new JButton("Continue");
+        continueButton.addActionListener(event -> {
+            if (!DataInput.isConnected()) DataInput.connect(selectedOption);
+            PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
+            layout.replace(continueButton, disconnectButton);
         });
 
         disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(event -> {
             DataInput.disconnect();
-            layout.replace(disconnectButton, connectButton);
+            PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
+            layout.replace(disconnectButton, continueButton);
         });
 
         add(inputTypeOptions);
