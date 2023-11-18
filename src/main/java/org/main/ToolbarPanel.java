@@ -49,8 +49,17 @@ public class ToolbarPanel extends JPanel {
             } else {
                 DataInput.setUARTPort(selectedOption);
                 DataInput.connect(DataInput.UART);
+                try {
+                    DatasetController.autoDetectDatasets(DataInput.UART);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
+            JScrollPane scrollPane = new JScrollPane(DatasetPanel.instance);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            PanelManager.instance.replaceComponent(scrollPane, BorderLayout.CENTER);
             layout.replace(connectButton, continueButton);
         });
 

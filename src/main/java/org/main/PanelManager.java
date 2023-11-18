@@ -7,7 +7,7 @@ import java.awt.*;
 public class PanelManager extends JFrame {
     public static PanelManager instance = new PanelManager("Front Row");
     private ToolbarPanel toolbarPanel;
-    private JPanel centerPanel;
+    private Component centerPanel;
     private BorderLayout layout;
 
     public PanelManager(String name) {
@@ -19,7 +19,7 @@ public class PanelManager extends JFrame {
         add(toolbarPanel, BorderLayout.SOUTH);
     }
 
-    public void addComponent(JPanel component, String location) {
+    public void addComponent(Component component, String location) {
         if (BorderLayout.CENTER.equals(location))
             centerPanel = component;
         add(component, location);
@@ -27,7 +27,7 @@ public class PanelManager extends JFrame {
         revalidate();
     }
 
-    public void removeComponent(JPanel component) {
+    public void removeComponent(Component component) {
         JPanel center = (JPanel) layout.getLayoutComponent(BorderLayout.CENTER);
         if (center.equals(component))
             centerPanel = null;
@@ -36,7 +36,7 @@ public class PanelManager extends JFrame {
         revalidate();
     }
 
-    public void replaceComponent(JPanel component, String location) {
+    public void replaceComponent(Component component, String location) {
         if (BorderLayout.CENTER.equals(location)) {
             if (centerPanel != null)
                 remove(centerPanel);

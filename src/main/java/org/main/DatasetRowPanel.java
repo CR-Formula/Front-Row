@@ -8,6 +8,8 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
+import java.util.Formatter;
+import java.util.Locale;
 
 public class DatasetRowPanel extends JPanel {
     private int index;
@@ -72,7 +74,11 @@ public class DatasetRowPanel extends JPanel {
         minField.setMaximumSize(minField.getPreferredSize());
         minField.addChangeListener(e -> dataset.setMin((int) minField.getValue()));
 
-        indexLabel = new JLabel(index + ":");
+
+        StringBuilder sb = new StringBuilder();
+        Formatter formatter = new Formatter(sb, Locale.US);
+        int indexStringLength = String.valueOf(DatasetController.getDatasets().size()).length();
+        indexLabel = new JLabel(formatter.format("%0" + indexStringLength + "d", index) + ":");
         nameFieldLabel = new JLabel("Name: ");
         labelFieldLabel = new JLabel("Label: ");
         maxFieldLabel = new JLabel("Max: ");
