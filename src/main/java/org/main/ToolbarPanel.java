@@ -37,7 +37,8 @@ public class ToolbarPanel extends JPanel {
             options[i] = openPorts[i-1];
         }
 
-        dimensionLabel = new JLabel("Number of rows displayed: ");
+        dimensionLabel = new JLabel("Rows: ");
+        dimensionLabel.setForeground(Theme.fontColor);
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, (int) CanvasPanel.instance.canvasDimension.getHeight(), 1);
         dimensionSelector = new JSpinner(spinnerModel);
         dimensionSelector.setMaximumSize(dimensionSelector.getPreferredSize());

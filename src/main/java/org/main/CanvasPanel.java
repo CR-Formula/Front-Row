@@ -25,7 +25,7 @@ public class CanvasPanel extends JPanel {
     private List<JPanel> primaryGraphs;
     private List<JPanel> secondaryGraphs;
 
-    public Dimension canvasDimension = new Dimension(2, 4);
+    public Dimension canvasDimension = new Dimension(2, 6);
 
     final GLProfile profile = GLProfile.get(GLProfile.GL2);
     GLCapabilities capabilities = new GLCapabilities(profile);
