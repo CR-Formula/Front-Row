@@ -44,8 +44,8 @@ public class CanvasPanel extends JPanel {
 
         layout = new MigLayout("fill", columnConstraints.toString(), rowConstraints.toString());
 
-        primaryGraphs = new ArrayList<>(CanvasController.getPrimaryGraphs().size());
-        secondaryGraphs = new ArrayList<>(CanvasController.getPrimaryGraphs().size());
+        primaryGraphs = new ArrayList<>(CanvasController.getGraphs().size());
+        secondaryGraphs = new ArrayList<>(CanvasController.getGraphs().size());
 
         setLayout(layout);
         setBackground(Theme.canvasBackground);
@@ -90,7 +90,7 @@ public class CanvasPanel extends JPanel {
 
         for (int i = 0; i < canvasDimension.getWidth(); i++) {
             int column = i == 0 ? 0 : 1;
-            List<? extends Graph> graphs = column == 0 ? CanvasController.getPrimaryGraphs() : CanvasController.getSecondaryGraphs();
+            List<? extends Graph> graphs = CanvasController.getGraphs();
             for (int j = 0; j < canvasDimension.getHeight(); j++) {
                 int index = column == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
                 try {

@@ -14,7 +14,7 @@ public class ToolbarTesting {
             System.out.println("OS Not Detected");
         };
 
-        DataInput.connect(DataInput.TEST);
+//        DataInput.connect(DataInput.TEST);
 
         final JFrame frame = PanelManager.instance;
 

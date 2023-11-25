@@ -8,6 +8,8 @@ public class ToolbarPanel extends JPanel {
 
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
+    private JButton importButton;
+    private JButton exportButton;
     private JButton connectButton;
     private JButton continueButton;
     private JButton disconnectButton;
@@ -25,6 +27,16 @@ public class ToolbarPanel extends JPanel {
 
         layout.setAutoCreateGaps(false);
         layout.setAutoCreateContainerGaps(false);
+
+        importButton = new JButton("Import");
+        importButton.addActionListener(event -> {
+            System.out.println("Import");
+        });
+
+        exportButton = new JButton("Export");
+        exportButton.addActionListener(event -> {
+            System.out.println("Export");
+        });
 
         String[] openPorts = DataInput.getOpenUARTPorts();
         int optionsLength = openPorts.length + 1;
@@ -77,11 +89,18 @@ public class ToolbarPanel extends JPanel {
             layout.replace(disconnectButton, continueButton);
         });
 
+        add(importButton);
+        add(exportButton);
         add(inputTypeOptions);
         add(connectButton);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(importButton)
+                                .addGap(Theme.toolbarPadding)
+                                .addComponent(exportButton)
+                        )
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -93,6 +112,8 @@ public class ToolbarPanel extends JPanel {
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(importButton)
+                        .addComponent(exportButton)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
         );
