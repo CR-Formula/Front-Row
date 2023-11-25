@@ -54,6 +54,11 @@ public class CanvasPanel extends JPanel {
         setupCanvasLayout();
     }
 
+    public void setCanvasDimension(int height) {
+        canvasDimension = new Dimension((int) canvasDimension.getWidth(), height);
+        setupCanvasLayout();
+    }
+
     public void setupCanvasLayout() {
         if (runningSetup) return;
         runningSetup = true;

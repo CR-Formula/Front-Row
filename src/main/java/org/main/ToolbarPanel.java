@@ -8,6 +8,8 @@ public class ToolbarPanel extends JPanel {
 
     public static ToolbarPanel instance = new ToolbarPanel();
     private GroupLayout layout;
+    private JLabel dimensionLabel;
+    private JSpinner dimensionSelector;
     private JButton connectButton;
     private JButton continueButton;
     private JButton disconnectButton;
@@ -34,6 +36,14 @@ public class ToolbarPanel extends JPanel {
         for (int i = 1; i < options.length; i++) {
             options[i] = openPorts[i-1];
         }
+
+        dimensionLabel = new JLabel("Number of rows displayed: ");
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, (int) CanvasPanel.instance.canvasDimension.getHeight(), 1);
+        dimensionSelector = new JSpinner(spinnerModel);
+        dimensionSelector.setMaximumSize(dimensionSelector.getPreferredSize());
+        dimensionSelector.addChangeListener(e -> {
+            CanvasPanel.instance.setCanvasDimension((Integer) dimensionSelector.getValue());
+        });
 
         inputTypeOptions = new JComboBox<>(options);
         Dimension comboBoxAMaxSize = new Dimension((int) (inputTypeOptions.getPreferredSize().getWidth()  * 1.1), (int) inputTypeOptions.getPreferredSize().getHeight());
@@ -77,11 +87,15 @@ public class ToolbarPanel extends JPanel {
             layout.replace(disconnectButton, continueButton);
         });
 
+        add(dimensionLabel);
+        add(dimensionSelector);
         add(inputTypeOptions);
         add(connectButton);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
+                        .addComponent(dimensionLabel)
+                        .addComponent(dimensionSelector)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -93,6 +107,8 @@ public class ToolbarPanel extends JPanel {
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(dimensionLabel)
+                        .addComponent(dimensionSelector)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
         );
