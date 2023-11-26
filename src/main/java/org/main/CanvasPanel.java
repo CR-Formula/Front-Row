@@ -33,21 +33,11 @@ public class CanvasPanel extends JPanel {
     private boolean runningSetup = false;
 
     private CanvasPanel() {
-        StringBuilder columnConstraints = new StringBuilder(Theme.graphPadding + "[][][][][]" + Theme.graphPadding);
-        StringBuilder rowConstraints = new StringBuilder(Integer.toString(Theme.graphPadding));
-        for (int i = 0; i < canvasDimension.getWidth() - 1; i++) {
-            columnConstraints.append("[]").append(Theme.graphPadding);
-        }
-        for (int i = 0; i < canvasDimension.getHeight(); i++) {
-            rowConstraints.append("[]").append(Theme.graphPadding);
-        }
-
-        layout = new MigLayout("fill", columnConstraints.toString(), rowConstraints.toString());
+        updateLayout();
 
         primaryGraphs = new ArrayList<>(CanvasController.getPrimaryGraphs().size());
         secondaryGraphs = new ArrayList<>(CanvasController.getPrimaryGraphs().size());
 
-        setLayout(layout);
         setBackground(Theme.canvasBackground);
 
         initializeGraphs();
@@ -56,8 +46,28 @@ public class CanvasPanel extends JPanel {
 
     public void setCanvasDimension(int height) {
         canvasDimension = new Dimension((int) canvasDimension.getWidth(), height);
+        updateLayout();
         setupCanvasLayout();
     }
+
+    private void updateLayout() {
+        String columnConstraints = generateConstraints(Theme.graphPadding + "[][][][][]" + Theme.graphPadding, canvasDimension.getWidth()-1);
+        String rowConstraints = generateConstraints(Integer.toString(Theme.graphPadding), canvasDimension.getHeight());
+
+        layout = new MigLayout("fill", columnConstraints, rowConstraints);
+        setLayout(layout);
+    }
+
+    private String generateConstraints(String padding, double dimension) {
+        StringBuilder constraints = new StringBuilder(padding);
+
+        for (int i = 0; i < dimension; i++) {
+            constraints.append("[]").append(Theme.graphPadding);
+        }
+
+        return constraints.toString();
+    }
+
 
     public void setupCanvasLayout() {
         if (runningSetup) return;
