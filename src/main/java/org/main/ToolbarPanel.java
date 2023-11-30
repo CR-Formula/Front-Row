@@ -39,7 +39,7 @@ public class ToolbarPanel extends JPanel {
 
         dimensionLabel = new JLabel("Rows: ");
         dimensionLabel.setForeground(Theme.fontColor);
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, (int) CanvasPanel.instance.canvasDimension.getHeight(), 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, 99, 1);
         dimensionSelector = new JSpinner(spinnerModel);
         dimensionSelector.setMaximumSize(dimensionSelector.getPreferredSize());
         dimensionSelector.addChangeListener(e -> {
