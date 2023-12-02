@@ -18,6 +18,8 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
     @Override
     public void display(GLAutoDrawable drawable) {
+        // Utilize DoubleBuffer instead of drawing each vertex
+
         if (datasets == null) return;
 
         final GL2 gl = drawable.getGL().getGL2();
