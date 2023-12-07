@@ -1,19 +1,32 @@
 package org.main;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 
 import java.awt.*;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
 public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     private double maxYValue = 1;
     private double minYValue = -1;
+    private int vboId;
 
     public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.datasets = new ArrayList<Dataset>();
+    }
+    @Override
+    public void init(GLAutoDrawable glAutoDrawable) {
+        GL2 gl = glAutoDrawable.getGL().getGL2();
+
+
+        int[] vboIds = new int[1];
+        // Generate a buffer object name/ID
+        gl.glGenBuffers(1, vboIds, 0);
+        vboId = vboIds[0];
     }
 
     @Override
@@ -70,8 +83,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
             }
             
             if (mouseOnCanvas) {
-                gl.glBegin(GL2.GL_LINES);
-                gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
                 Color mouseColor = new Color(255, 255, 255);
                 gl.glColor3d(mouseColor.getRed() / 255.0, mouseColor.getBlue() / 255.0, mouseColor.getGreen() / 255.0);
@@ -84,10 +95,30 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     mouseXReal = convertPointOverWidth(mousePos.getX()); 
                 }
 
-                gl.glVertex2d(mouseXReal, 1);
-                gl.glVertex2d(mouseXReal, -1);
+                // Bind the buffer object to ARRAY_BUFFER bc it's vertex array data
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboId);
 
-                gl.glEnd();
+                float[] vertices = {
+                        (float) mouseXReal, 1,
+                        (float) mouseXReal, -1
+                };
+
+                // Create a FloatBuffer to hold the vertices
+                FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(vertices);
+
+                // Allocate storage depending on size of vertices buffer
+                gl.glBufferData(GL2.GL_ARRAY_BUFFER, (long) vertexBuffer.limit() * Buffers.SIZEOF_FLOAT, vertexBuffer, GL2.GL_STATIC_DRAW);
+                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+                // Specify the format of the vertex data (dimension, datatype, stride, start index)
+                gl.glVertexPointer(2, GL2.GL_FLOAT, 0, 0);
+
+                gl.glDrawArrays(GL2.GL_LINES, 0, 2);
+
+                gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+
+                // Unbind the buffer object
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
             }
 
         } catch (ConcurrentModificationException e) {
