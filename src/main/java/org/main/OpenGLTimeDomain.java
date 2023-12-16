@@ -38,6 +38,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         final GL2 gl = drawable.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL2.GL_BUFFER);
 
         final int minSampleCount = DatasetController.getLastSampleIndex();
         final double diff = 2.0 / ((double) sampleCount);
@@ -52,11 +53,13 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 minYValue = Math.min(minYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
                 double range = maxYValue - minYValue;
 
-                gl.glBegin(GL2.GL_LINE_STRIP);
                 double initialX = -1.0;
                 double initialY = dataset.getSample(dataset.getLength() - drawSampleCount);
                 initialY = (((initialY - minYValue) / range) * 2) + -1;
-                gl.glVertex2d(initialX, initialY);
+
+                ArrayList<Float> verticesList = new ArrayList<>();
+                verticesList.add((float) initialX);
+                verticesList.add((float) initialY);
 
                 for (int i = 1; i < drawSampleCount - 1; i++) {
                     if (autoDetectMaxMin) {
@@ -76,10 +79,23 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     Color c = dataset.getColor();
                     gl.glColor3d(c.getRed() / 255.0, c.getGreen() / 255.0, c.getBlue() / 255.0);
 
-                    gl.glVertex2d(sampleX, sampleY);
+                    verticesList.add((float) sampleX);
+                    verticesList.add((float) sampleY);
                 }
 
-                gl.glEnd();
+                float[] vertices = new float[verticesList.size()];
+                for (int i = 0; i < verticesList.size(); i++)
+                    vertices[i] = verticesList.get(i);
+
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboId);
+                FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(vertices);
+                gl.glBufferData(GL2.GL_ARRAY_BUFFER, (long) vertexBuffer.limit() * Buffers.SIZEOF_FLOAT, vertexBuffer, GL2.GL_STATIC_DRAW);
+                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+                gl.glVertexPointer(2, GL2.GL_FLOAT, 0, 0);
+                gl.glDrawArrays(GL2.GL_LINE_STRIP, 0, vertices.length/2);
+
+                gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
             }
             
             if (mouseOnCanvas) {
@@ -95,29 +111,19 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     mouseXReal = convertPointOverWidth(mousePos.getX()); 
                 }
 
-                // Bind the buffer object to ARRAY_BUFFER bc it's vertex array data
-                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboId);
-
-                float[] vertices = {
+                float[] mouseVertices = {
                         (float) mouseXReal, 1,
                         (float) mouseXReal, -1
                 };
 
-                // Create a FloatBuffer to hold the vertices
-                FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(vertices);
-
-                // Allocate storage depending on size of vertices buffer
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboId);
+                FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(mouseVertices);
                 gl.glBufferData(GL2.GL_ARRAY_BUFFER, (long) vertexBuffer.limit() * Buffers.SIZEOF_FLOAT, vertexBuffer, GL2.GL_STATIC_DRAW);
                 gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-                // Specify the format of the vertex data (dimension, datatype, stride, start index)
                 gl.glVertexPointer(2, GL2.GL_FLOAT, 0, 0);
-
                 gl.glDrawArrays(GL2.GL_LINES, 0, 2);
 
                 gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-
-                // Unbind the buffer object
                 gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
             }
 
