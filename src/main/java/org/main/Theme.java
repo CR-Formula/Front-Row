@@ -25,6 +25,7 @@ public class Theme {
     public final static Font largeFont = new Font(fontName, Font.PLAIN, 16);
     public final static Font normalFont = new Font(fontName, Font.PLAIN, 12);
     public final static Font smallFont = new Font(fontName, Font.PLAIN, 8);
+    public final static Color fontColor = new Color(0xFFFFFF);
 
     // Line details
     public final static int smallLineWidth = 1;
