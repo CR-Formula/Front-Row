@@ -69,11 +69,9 @@ public class DataInput {
 
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
-            Color[] colors = DatasetController.generateRandomColors(3);
-
-            DatasetController.addDataset(new Dataset("sinA", 0, colors[0]));
-            DatasetController.addDataset(new Dataset("sinB", 1, colors[1]));
-            DatasetController.addDataset(new Dataset("sinC", 2, colors[2]));
+            DatasetController.addDataset(new Dataset("sinA", 0, new Color(255, 0, 0)));
+            DatasetController.addDataset(new Dataset("sinB", 1, new Color(0, 255, 0)));
+            DatasetController.addDataset(new Dataset("sinC", 2, new Color(0, 0, 255)));
         }
 
         testThread = new Thread(() -> {
@@ -117,7 +115,7 @@ public class DataInput {
     }
 
     private static void enableUARTConnection() {
-        if (selectedUARTPort == null || selectedUARTPort.isEmpty())
+        if (selectedUARTPort == null || selectedUARTPort.equals(""))
             return;
 
         if (uartPort != null && uartPort.isOpen())
@@ -175,7 +173,6 @@ public class DataInput {
         latestTokens = null;
         if (uartThread.isAlive())
             uartThread.interrupt();
-        while (uartThread.isAlive());
     }
 
     public static boolean isConnected() {
@@ -197,9 +194,5 @@ public class DataInput {
 
     public static void setUARTPort(String portName) {
         selectedUARTPort = portName;
-    }
-
-    public static String connectionType() {
-        return selectedUARTPort.equals(TEST) ? TEST : UART;
     }
 }
