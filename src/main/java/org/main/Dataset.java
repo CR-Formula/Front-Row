@@ -12,6 +12,7 @@ public class Dataset {
     private int index;
     private int max;
     private int min;
+    protected boolean autoDetectMaxMin = false;
 
     public Dataset(String name) {
         this.name = name;

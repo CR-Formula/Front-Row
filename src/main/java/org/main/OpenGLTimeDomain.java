@@ -33,6 +33,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 if (drawSampleCount < 2)
                     return;
 
+                autoDetectMaxMin = dataset.autoDetectMaxMin;
                 maxYValue = Math.max(maxYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
                 minYValue = Math.min(minYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
                 double range = maxYValue - minYValue;

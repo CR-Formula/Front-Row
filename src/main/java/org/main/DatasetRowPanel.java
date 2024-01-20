@@ -22,6 +22,7 @@ public class DatasetRowPanel extends JPanel {
     private JLabel nameFieldLabel;
     private JTextField labelField;
     private JLabel labelFieldLabel;
+    private JCheckBox autoScale;
     private JSpinner maxField;
     private JLabel maxFieldLabel;
     private JSpinner minField;
@@ -64,6 +65,14 @@ public class DatasetRowPanel extends JPanel {
         labelField.setMaximumSize(new Dimension(100, (int) labelField.getPreferredSize().getHeight()));
         nameField.addActionListener(event -> dataset.setLabel(labelField.getText()));
 
+        autoScale = new JCheckBox("Autoscale");
+        autoScale.setMaximumSize(autoScale.getPreferredSize());
+        autoScale.addActionListener(event -> {
+            dataset.autoDetectMaxMin = autoScale.isSelected();
+            maxField.setEnabled(!autoScale.isSelected());
+            minField.setEnabled(!autoScale.isSelected());
+        });
+
         SpinnerNumberModel maxNumberModel = new SpinnerNumberModel(dataset.getMax(), Integer.MIN_VALUE / 100, Integer.MAX_VALUE / 100, 1);
         maxField = new JSpinner(maxNumberModel);
         maxField.setMaximumSize(maxField.getPreferredSize());
@@ -92,6 +101,7 @@ public class DatasetRowPanel extends JPanel {
         add(minFieldLabel);
         add(nameField);
         add(labelField);
+        add(autoScale);
         add(maxField);
         add(minField);
 
@@ -116,7 +126,10 @@ public class DatasetRowPanel extends JPanel {
                                 .addComponent(maxFieldLabel)
                                 .addComponent(maxField)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding)
+                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding / 2)
+                                .addComponent(autoScale)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding / 2)
                                 .addComponent(minFieldLabel)
                                 .addComponent(minField)
                                 .addGap(Theme.datasetRowHorizontalPadding)
@@ -133,6 +146,7 @@ public class DatasetRowPanel extends JPanel {
                                 .addComponent(nameField)
                                 .addComponent(labelFieldLabel)
                                 .addComponent(labelField)
+                                .addComponent(autoScale)
                                 .addComponent(maxFieldLabel)
                                 .addComponent(maxField)
                                 .addComponent(minFieldLabel)
