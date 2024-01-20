@@ -7,17 +7,17 @@ import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.*;
 import java.util.ConcurrentModificationException;
 
-public class Dial extends SecondaryGraph {
+public class OpenGLDial extends SecondaryGraph implements OpenGLModel {
     private float maxValue;
     private float minValue;
 
-    public Dial(int graphX, int graphY, int graphWidth, int graphHeight) {
+    public OpenGLDial(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.maxValue = 1;
         this.minValue = -1;
     }
 
-    public Dial(int graphX, int graphY, int graphWidth, int graphHeight, float maxValue, float minValue) {
+    public OpenGLDial(int graphX, int graphY, int graphWidth, int graphHeight, float maxValue, float minValue) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.maxValue = maxValue;
         this.minValue = minValue;
@@ -42,6 +42,12 @@ public class Dial extends SecondaryGraph {
         final double range = 2;
 
         float value = dataset.hasValues() ? dataset.getLastSample() : minValue;
+        if (autoDetectMaxMin && value > maxValue) maxValue = value;
+        else if (autoDetectMaxMin && value < minValue) minValue = value;
+        else if (!autoDetectMaxMin) {
+            maxValue = dataset.getMax();
+            minValue = dataset.getMin();
+        }
 
         final int minSampleCount = (int) (((value - minValue) / (maxValue - minValue)) * sampleCount);
         final int drawSampleCount = Math.min(minSampleCount, sampleCount);
@@ -49,7 +55,7 @@ public class Dial extends SecondaryGraph {
         try {
             gl.glBegin(GL.GL_TRIANGLE_FAN);
             Color c1 = dataset.getColor();
-            gl.glColor3d(c1.getRed() / 255.0, c1.getBlue() / 255.0, c1.getGreen() / 255.0);
+            gl.glColor3d(c1.getRed() / 255.0, c1.getGreen() / 255.0, c1.getBlue() / 255.0);
 
             double originX = convertPointOverWidth((graphWidth / 2));
             double originY = convertPointOverHeight((graphHeight / 2) - (radius / 2));
@@ -65,7 +71,7 @@ public class Dial extends SecondaryGraph {
             gl.glBegin(GL.GL_TRIANGLE_FAN);
 
             Color c2 = new Color(0, 0, 0);
-            gl.glColor3d(c2.getRed() / 255.0, c2.getBlue() / 255.0, c2.getGreen() / 255.0);
+            gl.glColor3d(c2.getRed() / 255.0, c2.getGreen() / 255.0, c2.getBlue() / 255.0);
 
             gl.glVertex2d(originX, originY);
 
@@ -78,5 +84,9 @@ public class Dial extends SecondaryGraph {
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
         }
+    }
+
+    public String toString() {
+        return "Dial";
     }
 }
