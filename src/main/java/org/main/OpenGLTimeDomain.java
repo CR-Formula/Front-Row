@@ -125,6 +125,8 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
                 gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
                 gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+
+                vertexBuffer.rewind();
             }
 
         } catch (ConcurrentModificationException e) {
