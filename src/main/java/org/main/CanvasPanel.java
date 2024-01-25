@@ -154,7 +154,7 @@ public class CanvasPanel extends JPanel {
 
             graphColumns.get(column).get(index).add(column == 0 ? getDefaultTDCanvas(index) : getDefaultDialCanvas(index), BorderLayout.CENTER);
 
-//            setupCanvasLayout();
+            setupCanvasLayout();
         });
         panel.add(button, BorderLayout.CENTER);
         button.setFont(Theme.largeFont);
@@ -194,29 +194,41 @@ public class CanvasPanel extends JPanel {
     }
 
     private GLJPanel getDefaultTDCanvas(int i) {
-//        OpenGLTimeDomain td = new OpenGLTimeDomain(0, 0, 0, 0);
-//        td.setDatasets(List.of(DatasetController.getDataset(i % DatasetController.getDatasets().size())));
+        OpenGLTimeDomain td = new OpenGLTimeDomain(0, 0, 0, 0);
+        td.setDatasets(List.of(DatasetController.getDataset(i % DatasetController.getDatasets().size())));
 //        td.toggleAutoDetectMaxMin();
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
         GLJPanel glJPanel = new GLJPanel(capabilities);
+        glJPanel.addGLEventListener(td);
+        glJPanel.addMouseListener(td);
 
-        InitialGraphPanel popUpPanel = new InitialGraphPanel(glJPanel, InitialGraphPanel.GraphType.PRIMARY);
+        Animator animator = new Animator(glJPanel);
+        animator.setUpdateFPSFrames(1, null);
+        animator.start();
 
+        glJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         return glJPanel;
     }
 
     private GLJPanel getDefaultDialCanvas(int i) {
-//        OpenGLDial dial = new OpenGLDial(0, 0, 0, 0);
-//        dial.setDataset(DatasetController.getDataset(i % DatasetController.getDatasets().size()));
+        OpenGLDial dial = new OpenGLDial(0, 0, 0, 0);
+        dial.setDataset(DatasetController.getDataset(i % DatasetController.getDatasets().size()));
 
+        dial.toggleAutoDetectMaxMin();
 
 //        CanvasController.addPrimaryGraph(CanvasController.TIME_DOMAIN, td);
 
         GLJPanel glJPanel = new GLJPanel(capabilities);
+        glJPanel.addGLEventListener(dial);
+        glJPanel.addMouseListener(dial);
 
-        InitialGraphPanel popUpPanel = new InitialGraphPanel(glJPanel, InitialGraphPanel.GraphType.SECONDARY);
+        Animator animator = new Animator(glJPanel);
+        animator.setUpdateFPSFrames(1, null);
+        animator.start();
+
+        glJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         return glJPanel;
     }
