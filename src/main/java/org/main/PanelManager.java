@@ -47,7 +47,4 @@ public class PanelManager extends JFrame {
         revalidate();
     }
 
-
-
-
 }
