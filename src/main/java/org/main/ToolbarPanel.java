@@ -3,6 +3,9 @@ package org.main;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class ToolbarPanel extends JPanel {
 
@@ -13,8 +16,12 @@ public class ToolbarPanel extends JPanel {
     private JButton connectButton;
     private JButton continueButton;
     private JButton disconnectButton;
+
+    private JButton exportButton;
     private JComboBox<String> inputTypeOptions;
     private String selectedOption = DataInput.TEST;
+    private String csvLocation = "src" + File.separator + "dataSetCSV";
+
 
     private ToolbarPanel() {
         super();
@@ -79,6 +86,8 @@ public class ToolbarPanel extends JPanel {
             if (!DataInput.isConnected()) DataInput.connect(selectedOption);
             PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
             layout.replace(continueButton, disconnectButton);
+
+            exportButton.setVisible(true);
         });
 
         disconnectButton = new JButton("Disconnect");
@@ -86,12 +95,30 @@ public class ToolbarPanel extends JPanel {
             DataInput.disconnect();
             PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(disconnectButton, continueButton);
+
+            exportButton.setVisible(false);
+        });
+
+        exportButton = new JButton("Export");
+        exportButton.setVisible(false);
+        exportButton.addActionListener(event -> {
+            try {
+                ArrayList<Dataset> dataSets = new ArrayList<>();
+                for (Dataset dataset : DatasetController.getDatasets()) {
+                    dataSets.add(dataset);
+                }
+
+                exportToCSV(dataSets, csvLocation);
+            } catch (Exception e) {
+                System.err.println("Export failed. Error: " + e.getMessage());
+            }
         });
 
         add(dimensionLabel);
         add(dimensionSelector);
         add(inputTypeOptions);
         add(connectButton);
+        add(exportButton);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
@@ -103,6 +130,7 @@ public class ToolbarPanel extends JPanel {
                                 .addComponent(inputTypeOptions)
                                 .addGap(Theme.toolbarPadding)
                                 .addComponent(connectButton)
+                                .addComponent(exportButton)
                         )
         );
 
@@ -112,6 +140,54 @@ public class ToolbarPanel extends JPanel {
                         .addComponent(dimensionSelector)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
+                        .addComponent(exportButton)
         );
+    }
+
+    private void exportToCSV(ArrayList<Dataset> dataSets, String location) {
+        String fileName = location + File.separator + "dataSet.csv";
+        File outputFile = new File(fileName);
+
+        File directory = new File(location);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        try (PrintWriter writer = new PrintWriter(outputFile)) {
+            writer.print("Timestamp (Second)");
+            for (Dataset dataset : dataSets) {
+                writer.print("," + dataset.getName());
+            }
+            writer.println();
+
+            double startTime = System.currentTimeMillis();
+            int maximumLength = getMaximumLength(dataSets);
+
+            for (int i = 0; i < maximumLength; i++) {
+                double timestamp = (System.currentTimeMillis() - startTime) / 1000;
+                writer.print(timestamp);
+
+                for (Dataset dataset : dataSets) {
+                    if (i < dataset.getLength()) {
+                        writer.print("," + dataset.getSample(i));
+                    } else {
+                        writer.print(",");
+                    }
+                }
+
+                writer.println();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Export failed. Error: " + e.getMessage());
+        }
+    }
+
+    private int getMaximumLength(ArrayList<Dataset> datasets) {
+        int max = 0;
+        for (Dataset dataset : datasets) {
+            max = Math.max(max, dataset.getLength());
+        }
+        return max;
     }
 }
