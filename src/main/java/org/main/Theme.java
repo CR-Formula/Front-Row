@@ -18,7 +18,7 @@ public class Theme {
     public final static Color graphBorder = new Color(0xFFFFFF);
     public final static Color datasetRowBackground = new Color(0xBEBEBE);
     public final static Color graphInfo = new Color(0xFFD677);
-    public final static Color nullGraphColor = new Color(0xBDBDBD);
+    public final static Color blankGraphColor = new Color(0xBDBDBD);
 
     // Font details
     public final static String fontName = "Courier"; // Other fonts to look at "DialogInput", "Dialog", "Serif"

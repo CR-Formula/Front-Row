@@ -67,6 +67,7 @@ public class DatasetRowPanel extends JPanel {
 
         autoScale = new JCheckBox("Autoscale");
         autoScale.setMaximumSize(autoScale.getPreferredSize());
+        autoScale.setBackground(Color.white);
         autoScale.addActionListener(event -> {
             dataset.autoDetectMaxMin = autoScale.isSelected();
             maxField.setEnabled(!autoScale.isSelected());

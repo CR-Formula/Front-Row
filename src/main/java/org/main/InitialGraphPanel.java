@@ -4,7 +4,6 @@ import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -15,6 +14,7 @@ public class InitialGraphPanel extends JPanel {
     private GraphType graphType;
     private Graph graph;
     private GroupLayout layout;
+    private JPanel container;
     private GLJPanel graphPanel;
     private JLabel datasetLabel;
     private JLabel graphLabel;
@@ -22,9 +22,10 @@ public class InitialGraphPanel extends JPanel {
     private JCheckBox timeDomain;
     private JCheckBox dial;
 
-    public InitialGraphPanel(GLJPanel graphPanel, GraphType type){
+    public InitialGraphPanel(JPanel container, GLJPanel graphPanel, GraphType type){
         super();
 
+        this.container = container;
         this.graphPanel = graphPanel;
         this.graphType = type;
 
@@ -121,6 +122,9 @@ public class InitialGraphPanel extends JPanel {
         animator.start();
 
         graphPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        container.removeAll();
+        container.add(graphPanel, BorderLayout.CENTER);
 
         CanvasPanel.instance.setupCanvasLayout();
         popupFrame.dispose();

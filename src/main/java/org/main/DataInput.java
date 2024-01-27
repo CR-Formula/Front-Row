@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import com.fazecast.jSerialComm.SerialPort;
 
 public class DataInput {
+//    public enum GraphType {TEST, UART}
     public static final String TEST = "TEST";
     public static final String UART = "UART";
     private static boolean connected;
