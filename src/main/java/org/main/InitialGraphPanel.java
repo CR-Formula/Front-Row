@@ -57,6 +57,8 @@ public class InitialGraphPanel extends JPanel {
             jCheckBox.addActionListener(event -> {
                 if(jCheckBox.isSelected()){
                     graphDatasets.add(dataset);
+                } else {
+                    graphDatasets.remove(dataset);
                 }
             });
 
