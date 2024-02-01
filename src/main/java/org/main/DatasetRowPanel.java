@@ -59,11 +59,9 @@ public class DatasetRowPanel extends JPanel {
 
         nameField = new JTextField(dataset.getName());
         nameField.setMaximumSize(new Dimension(100, (int) nameField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> dataset.setName(nameField.getText()));
 
         labelField = new JTextField(dataset.getLabel().equals("") ? "" : dataset.getLabel());
         labelField.setMaximumSize(new Dimension(100, (int) labelField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> dataset.setLabel(labelField.getText()));
 
         autoScale = new JCheckBox("Autoscale");
         autoScale.setMaximumSize(autoScale.getPreferredSize());
@@ -157,6 +155,10 @@ public class DatasetRowPanel extends JPanel {
         );
     }
 
+    public void confirmDatasetLabels(){
+        updateDatasetName(nameField.getText());
+        updateDatasetLabel(labelField.getText());
+    }
     public void updateDataset(Dataset dataset) {
         this.dataset = dataset;
     }

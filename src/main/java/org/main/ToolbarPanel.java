@@ -77,6 +77,7 @@ public class ToolbarPanel extends JPanel {
         continueButton = new JButton("Continue");
         continueButton.addActionListener(event -> {
             if (!DataInput.isConnected()) DataInput.connect(selectedOption);
+            DatasetPanel.confirmChanges();
             PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
             layout.replace(continueButton, disconnectButton);
         });
