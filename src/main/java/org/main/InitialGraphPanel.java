@@ -51,13 +51,11 @@ public class InitialGraphPanel extends JPanel {
 
 
         for(Dataset dataset : DatasetController.getDatasets()){
-            // JTextFields in DatasetRowPanel don't update dataset labels correctly
             String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
             JCheckBox jCheckBox = new JCheckBox(label);
             jCheckBox.addActionListener(event -> {
-                if(jCheckBox.isSelected()){
-                    graphDatasets.add(dataset);
-                }
+                if(jCheckBox.isSelected()) graphDatasets.add(dataset);
+                else graphDatasets.remove(dataset);
             });
 
             horizontalDatasetGroup.addComponent(jCheckBox);
@@ -66,18 +64,14 @@ public class InitialGraphPanel extends JPanel {
 
         if(graphType == GraphType.PRIMARY){
             timeDomain = new JCheckBox("Time Domain");
-            timeDomain.addActionListener(event  -> {
-                graph = new OpenGLTimeDomain(0, 0, 0, 0);
-            });
+            timeDomain.addActionListener(event  -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
 
             verticalGraphTypeGroup.addComponent(timeDomain);
             horizontalGraphTypeGroup.addComponent(timeDomain);
-        } else if (graphType  == GraphType.SECONDARY)
-        {
+        }
+        else if (graphType  == GraphType.SECONDARY){
             dial = new JCheckBox("Dial");
-            dial.addActionListener(event  -> {
-                graph = new OpenGLDial(0, 0, 0, 0);
-            });
+            dial.addActionListener(event  -> graph = new OpenGLDial(0, 0, 0, 0));
 
             verticalGraphTypeGroup.addComponent(dial);
             horizontalGraphTypeGroup.addComponent(dial);
@@ -125,8 +119,8 @@ public class InitialGraphPanel extends JPanel {
 
         container.removeAll();
         container.add(graphPanel, BorderLayout.CENTER);
-
         CanvasPanel.instance.setupCanvasLayout();
+
         popupFrame.dispose();
     }
 
@@ -148,7 +142,12 @@ public class InitialGraphPanel extends JPanel {
 
         popupFrame.setLocation(popupLocation);
 
-        popupFrame.add(this, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(this);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        popupFrame.add(scrollPane, BorderLayout.CENTER);
         popupFrame.add(new InitialGraphToolbarPanel(this), BorderLayout.SOUTH);
         popupFrame.setVisible(true);
     }

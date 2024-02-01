@@ -5,14 +5,11 @@ import javax.swing.border.EmptyBorder;
 
 public class InitialGraphToolbarPanel extends JPanel {
     private GroupLayout layout;
-    private InitialGraphPanel currentPanel;
     private JButton confirmButton;
     private JButton cancelButton;
 
     public InitialGraphToolbarPanel(InitialGraphPanel currentPanel){
         super();
-
-        this.currentPanel = currentPanel;
 
         layout = new GroupLayout(this);
 
@@ -24,15 +21,10 @@ public class InitialGraphToolbarPanel extends JPanel {
         layout.setAutoCreateContainerGaps(false);
 
         confirmButton = new JButton("Confirm");
-        confirmButton.addActionListener(event -> {
-            currentPanel.confirmChanges();
-        });
+        confirmButton.addActionListener(event -> currentPanel.confirmChanges());
 
-        // Doesn't work as intended : wait for CanvasPanel rewrite
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(event -> {
-            currentPanel.hideFrame();
-        });
+        cancelButton.addActionListener(event -> currentPanel.hideFrame());
 
         add(confirmButton);
         add(cancelButton);
@@ -53,9 +45,5 @@ public class InitialGraphToolbarPanel extends JPanel {
                         .addComponent(confirmButton)
                         .addComponent(cancelButton)
         );
-
-
-
-
     }
 }
