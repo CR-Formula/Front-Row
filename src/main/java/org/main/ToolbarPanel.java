@@ -10,6 +10,10 @@ public class ToolbarPanel extends JPanel {
     private GroupLayout layout;
     private JLabel dimensionLabel;
     private JSpinner dimensionSelector;
+    private JLabel leftMarginLabel;
+    private JSpinner leftMarginSpinner;
+    private JLabel bottomMarginLabel;
+    private JSpinner bottomMarginSpinner;
     private JButton connectButton;
     private JButton continueButton;
     private JButton disconnectButton;
@@ -39,11 +43,29 @@ public class ToolbarPanel extends JPanel {
 
         dimensionLabel = new JLabel("Rows: ");
         dimensionLabel.setForeground(Theme.fontColor);
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, 99, 1);
-        dimensionSelector = new JSpinner(spinnerModel);
+        SpinnerNumberModel dimensionModel = new SpinnerNumberModel((int) CanvasPanel.instance.canvasDimension.getHeight(), 0, 99, 1);
+        dimensionSelector = new JSpinner(dimensionModel);
         dimensionSelector.setMaximumSize(dimensionSelector.getPreferredSize());
         dimensionSelector.addChangeListener(e -> {
             CanvasPanel.instance.setCanvasDimension((Integer) dimensionSelector.getValue());
+        });
+
+        leftMarginLabel = new JLabel("Left Margin: ");
+        leftMarginLabel.setForeground(Theme.fontColor);
+        SpinnerNumberModel leftModel = new SpinnerNumberModel(OpenGLTimeDomain.getLeftMargin(), 0.00, 1.00, 0.05);
+        leftMarginSpinner = new JSpinner(leftModel);
+        leftMarginSpinner.setMaximumSize(new Dimension((int) (leftMarginSpinner.getPreferredSize().getWidth()  * 1.5), (int) leftMarginSpinner.getPreferredSize().getHeight()));
+        leftMarginSpinner.addChangeListener(e -> {
+            OpenGLTimeDomain.setLeftMargin((Double) leftMarginSpinner.getValue());
+        });
+
+        bottomMarginLabel = new JLabel("Bottom Margin: ");
+        bottomMarginLabel.setForeground(Theme.fontColor);
+        SpinnerNumberModel bottomModel = new SpinnerNumberModel(OpenGLTimeDomain.getBottomMargin(), 0.00, 1.00, 0.05);
+        bottomMarginSpinner = new JSpinner(bottomModel);
+        bottomMarginSpinner.setMaximumSize(new Dimension((int) (bottomMarginSpinner.getPreferredSize().getWidth()  * 1.5), (int) bottomMarginSpinner.getPreferredSize().getHeight()));
+        bottomMarginSpinner.addChangeListener(e -> {
+            OpenGLTimeDomain.setBottomMargin((Double) bottomMarginSpinner.getValue());
         });
 
         inputTypeOptions = new JComboBox<>(options);
@@ -91,6 +113,10 @@ public class ToolbarPanel extends JPanel {
 
         add(dimensionLabel);
         add(dimensionSelector);
+        add(leftMarginLabel);
+        add(leftMarginSpinner);
+        add(bottomMarginLabel);
+        add(bottomMarginSpinner);
         add(inputTypeOptions);
         add(connectButton);
 
@@ -98,6 +124,12 @@ public class ToolbarPanel extends JPanel {
                 layout.createSequentialGroup()
                         .addComponent(dimensionLabel)
                         .addComponent(dimensionSelector)
+                        .addGap(Theme.toolbarPadding)
+                        .addComponent(leftMarginLabel)
+                        .addComponent(leftMarginSpinner)
+                        .addGap(Theme.toolbarPadding)
+                        .addComponent(bottomMarginLabel)
+                        .addComponent(bottomMarginSpinner)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -111,6 +143,10 @@ public class ToolbarPanel extends JPanel {
                 layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(dimensionLabel)
                         .addComponent(dimensionSelector)
+                        .addComponent(leftMarginLabel)
+                        .addComponent(leftMarginSpinner)
+                        .addComponent(bottomMarginLabel)
+                        .addComponent(bottomMarginSpinner)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
         );

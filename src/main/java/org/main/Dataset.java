@@ -32,7 +32,9 @@ public class Dataset {
     public void add(float value) {
         values.add(value);
     }
-
+    public String toString(){
+        return getLabel().isEmpty() ? getName() : getLabel();
+    }
     public List<Float> getValues() {
         return values;
     }

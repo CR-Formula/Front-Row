@@ -50,19 +50,18 @@ public class InitialGraphPanel extends JPanel {
         horizontalGraphTypeGroup.addComponent(graphLabel);
 
 
-        for(Dataset dataset : DatasetController.getDatasets()){
-            String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
-            JCheckBox jCheckBox = new JCheckBox(label);
-            jCheckBox.addActionListener(event -> {
-                if(jCheckBox.isSelected()) graphDatasets.add(dataset);
-                else graphDatasets.remove(dataset);
-            });
-
-            horizontalDatasetGroup.addComponent(jCheckBox);
-            verticalDatasetGroup.addComponent(jCheckBox);
-        }
-
         if(graphType == GraphType.PRIMARY){
+            for(Dataset dataset : DatasetController.getDatasets()){
+                String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
+                JCheckBox jCheckBox = new JCheckBox(label);
+                jCheckBox.addActionListener(event -> {
+                    if(jCheckBox.isSelected()) graphDatasets.add(dataset);
+                    else graphDatasets.remove(dataset);
+                });
+                horizontalDatasetGroup.addComponent(jCheckBox);
+                verticalDatasetGroup.addComponent(jCheckBox);
+            }
+
             timeDomain = new JCheckBox("Time Domain");
             timeDomain.addActionListener(event  -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
 
@@ -70,6 +69,22 @@ public class InitialGraphPanel extends JPanel {
             horizontalGraphTypeGroup.addComponent(timeDomain);
         }
         else if (graphType  == GraphType.SECONDARY){
+            int datasetArrSize = DatasetController.getDatasets().size();
+            Dataset[] datasetArr = new Dataset[datasetArrSize];
+            for(int i = 0; i < datasetArrSize; i++) datasetArr[i] = DatasetController.getDatasets().get(i);
+
+            JComboBox<Dataset> datasetComboBox = new JComboBox<>(datasetArr);
+            Dimension comboBoxAMaxSize = new Dimension((int) (datasetComboBox.getPreferredSize().getWidth()  * 1.1), (int) datasetComboBox.getPreferredSize().getHeight());
+            datasetComboBox.setMaximumSize(comboBoxAMaxSize);
+            graphDatasets.add((Dataset) datasetComboBox.getSelectedItem());
+            datasetComboBox.addActionListener(event -> {
+                graphDatasets.clear();
+                graphDatasets.add((Dataset) datasetComboBox.getSelectedItem());
+            });
+
+            horizontalDatasetGroup.addComponent(datasetComboBox);
+            verticalDatasetGroup.addComponent(datasetComboBox);
+
             dial = new JCheckBox("Dial");
             dial.addActionListener(event  -> graph = new OpenGLDial(0, 0, 0, 0));
 
@@ -106,6 +121,7 @@ public class InitialGraphPanel extends JPanel {
         }
         else {
             graph.setDatasets(graphDatasets);
+            graph.toggleAutoDetectMaxMin();
         }
 
         graphPanel.addGLEventListener(graph);
