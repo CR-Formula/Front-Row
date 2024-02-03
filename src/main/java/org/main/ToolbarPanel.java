@@ -2,6 +2,7 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
@@ -20,7 +21,6 @@ public class ToolbarPanel extends JPanel {
     private JButton exportButton;
     private JComboBox<String> inputTypeOptions;
     private String selectedOption = DataInput.TEST;
-    private String csvLocation = "src" + File.separator + "dataSetCSV";
 
 
     private ToolbarPanel() {
@@ -108,9 +108,9 @@ public class ToolbarPanel extends JPanel {
                     dataSets.add(dataset);
                 }
 
-                exportToCSV(dataSets, csvLocation);
+                exportToCSV(dataSets);
             } catch (Exception e) {
-                System.err.println("Export failed. Error: " + e.getMessage());
+                System.err.println("Export failed1. Error: " + e.getMessage());
             }
         });
 
@@ -144,16 +144,20 @@ public class ToolbarPanel extends JPanel {
         );
     }
 
-    private void exportToCSV(ArrayList<Dataset> dataSets, String location) {
-        String fileName = location + File.separator + "dataSet.csv";
-        File outputFile = new File(fileName);
+    private void exportToCSV(ArrayList<Dataset> dataSets) {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "csv");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(getParent());
 
-        File directory = new File(location);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+        };
 
-        try (PrintWriter writer = new PrintWriter(outputFile)) {
+        String location = chooser.getSelectedFile().toString();
+
+        try (PrintWriter writer = new PrintWriter(location)) {
             writer.print("Timestamp (Second)");
             for (Dataset dataset : dataSets) {
                 writer.print("," + dataset.getName());
@@ -179,7 +183,7 @@ public class ToolbarPanel extends JPanel {
             }
 
         } catch (Exception e) {
-            System.err.println("Export failed. Error: " + e.getMessage());
+            System.err.println("Export failed2. Error: " + e.getMessage());
         }
     }
 
