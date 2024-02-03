@@ -148,7 +148,7 @@ public class ToolbarPanel extends JPanel {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "csv");
         chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(getParent());
+        int returnVal = chooser.showSaveDialog(getParent());
 
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             System.out.println("You chose to open this file: " +
