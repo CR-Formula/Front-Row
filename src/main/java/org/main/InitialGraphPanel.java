@@ -49,7 +49,6 @@ public class InitialGraphPanel extends JPanel {
         verticalGraphTypeGroup.addComponent(graphLabel);
         horizontalGraphTypeGroup.addComponent(graphLabel);
 
-
         if(graphType == GraphType.PRIMARY){
             for(Dataset dataset : DatasetController.getDatasets()){
                 String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
@@ -167,5 +166,4 @@ public class InitialGraphPanel extends JPanel {
         popupFrame.add(new InitialGraphToolbarPanel(this), BorderLayout.SOUTH);
         popupFrame.setVisible(true);
     }
-
 }
