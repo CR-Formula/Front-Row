@@ -110,16 +110,6 @@ public class CanvasPanel extends JPanel {
             List<JLayeredPane> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
             for (int j = 0; j < canvasDimension.getHeight(); j++) {
                 int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
-
-                Component component = componentList.get(index).getComponent(0);
-
-                componentList.get(index).removeAll();
-
-                if (component.getClass().equals(GLJPanel.class)) {
-                    componentList.get(index).add(refreshGraph(componentList.get(index), (GLJPanel) component), Theme.GraphLayer);
-                } else {
-                    componentList.get(index).add(component, Theme.BaseLayer);
-                }
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
                     location = "cell " + column + " " + j + " 5 1 , grow";
@@ -131,23 +121,6 @@ public class CanvasPanel extends JPanel {
         revalidate();
 
         runningSetup = false;
-    }
-
-    private JPanel refreshGraph(JLayeredPane container, GLJPanel oldGLJPanel) {
-        GLJPanel newGLJPanel = new GLJPanel(capabilities);
-
-        ((Graph) oldGLJPanel.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
-
-        newGLJPanel.addGLEventListener(oldGLJPanel.getGLEventListener(0));
-        newGLJPanel.addMouseListener(oldGLJPanel.getMouseListeners()[0]);
-
-        newGLJPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
-        Animator animator = new Animator(newGLJPanel);
-        animator.setUpdateFPSFrames(1, null);
-        animator.start();
-
-        return newGLJPanel;
     }
 
     public void setCanvasDimension(int height) {

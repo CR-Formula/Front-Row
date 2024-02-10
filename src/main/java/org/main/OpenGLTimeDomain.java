@@ -58,6 +58,8 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
         try {
             for (Dataset dataset : datasets) {
+                dataset.setRecentMax(Integer.MIN_VALUE);
+                dataset.setRecentMin(Integer.MAX_VALUE);
                 final int drawSampleCount = Math.min(minSampleCount, sampleCount);
                 if (drawSampleCount < 2)
                     return;
@@ -87,6 +89,12 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                         maxYValue = dataset.getMax();
                         minYValue = dataset.getMin();
                     }
+                    float sample = dataset.getSample((dataset.getLength()) - (drawSampleCount - (i)));
+                    if (sample > dataset.getRecentMax())
+                        dataset.setRecentMax(sample);
+                    if (sample < dataset.getRecentMax())
+                        dataset.setRecentMin(sample);
+
                     range = maxYValue - minYValue;
 
                     double sampleX = -1 + leftMargin + ((i) * diff);
