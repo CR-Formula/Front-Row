@@ -31,4 +31,9 @@ public class Theme {
     public final static int smallLineWidth = 1;
     public final static int mediumLineWidth = 3;
     public final static int largeLineWidth = 15;
+
+    // Canvas Panel Layers
+    public final static int BaseLayer = 0;
+    public final static int GraphLayer = 1;
+    public final static int GraphTextLayer = 2;
 }

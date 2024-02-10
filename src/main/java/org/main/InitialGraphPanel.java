@@ -14,7 +14,7 @@ public class InitialGraphPanel extends JPanel {
     private GraphType graphType;
     private Graph graph;
     private GroupLayout layout;
-    private JPanel container;
+    private JLayeredPane container;
     private GLJPanel graphPanel;
     private JLabel datasetLabel;
     private JLabel graphLabel;
@@ -22,7 +22,7 @@ public class InitialGraphPanel extends JPanel {
     private JCheckBox timeDomain;
     private JCheckBox dial;
 
-    public InitialGraphPanel(JPanel container, GLJPanel graphPanel, GraphType type){
+    public InitialGraphPanel(JLayeredPane container, GLJPanel graphPanel, GraphType type){
         super();
 
         this.container = container;
@@ -134,7 +134,7 @@ public class InitialGraphPanel extends JPanel {
         graphPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         container.removeAll();
-        container.add(graphPanel, BorderLayout.CENTER);
+        container.add(graphPanel, Theme.GraphLayer);
         CanvasPanel.instance.setupCanvasLayout();
 
         popupFrame.dispose();
