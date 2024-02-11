@@ -86,7 +86,7 @@ public class InitialGraphPanel extends JPanel {
             verticalDatasetGroup.addComponent(datasetComboBox);
 
             dial = new JCheckBox("Dial");
-            dial.addActionListener(event  -> graph = new OpenGLDial(0, 0, 0, 0));
+            dial.addActionListener(event  -> graph = new DialWithBuffer());
 
             verticalGraphTypeGroup.addComponent(dial);
             horizontalGraphTypeGroup.addComponent(dial);

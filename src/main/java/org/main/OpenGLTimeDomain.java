@@ -32,7 +32,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     }
 
     public void init(GLAutoDrawable glAutoDrawable) {
-        GL2 gl = glAutoDrawable.getGL().getGL2();
+        gl = glAutoDrawable.getGL().getGL2();
 
         vboIds = new int[1];
         gl.glGenBuffers(1, vboIds, 0);
@@ -42,7 +42,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     public void display(GLAutoDrawable drawable) {
         if (datasets == null) return;
 
-        gl = drawable.getGL().getGL2();
         glut = new GLUT();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
@@ -51,10 +50,12 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         final int minSampleCount = DatasetController.getLastSampleIndex();
         final double diff = (2.0 - leftMargin) / ((double) sampleCount);
 
-        double graphXCo = 0;
-        double graphYCo = 0;
+        double graphXCo;
+        double graphYCo;
         double labelXCo = -1 + leftMargin + 0.1;
         double labelYCo = 1 - topMargin;
+
+        drawTickMarks();
 
         try {
             for (Dataset dataset : datasets) {
@@ -95,9 +96,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
                     verticesList.add((float) sampleX);
                     verticesList.add((float) sampleY);
-
-                    graphXCo = sampleX - 0.075;
-                    graphYCo = sampleY;
                 }
                 float[] datasetVertices = new float[verticesList.size()];
                 for (int i = 0; i < verticesList.size(); i++)
@@ -121,16 +119,11 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
             }
 
-            gl.glColor3d(1.0f, 1.0f, 1.0f);
-            gl.glRasterPos2d(.6, 1 - topMargin);
-            String maxValue = "Maximum: " + String.format("%.2f", maxYValue);
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, maxValue);
-
-            float[] marginVertices = {
+            float[] marginVertices = new float[]{
                     -1, -1,
                     1, -1,
-                    1, (float) (-1 + bottomMargin),
-                    -1, (float) (-1 + bottomMargin),
+                    1, (float) (-1 + bottomMargin - Theme.graphMinPadding),
+                    -1, (float) (-1 + bottomMargin - Theme.graphMinPadding),
 
                     -1, 1,
                     (float) leftMargin - 1, 1,
@@ -138,42 +131,11 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     -1, -1
             };
 
-//            Texture emojiTexture = null;
-//            try {
-//                emojiTexture = TextureIO.newTexture(new File("skull.png"), true);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//
-//            float[] vertices = {
-//                    0, 0,
-//                    .5F, 0,
-//                    .5F, .5F,
-//                    0, .5F
-//            };
-//
-//            float[] texCoords = {
-//                    0, 0,
-//                    1, 0,
-//                    1, 1,
-//                    0, 1
-//            };
-//
-//            gl.glEnable(GL2.GL_TEXTURE_2D);
-//            emojiTexture.bind(gl);
-//            gl.glBegin(GL2.GL_QUADS);
-//
-//            for (int i = 0; i < 4; i++) {
-//                gl.glTexCoord2f(texCoords[i * 2], texCoords[i * 2 + 1]);
-//                gl.glVertex2f(vertices[i * 2], vertices[i * 2 + 1]);
-//            }
-//            gl.glEnd();
-//
-//            gl.glDisable(GL2.GL_TEXTURE_2D);
-
+            gl.glColor3d(1.0f, 1.0f, 1.0f);
+            gl.glRasterPos2d(.6, 1 - topMargin);
+            String maxValue = "Maximum: " + String.format("%.2f", maxYValue);
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, maxValue);
             drawBuffers(marginVertices, GL2.GL_LINE_STRIP);
-            drawTickMarks();
             
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
@@ -181,53 +143,80 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     }
 
     private void drawTickMarks() {
-        int numXTicks = 10;
+        int numXTicks = 5;
         double xTickOffset = 0.1;
         double xTickLength = 0.05;
 
-        int numYTicks = 6;
-        double yTickOffset = 0.1;
+        int numYTicks = 5;
         double yTickLength = 0.025;
 
         double xTickInterval = (2 - leftMargin) / (double) numXTicks;
-        double yTickInterval = (2 - bottomMargin) / (double) numYTicks;
+        double yTickInterval = (2 - bottomMargin) / ((double) numYTicks);
+
+        int yMidPoint = numYTicks / 2 + 1;
+        double yTickOffset = Math.abs((1 - bottomMargin / 2) - (yMidPoint * yTickInterval));
+
+        double graphXMin = leftMargin - 1;
+        double graphYMin = bottomMargin - 1;
+        double graphXMax = 1;
+        double graphYMax = 1;
+
+        float[] gridLinesVertices = new float[(numXTicks + numYTicks) * 4];
+        int gridIndex = 0;
 
         float[] xTickVertices = new float[numXTicks * 4];
         for (int i = 0; i < numXTicks; i++) {
             double x = (leftMargin - 1) + i * xTickInterval + xTickOffset;
             int index = i * 4;
             xTickVertices[index] = (float) x;
-            xTickVertices[index + 1] = (float) (bottomMargin - 1);
+            xTickVertices[index + 1] = (float) (graphYMin - Theme.graphMinPadding);
             xTickVertices[index + 2] = (float) x;
-            xTickVertices[index + 3] = (float) ((bottomMargin - 1) - (xTickLength / (i % 2 + 1)));
+            xTickVertices[index + 3] = (float) ((graphYMin - Theme.graphMinPadding) - (xTickLength / (i % 2 + 1)));
+
+            gridLinesVertices[gridIndex++] = (float) x;
+            gridLinesVertices[gridIndex++] = (float) graphYMax;
+            gridLinesVertices[gridIndex++] = (float) x;
+            gridLinesVertices[gridIndex++] = (float) (graphYMin - Theme.graphMinPadding);
         }
 
         float[] yTickVertices = new float[numYTicks * 4];
         for (int i = 0; i < numYTicks; i++) {
-            double y = (bottomMargin - 1) + i * yTickInterval + yTickOffset;
+            double y = graphYMin + i * yTickInterval + yTickOffset;
             int index = i * 4;
-            yTickVertices[index] = (float) (leftMargin - 1);
-//            yTickVertices[index] = (float) 1;
+            yTickVertices[index] = (float) graphXMin;
             yTickVertices[index + 1] = (float) y;
-            yTickVertices[index + 2] = (float) (leftMargin - 1 - (yTickLength / (i % 2 + 1)));
+            yTickVertices[index + 2] = (float) (graphXMin - (yTickLength / (i % 2 + 1)));
             yTickVertices[index + 3] = (float) y;
 
-            gl.glColor3d(1.0f, 1.0f, 1.0f);
+            gridLinesVertices[gridIndex++] = (float) graphXMin;
+            gridLinesVertices[gridIndex++] = (float) y;
+            gridLinesVertices[gridIndex++] = (float) graphXMax;
+            gridLinesVertices[gridIndex++] = (float) y;
+
+            // Center label at some point
             gl.glRasterPos2d(-1 + leftMargin / 3, y);
-            double rawValue = (y + 1) / 2 * maxYValue;
+            double rawValue = (y - graphYMin) / (graphYMax - graphYMin) * (maxYValue - minYValue) + minYValue;
+            rawValue = (Math.abs(rawValue) < 0.001) ? 0 : rawValue;
+
             String rawLabel = String.format("%.2f", rawValue);
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, rawLabel);
         }
 
 
-        gl.glColor3d(169, 169,169);
+        gl.glColor4f(255, 255, 255, 1.0f);
         drawBuffers(xTickVertices, gl.GL_LINES);
         drawBuffers(yTickVertices, gl.GL_LINES);
+
+        gl.glColor4f(255, 255, 255, 0.1f);
+        drawBuffers(gridLinesVertices, gl.GL_LINES);
     }
 
     // Binding to multiple buffer objects and rendering their vertices simultaneously may improve performance
     // Sets of vertices are currently rendered one at a time, which cleans up vboId assignments
     private void drawBuffers(float[] vertices, int primitivePolygon){
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboIds[0]);
         FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(vertices);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, (long) vertexBuffer.limit() * Buffers.SIZEOF_FLOAT, vertexBuffer, GL2.GL_STATIC_DRAW);
@@ -237,6 +226,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+        gl.glDisable(GL2.GL_BLEND);
     }
 
     public static void setLeftMargin(double leftMargin) {
