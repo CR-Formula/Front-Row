@@ -16,12 +16,11 @@ import org.main.InitialGraphPanel.GraphType;
 public class CanvasPanel extends JPanel {
     public static CanvasPanel instance = new CanvasPanel();
 
-
     private MigLayout layout;
 
     private boolean displayGraphs = false;
-    private List<JPanel> primaryGraphs;
-    private List<JPanel> secondaryGraphs;
+    private List<JLayeredPane> primaryGraphs;
+    private List<JLayeredPane> secondaryGraphs;
 
     public Dimension canvasDimension = new Dimension(2, 4);
 
@@ -36,11 +35,11 @@ public class CanvasPanel extends JPanel {
 
         primaryGraphs = new ArrayList<>();
         for (int i = 0; i < canvasDimension.getHeight(); i++)
-            primaryGraphs.add(new JPanel());
+            primaryGraphs.add(new JLayeredPane());
 
         secondaryGraphs = new ArrayList<>();
         for (int i = 0; i < (int) (canvasDimension.getHeight() * (canvasDimension.getWidth() - 1)); i++)
-            secondaryGraphs.add(new JPanel());
+            secondaryGraphs.add(new JLayeredPane());
 
         setBackground(Theme.canvasBackground);
 
@@ -67,13 +66,13 @@ public class CanvasPanel extends JPanel {
     void initializePanels() {
         for (int column = 0; column < canvasDimension.getWidth();column++) {
             for (int row = 0; row < canvasDimension.getHeight(); row++) {
-                JPanel currentPanel = (column == 0 ? primaryGraphs.get(row) : secondaryGraphs.get((int) (((column - 1) * canvasDimension.getHeight()) + row)));
+                JLayeredPane currentPanel = (column == 0 ? primaryGraphs.get(row) : secondaryGraphs.get((int) (((column - 1) * canvasDimension.getHeight()) + row)));
                 createBlankGraph(currentPanel);
             }
         }
     }
 
-    private void createBlankGraph(JPanel container) {
+    private void createBlankGraph(JLayeredPane container) {
         container.setLayout(new BorderLayout());
         JButton button = new JButton("+");
         button.setFocusPainted(false);
@@ -86,17 +85,17 @@ public class CanvasPanel extends JPanel {
             GraphType type = pIndex != -1 && sIndex == -1 ? GraphType.PRIMARY : GraphType.SECONDARY;
             createGraph(container, type);
         });
-        container.add(button);
-        container.add(button, BorderLayout.CENTER);
+//        container.add(button);
+//        container.add(button, JLayeredPane.DEFAULT_LAYER);
         button.setFont(Theme.largeFont);
         button.setBackground(Theme.blankGraphColor);
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         button.setBorder(BorderFactory.createEmptyBorder());
 
-        container.add(button, BorderLayout.CENTER);
+        container.add(button, Theme.BaseLayer);
     }
 
-    private void createGraph(JPanel container, GraphType type) {
+    private void createGraph(JLayeredPane container, GraphType type) {
         GLJPanel graph = new GLJPanel(capabilities);
         new InitialGraphPanel(container, graph, type);
     }
@@ -108,7 +107,7 @@ public class CanvasPanel extends JPanel {
 
         for (int i = 0; i < canvasDimension.getWidth(); i++) {
             int column = i == 0 ? i : i + 4;
-            List<JPanel> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
+            List<JLayeredPane> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
             for (int j = 0; j < canvasDimension.getHeight(); j++) {
                 int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
 
@@ -117,9 +116,9 @@ public class CanvasPanel extends JPanel {
                 componentList.get(index).removeAll();
 
                 if (component.getClass().equals(GLJPanel.class)) {
-                    componentList.get(index).add(refreshGraph(componentList.get(index), (GLJPanel) component), BorderLayout.CENTER);
+                    componentList.get(index).add(refreshGraph(componentList.get(index), (GLJPanel) component), Theme.GraphLayer);
                 } else {
-                    componentList.get(index).add(component, BorderLayout.CENTER);
+                    componentList.get(index).add(component, Theme.BaseLayer);
                 }
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
@@ -134,7 +133,7 @@ public class CanvasPanel extends JPanel {
         runningSetup = false;
     }
 
-    private JPanel refreshGraph(JPanel container, GLJPanel oldGLJPanel) {
+    private JPanel refreshGraph(JLayeredPane container, GLJPanel oldGLJPanel) {
         GLJPanel newGLJPanel = new GLJPanel(capabilities);
 
         ((Graph) oldGLJPanel.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
@@ -154,8 +153,8 @@ public class CanvasPanel extends JPanel {
     public void setCanvasDimension(int height) {
         if (height > canvasDimension.getHeight()) {
             for (int i = 0; i < height - canvasDimension.getHeight(); i++) {
-                primaryGraphs.add(new JPanel());
-                secondaryGraphs.add(new JPanel());
+                primaryGraphs.add(new JLayeredPane());
+                secondaryGraphs.add(new JLayeredPane());
             }
         }
         canvasDimension = new Dimension((int) canvasDimension.getWidth(), height);
