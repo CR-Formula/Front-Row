@@ -110,7 +110,7 @@ public class ToolbarPanel extends JPanel {
             PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
             layout.replace(continueButton, disconnectButton);
 
-            exportButton.setVisible(true);
+//            exportButton.setVisible(true);
         });
 
         disconnectButton = new JButton("Disconnect");
@@ -119,11 +119,11 @@ public class ToolbarPanel extends JPanel {
             PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(disconnectButton, continueButton);
 
-            exportButton.setVisible(false);
+//            exportButton.setVisible(false);
         });
 
         exportButton = new JButton("Export");
-        exportButton.setVisible(false);
+//        exportButton.setVisible(false);
         exportButton.addActionListener(event -> {
             try {
                 ArrayList<Dataset> dataSets = new ArrayList<>();
@@ -149,6 +149,8 @@ public class ToolbarPanel extends JPanel {
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
+                        .addComponent(exportButton)
+                        .addGap(Theme.toolbarPadding)
                         .addComponent(dimensionLabel)
                         .addComponent(dimensionSelector)
                         .addGap(Theme.toolbarPadding)
@@ -163,12 +165,12 @@ public class ToolbarPanel extends JPanel {
                                 .addComponent(inputTypeOptions)
                                 .addGap(Theme.toolbarPadding)
                                 .addComponent(connectButton)
-                                .addComponent(exportButton)
                         )
         );
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(exportButton)
                         .addComponent(dimensionLabel)
                         .addComponent(dimensionSelector)
                         .addComponent(leftMarginLabel)
@@ -177,7 +179,6 @@ public class ToolbarPanel extends JPanel {
                         .addComponent(bottomMarginSpinner)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
-                        .addComponent(exportButton)
         );
     }
 

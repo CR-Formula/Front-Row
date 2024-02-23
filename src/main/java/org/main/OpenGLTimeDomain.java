@@ -4,12 +4,9 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.gl2.GLUT;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureIO;
 
+import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -24,7 +21,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     private static double topMargin = 0.15;
 
     private GL2 gl;
-    private GLUT glut;
+//    private GLUT glut;
 
     public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
@@ -43,7 +40,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         if (datasets == null) return;
 
         gl = drawable.getGL().getGL2();
-        glut = new GLUT();
+//        glut = new GLUT();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL2.GL_BUFFER);
@@ -58,6 +55,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
         try {
             for (Dataset dataset : datasets) {
+                OpenGL.drawLargeText(gl, "Test", 0, 0, 0f);
                 dataset.setRecentMax(Integer.MIN_VALUE);
                 dataset.setRecentMin(Integer.MAX_VALUE);
                 final int drawSampleCount = Math.min(minSampleCount, sampleCount);
@@ -117,13 +115,13 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
                 gl.glRasterPos2d(labelXCo, labelYCo);
                 String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
-                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, label);
+//                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, label);
 
                 graphXCo = labelXCo + label.length() / 40.0;
                 graphYCo = labelYCo;
                 gl.glRasterPos2d(graphXCo, graphYCo);
                 String currentValue = String.format("%.2f", dataset.getLastSample());
-                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, currentValue);
+//                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, currentValue);
 
                 labelYCo -= 0.15;
 
@@ -132,7 +130,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
             gl.glColor3d(1.0f, 1.0f, 1.0f);
             gl.glRasterPos2d(.6, 1 - topMargin);
             String maxValue = "Maximum: " + String.format("%.2f", maxYValue);
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, maxValue);
+//            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, maxValue);
 
             float[] marginVertices = {
                     -1, -1,
@@ -182,7 +180,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
             drawBuffers(marginVertices, GL2.GL_LINE_STRIP);
             drawTickMarks();
-            
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
         }
@@ -224,7 +221,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
             gl.glRasterPos2d(-1 + leftMargin / 3, y);
             double rawValue = (y + 1) / 2 * maxYValue;
             String rawLabel = String.format("%.2f", rawValue);
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, rawLabel);
+//            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, rawLabel);
         }
 
 
@@ -262,7 +259,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     public static double getBottomMargin() {
         return bottomMargin;
     }
-
 
     public String toString() {
         return "Time Domain";

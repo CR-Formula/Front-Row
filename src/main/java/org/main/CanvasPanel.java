@@ -3,7 +3,6 @@ package org.main;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -85,8 +84,6 @@ public class CanvasPanel extends JPanel {
             GraphType type = pIndex != -1 && sIndex == -1 ? GraphType.PRIMARY : GraphType.SECONDARY;
             createGraph(container, type);
         });
-//        container.add(button);
-//        container.add(button, JLayeredPane.DEFAULT_LAYER);
         button.setFont(Theme.largeFont);
         button.setBackground(Theme.blankGraphColor);
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
