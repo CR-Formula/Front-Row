@@ -10,6 +10,7 @@ public class Theme {
     public static int datasetRowHorizontalPadding = 10;
     public static int datasetRowVerticalPadding = 5;
     public static int maxDatasetRowHorizontalPadding = 50;
+    public static double graphMinPadding = 0.01;
 
     // Colors
     public final static Color canvasBackground = new Color(0x6C6B7C);

@@ -16,8 +16,8 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     protected int graphX;
     protected int graphY;
-    protected int graphWidth;
-    protected int graphHeight;
+    protected float graphWidth;
+    protected float graphHeight;
 
     protected static boolean mouseOnCanvas;
 
@@ -28,6 +28,8 @@ public class Graph extends MouseAdapter implements GLEventListener {
         this.graphY = graphY;
         this.graphWidth = graphWidth;
         this.graphHeight = graphHeight;
+    }
+    public Graph() {
     }
 
     @Override
@@ -76,12 +78,12 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     }
 
-    protected double convertPointOverHeight(double value) {
-        return ((value / graphHeight) * (2)) + -1;
+    protected float convertPointOverHeight(double value) {
+        return (float) (((value / graphHeight) * (2)) + -1);
     }
 
-    protected double convertPointOverWidth(double value) {
-        return ((value / graphWidth) * (2)) + -1;
+    protected float convertPointOverWidth(double value) {
+        return (float) (((value / graphWidth) * (2)) + -1);
     }
 
     protected double convertValueOverHeight(double value) {
