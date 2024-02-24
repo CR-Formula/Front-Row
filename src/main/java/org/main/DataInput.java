@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import com.fazecast.jSerialComm.SerialPort;
 
@@ -27,6 +28,8 @@ public class DataInput {
 
     private static String[] latestTokens;
 
+    private static Date startTime;
+
     public static void connect(String type) {
         if (type.equals(TEST)) {
             if (connectionType != null && !connectionType.equals(TEST))
@@ -41,6 +44,7 @@ public class DataInput {
             connected = true;
             enableUARTConnection();
         }
+        if (connected) startTime = new Date();
     }
 
     public static void disconnect() {
@@ -203,4 +207,6 @@ public class DataInput {
     public static String connectionType() {
         return selectedUARTPort.equals(TEST) ? TEST : UART;
     }
+
+    public Date getStartTime(){return startTime;}
 }
