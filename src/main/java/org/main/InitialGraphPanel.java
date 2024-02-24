@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.Animator;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import net.miginfocom.swing.MigLayout;
 
 public class InitialGraphPanel extends JPanel {
     public enum GraphType {PRIMARY, SECONDARY}
@@ -22,93 +23,63 @@ public class InitialGraphPanel extends JPanel {
     private JCheckBox timeDomain;
     private JCheckBox dial;
 
-    public InitialGraphPanel(JLayeredPane container, GLJPanel graphPanel, GraphType type){
+    public InitialGraphPanel(JLayeredPane container, GLJPanel graphPanel, GraphType type) {
         super();
 
         this.container = container;
         this.graphPanel = graphPanel;
         this.graphType = type;
 
-        datasetLabel = new JLabel("Datasets");
-        graphLabel = new JLabel("Graph Type");
+        datasetLabel = new JLabel("Datasets", SwingConstants.CENTER);
+        graphLabel = new JLabel("Graph Type", SwingConstants.CENTER);
+        datasetLabel.setOpaque(true);
+        graphLabel.setOpaque(true);
+        datasetLabel.setBackground(Color.white);
+        graphLabel.setBackground(Color.white);
 
-        layout = new GroupLayout(this);
+        String columnConstraints = 50 + "[]" + Theme.graphPadding + "[]" + 50;
+        StringBuilder rowConstraints = new StringBuilder(Theme.graphPadding);
+        for (int i = 0; i < DatasetController.getDatasets().size(); i++)
+            rowConstraints.append("[]").append(Theme.graphPadding);
 
-        layout.setAutoCreateGaps(false);
-        layout.setAutoCreateContainerGaps(false);
-        setLayout(layout);
+        setLayout(new MigLayout("fill", columnConstraints, rowConstraints.toString()));
+
         setBackground(Theme.canvasBackground);
 
-        GroupLayout.ParallelGroup horizontalDatasetGroup = layout.createParallelGroup();
-        GroupLayout.SequentialGroup verticalDatasetGroup = layout.createSequentialGroup();
-        horizontalDatasetGroup.addComponent(datasetLabel);
-        verticalDatasetGroup.addComponent(datasetLabel);
+        add(graphLabel, "cell 0 0, grow");
+        add(datasetLabel, "cell 1 0, grow");
 
-        GroupLayout.ParallelGroup horizontalGraphTypeGroup = layout.createParallelGroup();
-        GroupLayout.SequentialGroup verticalGraphTypeGroup = layout.createSequentialGroup();
-        verticalGraphTypeGroup.addComponent(graphLabel);
-        horizontalGraphTypeGroup.addComponent(graphLabel);
-
-        if(graphType == GraphType.PRIMARY){
-            for(Dataset dataset : DatasetController.getDatasets()){
+        if (graphType == GraphType.PRIMARY) {
+            for (int i = 0; i < DatasetController.getDatasets().size(); i++) {
+                Dataset dataset = DatasetController.getDataset(i);
                 String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
                 JCheckBox jCheckBox = new JCheckBox(label);
                 jCheckBox.addActionListener(event -> {
-                    if(jCheckBox.isSelected()) graphDatasets.add(dataset);
+                    if (jCheckBox.isSelected()) graphDatasets.add(dataset);
                     else graphDatasets.remove(dataset);
                 });
-                horizontalDatasetGroup.addComponent(jCheckBox);
-                verticalDatasetGroup.addComponent(jCheckBox);
+                int row = i + 1;
+                add(jCheckBox, "cell 1 " + row + ", grow");
             }
 
             timeDomain = new JCheckBox("Time Domain");
-            timeDomain.addActionListener(event  -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
+            timeDomain.addActionListener(event -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
+            add(timeDomain, "cell 0 1, grow");
 
-            verticalGraphTypeGroup.addComponent(timeDomain);
-            horizontalGraphTypeGroup.addComponent(timeDomain);
-        }
-        else if (graphType  == GraphType.SECONDARY){
-            int datasetArrSize = DatasetController.getDatasets().size();
-            Dataset[] datasetArr = new Dataset[datasetArrSize];
-            for(int i = 0; i < datasetArrSize; i++) datasetArr[i] = DatasetController.getDatasets().get(i);
-
+        } else if (graphType == GraphType.SECONDARY) {
+            Dataset[] datasetArr = DatasetController.getDatasets().toArray(new Dataset[0]);
             JComboBox<Dataset> datasetComboBox = new JComboBox<>(datasetArr);
-            Dimension comboBoxAMaxSize = new Dimension((int) (datasetComboBox.getPreferredSize().getWidth()  * 1.1), (int) datasetComboBox.getPreferredSize().getHeight());
-            datasetComboBox.setMaximumSize(comboBoxAMaxSize);
             graphDatasets.add((Dataset) datasetComboBox.getSelectedItem());
             datasetComboBox.addActionListener(event -> {
                 graphDatasets.clear();
                 graphDatasets.add((Dataset) datasetComboBox.getSelectedItem());
             });
-
-            horizontalDatasetGroup.addComponent(datasetComboBox);
-            verticalDatasetGroup.addComponent(datasetComboBox);
+            add(datasetComboBox, "cell 1 1, grow");
 
             dial = new JCheckBox("Dial");
-            dial.addActionListener(event  -> graph = new DialWithBuffer());
-
-            verticalGraphTypeGroup.addComponent(dial);
-            horizontalGraphTypeGroup.addComponent(dial);
+            dial.addActionListener(event -> graph = new DialWithBuffer());
+            add(dial, "cell 0 1, grow");
         }
-
-        layout.setHorizontalGroup(
-                layout.createSequentialGroup()
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-                        .addGroup(horizontalGraphTypeGroup)
-                        .addGap(Theme.datasetRowPadding)
-                        .addGroup(horizontalDatasetGroup)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        );
-
-        layout.setVerticalGroup(
-                layout.createSequentialGroup().addGap(Theme.datasetRowVerticalPadding).addGroup(
-                        layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addGroup(verticalGraphTypeGroup)
-                                .addGroup(verticalDatasetGroup)
-                )
-        );
 
         buildFrame();
     }
