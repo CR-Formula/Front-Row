@@ -21,7 +21,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     private static double topMargin = 0.15;
 
     private GL2 gl;
-//    private GLUT glut;
+    private GLUT glut;
 
     public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
@@ -56,7 +56,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
         try {
             for (Dataset dataset : datasets) {
-                OpenGL.drawLargeText(gl, "Test", 0, 0, 0f);
+//                OpenGL.drawLargeText(gl, "Test", 0, 0, 0f);
                 dataset.setRecentMax(Integer.MIN_VALUE);
                 dataset.setRecentMin(Integer.MAX_VALUE);
                 final int drawSampleCount = Math.min(minSampleCount, sampleCount);
