@@ -10,8 +10,10 @@ public class Dataset {
     private String label;
     private Color color;
     private int index;
-    private int max;
-    private int min;
+    private float max;
+    private float min;
+    private float recentMax;
+    private float recentMin;
     protected boolean autoDetectMaxMin = false;
 
     public Dataset(String name) {
@@ -51,11 +53,11 @@ public class Dataset {
         return label;
     }
 
-    public int getMax() {
+    public float getMax() {
         return max;
     }
 
-    public int getMin() {
+    public float getMin() {
         return min;
     }
 
@@ -92,11 +94,19 @@ public class Dataset {
         System.out.println("Dataset: " + color.getRGB());
     }
 
-    public void setMax(int max) {
+    public void setMax(float max) {
         this.max = max;
     }
 
-    public void setMin(int min) {
+    public void setMin(float min) {
         this.min = min;
     }
+
+    public void setRecentMax(float max) {this.recentMax = max;}
+
+    public void setRecentMin(float min) {this.recentMin = min;}
+
+    public float getRecentMax() {return recentMax;}
+
+    public float getRecentMin() {return recentMin;}
 }

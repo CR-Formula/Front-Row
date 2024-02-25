@@ -44,7 +44,7 @@ public class DatasetRowPanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(new Color(0x000000)));
 
         colorButton = new JButton(" ■ ");
-        colorButton.setFont(Theme.normalFont);
+        colorButton.setFont(Theme.mediumFont);
         colorButton.setForeground(dataset.getColor());
         colorButton.setBorder(new LineBorder(Color.BLACK));
         colorButton.setFocusPainted(false);

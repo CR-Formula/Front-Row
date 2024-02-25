@@ -85,6 +85,9 @@ public class InitialGraphPanel extends JPanel {
     }
 
     public void confirmChanges(){
+        container.removeAll();
+        graphPanel.setOpaque(true);
+
         if(graphType == GraphType.SECONDARY){
             ((SecondaryGraph) graph).setDataset(graphDatasets.get(0));
             graph.toggleAutoDetectMaxMin();
@@ -92,6 +95,9 @@ public class InitialGraphPanel extends JPanel {
         else {
             graph.setDatasets(graphDatasets);
             graph.toggleAutoDetectMaxMin();
+            ((PrimaryGraph) graph).setDataLayer(new PrimaryGraphInfoLayer(graphDatasets));
+            ((PrimaryGraph) graph).getDataLayer().setBounds(0, 0, container.getWidth(), container.getHeight());
+            container.add(((PrimaryGraph) graph).getDataLayer(), Theme.GraphLayer);
         }
 
         graphPanel.addGLEventListener(graph);
@@ -103,9 +109,18 @@ public class InitialGraphPanel extends JPanel {
 
         graphPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        container.removeAll();
-        container.add(graphPanel, Theme.GraphLayer);
+        graphPanel.setBounds(0, 0, container.getWidth(), container.getHeight());
+        container.add(graphPanel, Theme.BaseLayer);
+        container.setOpaque(true);
+        container.setComponentZOrder(graphPanel, 0);
+        if (graphType == GraphType.PRIMARY)
+            container.setComponentZOrder(((PrimaryGraph) graph).getDataLayer(), 1);
+
         CanvasPanel.instance.setupCanvasLayout();
+
+        System.out.println("Graph:\t" + container.getLayer(graphPanel));
+        System.out.println("Data:\t" + container.getLayer(((PrimaryGraph)graph).getDataLayer()));
+        System.out.println("Count:\t" + container.getComponentCount());
 
         popupFrame.dispose();
     }
