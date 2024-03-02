@@ -65,11 +65,11 @@ public class Dataset {
         return color;
     }
 
-    public Float getSample(int i) {
+    public float getSample(int i) {
         return values.get(i);
     }
 
-    public Float getLastSample() {
+    public float getLastSample() {
         return values.size() > 0 ? values.get(values.size() - 1) : 0.0f;
     }
 

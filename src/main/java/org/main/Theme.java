@@ -15,7 +15,7 @@ public class Theme {
     // Colors
     public final static Color canvasBackground = new Color(0x6C6B7C);
     public final static Color toolbarBackground = new Color(0x464552);
-    public final static Color graphBackground = new Color(0x000000);
+    public final static Color graphBackground = new Color(0xFF444444, true);
     public final static Color graphBorder = new Color(0xFFFFFF);
     public final static Color datasetRowBackground = new Color(0xBEBEBE);
     public final static Color graphInfo = new Color(0xFFD677);

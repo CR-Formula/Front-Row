@@ -1,4 +1,4 @@
-package org.basics;
+package org.main;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2ES3;

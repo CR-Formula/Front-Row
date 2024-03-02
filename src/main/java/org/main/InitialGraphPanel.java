@@ -77,7 +77,7 @@ public class InitialGraphPanel extends JPanel {
             add(datasetComboBox, "cell 1 1, grow");
 
             dial = new JCheckBox("Dial");
-            dial.addActionListener(event -> graph = new DialWithBuffer());
+            dial.addActionListener(event -> graph = new OpenGLDial());
             add(dial, "cell 0 1, grow");
         }
 
@@ -118,9 +118,9 @@ public class InitialGraphPanel extends JPanel {
 
         CanvasPanel.instance.setupCanvasLayout();
 
-        System.out.println("Graph:\t" + container.getLayer(graphPanel));
-        System.out.println("Data:\t" + container.getLayer(((PrimaryGraph)graph).getDataLayer()));
-        System.out.println("Count:\t" + container.getComponentCount());
+//        System.out.println("Graph:\t" + container.getLayer(graphPanel));
+//        System.out.println("Data:\t" + container.getLayer(((PrimaryGraph)graph).getDataLayer()));
+//        System.out.println("Count:\t" + container.getComponentCount());
 
         popupFrame.dispose();
     }
