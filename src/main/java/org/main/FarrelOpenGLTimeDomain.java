@@ -1,8 +1,9 @@
 package org.main;
 
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 import javax.swing.*;
@@ -10,38 +11,47 @@ import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
-public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
-    private int[] vboIds;
+public class FarrelOpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     private double maxYValue = 1;
     private double minYValue = -1;
-    private GL2 gl;
+    private GL2ES3 gl;
     private GLUT glut;
 
     private int timePassed = 0;
     private int lastTime = 0;
     private double xTickOffset = -2.25;
 
-    public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
+    public FarrelOpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.datasets = new ArrayList<Dataset>();
     }
 
-    public void init(GLAutoDrawable glAutoDrawable) {
-        gl = glAutoDrawable.getGL().getGL2();
+    @Override
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height){
+    }
 
-        vboIds = new int[1];
-        gl.glGenBuffers(1, vboIds, 0);
+    @Override
+    public void init(GLAutoDrawable glAutoDrawable) {
+        gl = glAutoDrawable.getGL().getGL2ES3();
+
+        gl.glEnable(GL3.GL_BLEND);
+        gl.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
+        gl.setSwapInterval(1);
+        float scalingFactor = (int) Math.round((double) Toolkit.getDefaultToolkit().getScreenResolution() / 100.0);
+        Theme.initialize(gl, scalingFactor);
+        OpenGL.makeAllPrograms(gl);
+        float[] screenMatrix = new float[16];
+        OpenGL.makeOrthoMatrix(screenMatrix, -1, 1, -1, 1, -10000, 10000);
+        OpenGL.useMatrix(gl, screenMatrix);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         if (datasets == null) return;
 
-        glut = new GLUT();
-
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL2.GL_BUFFER);
+//        glut = new GLUT();
 
         final int minSampleCount = DatasetController.getLastSampleIndex();
         final double diff = (2.0 - leftMargin) / ((double) sampleCount);
@@ -67,9 +77,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 maxYValue = Math.max(maxYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
                 minYValue = Math.min(minYValue, dataset.getSample(dataset.getLength() - drawSampleCount));
                 double range = maxYValue - minYValue;
-
-                Color c = dataset.getColor();
-                gl.glColor3d(c.getRed() / 255.0, c.getGreen() / 255.0, c.getBlue() / 255.0);
 
                 double initialX = -1.0 + leftMargin;
                 double initialY = dataset.getSample(dataset.getLength() - drawSampleCount);
@@ -106,22 +113,11 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                 float[] datasetVertices = new float[verticesList.size()];
                 for (int i = 0; i < verticesList.size(); i++)
                     datasetVertices[i] = verticesList.get(i);
-                drawBuffers(datasetVertices, gl.GL_LINE_STRIP);
 
-
-                gl.glColor3d(1.0f, 1.0f, 1.0f);
-
-                gl.glRasterPos2d(labelXCo, labelYCo);
-                String label = dataset.getLabel().isEmpty() ? dataset.getName() : dataset.getLabel();
-                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, label);
-
-                graphXCo = labelXCo + label.length() / 40.0;
-                graphYCo = labelYCo;
-                gl.glRasterPos2d(graphXCo, graphYCo);
-                String currentValue = String.format("%.2f", dataset.getLastSample());
-                glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, currentValue);
-
-                labelYCo -= 0.15;
+                FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(datasetVertices);
+                OpenGL.drawBox(gl, new float[]{0.0f,0.0f,0.0f,1f}, -1,-1, 2, 2);
+                Color c = dataset.getColor();
+                OpenGL.drawLinesXy(gl, GL3.GL_LINE_STRIP, new float[]{c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f,1f}, vertexBuffer, datasetVertices.length / 2);
 
             }
 
@@ -139,12 +135,9 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                     -1, -1
             };
 
-            gl.glColor3d(1.0f, 1.0f, 1.0f);
-            gl.glRasterPos2d(.6, 1 - topMargin);
-            String maxValue = "Maximum: " + String.format("%.2f", maxYValue);
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, maxValue);
-            drawBuffers(marginVertices, GL2.GL_LINE_STRIP);
-            
+            FloatBuffer marginBuffer = Buffers.newDirectFloatBuffer(marginVertices);
+            OpenGL.drawLinesXy(gl, GL3.GL_LINE_STRIP, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, marginBuffer, marginVertices.length / 2);
+
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
         }
@@ -207,44 +200,69 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
             gridLinesVertices[gridIndex++] = (float) y;
             gridLinesVertices[gridIndex++] = (float) graphXMax;
             gridLinesVertices[gridIndex++] = (float) y;
-
-            // Center label at some point
-            gl.glRasterPos2d(-1 + leftMargin / 3, y);
-            double rawValue = (y - graphYMin) / (graphYMax - graphYMin) * (maxYValue - minYValue) + minYValue;
-            rawValue = (Math.abs(rawValue) < 0.001) ? 0 : rawValue;
-
-            String rawLabel = String.format("%.2f", rawValue);
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, rawLabel);
         }
 
+        FloatBuffer xTickBuffer = Buffers.newDirectFloatBuffer(xTickVertices);
+        OpenGL.drawLinesXy(gl, GL3.GL_LINES, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, xTickBuffer, xTickVertices.length / 2);
 
-        gl.glColor4f(255, 255, 255, 1.0f);
-        drawBuffers(xTickVertices, gl.GL_LINES);
-        drawBuffers(yTickVertices, gl.GL_LINES);
+        FloatBuffer yTickBuffer = Buffers.newDirectFloatBuffer(yTickVertices);
+        OpenGL.drawLinesXy(gl, GL3.GL_LINES, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, yTickBuffer, yTickVertices.length / 2);
 
-        gl.glColor4f(255, 255, 255, 0.1f);
-        drawBuffers(gridLinesVertices, gl.GL_LINES);
-    }
+        FloatBuffer gridLineBuffer = Buffers.newDirectFloatBuffer(gridLinesVertices);
+        OpenGL.drawLinesXy(gl, GL3.GL_LINES, new float[]{1.0f, 1.0f, 1.0f, 0.2f}, gridLineBuffer, gridLinesVertices.length / 2);
 
-    // Binding to multiple buffer objects and rendering their vertices simultaneously may improve performance
-    // Sets of vertices are currently rendered one at a time, which cleans up vboId assignments
-    private void drawBuffers(float[] vertices, int primitivePolygon){
-        gl.glEnable(GL2.GL_BLEND);
-        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vboIds[0]);
-        FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(vertices);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, (long) vertexBuffer.limit() * Buffers.SIZEOF_FLOAT, vertexBuffer, GL2.GL_STATIC_DRAW);
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(2, GL2.GL_FLOAT, 0, 0);
-        gl.glDrawArrays(primitivePolygon, 0, vertices.length/2);
-
-        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
-        gl.glDisable(GL2.GL_BLEND);
     }
 
     public String toString() {
         return "Time Domain";
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        final GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLCapabilities capabilities = new GLCapabilities(profile);
+
+        final GLCanvas glCanvas = new GLCanvas(capabilities);
+        final GLCanvas glCanvas2 = new GLCanvas(capabilities);
+
+        DataInput.connect(DataInput.TEST);
+
+        FarrelOpenGLTimeDomain td = new FarrelOpenGLTimeDomain(0,0,0,0);
+        java.util.List<Dataset> l = new ArrayList<>();
+        l.add(DatasetController.getDataset(0));
+        td.setDatasets(l);
+        td.toggleAutoDetectMaxMin();
+
+        OpenGLTimeDomain td2 = new OpenGLTimeDomain(0,0,0,0);
+        List<Dataset> l2 = new ArrayList<>();
+        l2.add(DatasetController.getDataset(1));
+        td2.setDatasets(l2);
+        td2.toggleAutoDetectMaxMin();
+
+
+        glCanvas.addGLEventListener(td);
+        glCanvas.setSize(400, 400);
+
+        glCanvas2.addGLEventListener(td2);
+        glCanvas.setSize(400, 400);
+
+        Animator animator = new Animator(glCanvas);
+        animator.setUpdateFPSFrames(1, null);
+        animator.start();
+
+        Animator animator2 = new Animator(glCanvas2);
+        animator2.setUpdateFPSFrames(1, null);
+        animator2.start();
+
+        Box screen = new Box(BoxLayout.Y_AXIS);
+        screen.add(glCanvas);
+        screen.add(glCanvas2);
+
+        final JFrame frame = new JFrame ("Moving Buffer Data");
+
+        frame.getContentPane().add(screen);
+        frame.setSize(frame.getContentPane().getPreferredSize());
+        frame.setVisible(true);
+
+        frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
     }
 }

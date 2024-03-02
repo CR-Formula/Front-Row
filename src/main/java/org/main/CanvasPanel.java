@@ -2,7 +2,8 @@ package org.main;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -93,7 +94,7 @@ public class CanvasPanel extends JPanel {
     }
 
     private void createGraph(JLayeredPane container, GraphType type) {
-        GLJPanel graph = new GLJPanel(capabilities);
+        GLCanvas graph = new GLCanvas(capabilities);
         new InitialGraphPanel(container, graph, type);
     }
 
@@ -107,6 +108,28 @@ public class CanvasPanel extends JPanel {
             List<JLayeredPane> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
             for (int j = 0; j < canvasDimension.getHeight(); j++) {
                 int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
+
+                JLayeredPane container = componentList.get(index);
+                if(container.getComponent(0).getClass() == GLCanvas.class){
+                    GLCanvas graphCanvas = (GLCanvas) componentList.get(index).getComponent(0);
+                    container.removeAll();
+
+//                    ((Graph) graphCanvas.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
+
+                    GLCanvas replacement = new GLCanvas(capabilities);
+                    replacement.addGLEventListener(graphCanvas.getGLEventListener(0));
+                    replacement.addMouseListener(graphCanvas.getMouseListeners()[0]);
+
+                    Animator animator = new Animator(replacement);
+                    animator.setUpdateFPSFrames(1, null);
+                    animator.start();
+
+
+                    container.add(replacement);
+
+                    System.out.println("Class found");
+                }
+
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
                     location = "cell " + column + " " + j + " 5 1 , grow";

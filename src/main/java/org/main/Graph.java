@@ -11,7 +11,7 @@ import java.util.List;
 public class Graph extends MouseAdapter implements GLEventListener {
     protected static Point frameLocation;
 
-    protected int sampleCount = 10000;
+    protected int sampleCount = 1000;
     protected List<Dataset> datasets;
 
     protected int graphX;

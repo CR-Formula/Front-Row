@@ -59,20 +59,20 @@ public class ToolbarPanel extends JPanel {
 
         leftMarginLabel = new JLabel("Left Margin: ");
         leftMarginLabel.setForeground(Theme.fontColor);
-        SpinnerNumberModel leftModel = new SpinnerNumberModel(OpenGLTimeDomain.getLeftMargin(), 0.00, 1.00, 0.05);
+        SpinnerNumberModel leftModel = new SpinnerNumberModel(PrimaryGraph.getLeftMargin(), 0.00, 1.00, 0.05);
         leftMarginSpinner = new JSpinner(leftModel);
         leftMarginSpinner.setMaximumSize(new Dimension((int) (leftMarginSpinner.getPreferredSize().getWidth()  * 1.5), (int) leftMarginSpinner.getPreferredSize().getHeight()));
         leftMarginSpinner.addChangeListener(e -> {
-            OpenGLTimeDomain.setLeftMargin((Double) leftMarginSpinner.getValue());
+            PrimaryGraph.setLeftMargin((Double) leftMarginSpinner.getValue());
         });
 
         bottomMarginLabel = new JLabel("Bottom Margin: ");
         bottomMarginLabel.setForeground(Theme.fontColor);
-        SpinnerNumberModel bottomModel = new SpinnerNumberModel(OpenGLTimeDomain.getBottomMargin(), 0.00, 1.00, 0.05);
+        SpinnerNumberModel bottomModel = new SpinnerNumberModel(PrimaryGraph.getBottomMargin(), 0.00, 1.00, 0.05);
         bottomMarginSpinner = new JSpinner(bottomModel);
         bottomMarginSpinner.setMaximumSize(new Dimension((int) (bottomMarginSpinner.getPreferredSize().getWidth()  * 1.5), (int) bottomMarginSpinner.getPreferredSize().getHeight()));
         bottomMarginSpinner.addChangeListener(e -> {
-            OpenGLTimeDomain.setBottomMargin((Double) bottomMarginSpinner.getValue());
+            PrimaryGraph.setBottomMargin((Double) bottomMarginSpinner.getValue());
         });
 
         inputTypeOptions = new JComboBox<>(options);

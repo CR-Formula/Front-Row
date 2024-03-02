@@ -1,5 +1,6 @@
 package org.main;
 
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 
@@ -16,14 +17,14 @@ public class InitialGraphPanel extends JPanel {
     private Graph graph;
     private GroupLayout layout;
     private JLayeredPane container;
-    private GLJPanel graphPanel;
+    private GLCanvas graphPanel;
     private JLabel datasetLabel;
     private JLabel graphLabel;
 
     private JCheckBox timeDomain;
     private JCheckBox dial;
 
-    public InitialGraphPanel(JLayeredPane container, GLJPanel graphPanel, GraphType type) {
+    public InitialGraphPanel(JLayeredPane container, GLCanvas graphPanel, GraphType type) {
         super();
 
         this.container = container;
@@ -63,7 +64,7 @@ public class InitialGraphPanel extends JPanel {
             }
 
             timeDomain = new JCheckBox("Time Domain");
-            timeDomain.addActionListener(event -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
+            timeDomain.addActionListener(event -> graph = new FarrelOpenGLTimeDomain(0, 0, 0, 0));
             add(timeDomain, "cell 0 1, grow");
 
         } else if (graphType == GraphType.SECONDARY) {
@@ -86,7 +87,7 @@ public class InitialGraphPanel extends JPanel {
 
     public void confirmChanges(){
         container.removeAll();
-        graphPanel.setOpaque(true);
+//        graphPanel.setOpaque(true);
 
         if(graphType == GraphType.SECONDARY){
             ((SecondaryGraph) graph).setDataset(graphDatasets.get(0));
@@ -107,9 +108,10 @@ public class InitialGraphPanel extends JPanel {
         animator.setUpdateFPSFrames(1, null);
         animator.start();
 
-        graphPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        graphPanel.setMaximumSize(new Dimension(10, 10));
 
         graphPanel.setBounds(0, 0, container.getWidth(), container.getHeight());
+
         container.add(graphPanel, Theme.BaseLayer);
         container.setOpaque(true);
         container.setComponentZOrder(graphPanel, 0);
@@ -118,9 +120,9 @@ public class InitialGraphPanel extends JPanel {
 
         CanvasPanel.instance.setupCanvasLayout();
 
-        System.out.println("Graph:\t" + container.getLayer(graphPanel));
-        System.out.println("Data:\t" + container.getLayer(((PrimaryGraph)graph).getDataLayer()));
-        System.out.println("Count:\t" + container.getComponentCount());
+//        System.out.println("Graph:\t" + container.getLayer(graphPanel));
+//        System.out.println("Data:\t" + container.getLayer(((PrimaryGraph)graph).getDataLayer()));
+//        System.out.println("Count:\t" + container.getComponentCount());
 
         popupFrame.dispose();
     }
