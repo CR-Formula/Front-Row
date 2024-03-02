@@ -23,6 +23,10 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     private GL2 gl;
     private GLUT glut;
 
+    private int timePassed = 0;
+    private int lastTime = 0;
+    private double xTickOffset = -2.25;
+
     public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
         this.datasets = new ArrayList<Dataset>();
@@ -52,7 +56,8 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         double labelXCo = -1 + leftMargin + 0.1;
         double labelYCo = 1 - topMargin;
 
-        drawTickMarks();
+        timePassed = datasets.get(0).getLength() - lastTime;
+        lastTime = datasets.get(0).getLength();
 
         try {
             for (Dataset dataset : datasets) {
@@ -125,6 +130,8 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
             }
 
+            drawTickMarks();
+
             float[] marginVertices = new float[]{
                     -1, -1,
                     1, -1,
@@ -149,8 +156,16 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
     }
 
     private void drawTickMarks() {
+        double graphXMin = leftMargin - 1;
+        double graphYMin = bottomMargin - 1;
+        double graphXMax = 1;
+        double graphYMax = 1;
+
         int numXTicks = 5;
-        double xTickOffset = 0.1;
+        double xTickIncrement = (double) timePassed * (graphXMax - graphXMin) / (sampleCount - 2);
+        if(DatasetController.getLastSampleIndex() > sampleCount)
+            xTickOffset -= xTickIncrement;
+
         double xTickLength = 0.05;
 
         int numYTicks = 5;
@@ -162,10 +177,6 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         int yMidPoint = numYTicks / 2 + 1;
         double yTickOffset = Math.abs((1 - bottomMargin / 2) - (yMidPoint * yTickInterval));
 
-        double graphXMin = leftMargin - 1;
-        double graphYMin = bottomMargin - 1;
-        double graphXMax = 1;
-        double graphYMax = 1;
 
         float[] gridLinesVertices = new float[(numXTicks + numYTicks) * 4];
         int gridIndex = 0;
@@ -173,6 +184,9 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
         float[] xTickVertices = new float[numXTicks * 4];
         for (int i = 0; i < numXTicks; i++) {
             double x = (leftMargin - 1) + i * xTickInterval + xTickOffset;
+            x %= (graphXMax - graphXMin);
+            x++;
+
             int index = i * 4;
             xTickVertices[index] = (float) x;
             xTickVertices[index + 1] = (float) (graphYMin - Theme.graphMinPadding);
