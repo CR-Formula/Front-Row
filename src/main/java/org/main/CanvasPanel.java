@@ -8,6 +8,8 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +100,12 @@ public class CanvasPanel extends JPanel {
         new InitialGraphPanel(container, graph, type);
     }
 
+    private void removeGraph(JLayeredPane container){
+        container.removeAll();
+        createBlankGraph(container);
+        setupCanvasLayout();
+    }
+
     public void setupCanvasLayout() {
         if (runningSetup) return;
         runningSetup = true;
@@ -110,8 +118,16 @@ public class CanvasPanel extends JPanel {
                 int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
 
                 JLayeredPane container = componentList.get(index);
-                if(container.getComponent(0).getClass() == GLCanvas.class){
-                    GLCanvas graphCanvas = (GLCanvas) componentList.get(index).getComponent(0);
+
+                boolean activeGraph = false;
+                GLCanvas graphCanvas = null;
+                for(Component component : container.getComponents()){
+                    if(component.getClass() == GLCanvas.class){
+                        graphCanvas = (GLCanvas) component;
+                        activeGraph = true;
+                    }
+                }
+                if(activeGraph){
                     container.removeAll();
 
 //                    ((Graph) graphCanvas.getGLEventListener(0)).setPosition(container.getX(), container.getY(), container.getSize());
@@ -124,23 +140,46 @@ public class CanvasPanel extends JPanel {
                     animator.setUpdateFPSFrames(1, null);
                     animator.start();
 
-
+                    container.add(newRemoveButton(container));
                     container.add(replacement);
-
-                    System.out.println("Class found");
                 }
 
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
                     location = "cell " + column + " " + j + " 5 1 , grow";
 
-                add(componentList.get(index), location);
+                add(container, location);
             }
         }
         repaint();
         revalidate();
 
         runningSetup = false;
+    }
+
+    private JButton newRemoveButton(JLayeredPane container) {
+        JButton removeButton = new JButton("X");
+        removeButton.setBackground(Color.BLACK);
+        removeButton.setForeground(Color.WHITE);
+        removeButton.setOpaque(true);
+        removeButton.setBorderPainted(false);
+        removeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                removeButton.setBackground(Color.GRAY);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                removeButton.setBackground(Color.BLACK);
+            }
+        });
+        removeButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        int buttonSize = container.getHeight() / 8;
+        removeButton.setSize(buttonSize, buttonSize);
+        removeButton.setBounds(container.getWidth() - (int) (buttonSize * 1.5), 0, removeButton.getWidth(), removeButton.getHeight());
+        removeButton.addActionListener(event -> removeGraph(container));
+        return removeButton;
     }
 
     public void setCanvasDimension(int height) {

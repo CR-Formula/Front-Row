@@ -112,11 +112,11 @@ public class InitialGraphPanel extends JPanel {
 
         graphPanel.setBounds(0, 0, container.getWidth(), container.getHeight());
 
-        container.add(graphPanel, Theme.BaseLayer);
+        container.add(graphPanel);
         container.setOpaque(true);
         container.setComponentZOrder(graphPanel, 0);
-        if (graphType == GraphType.PRIMARY)
-            container.setComponentZOrder(((PrimaryGraph) graph).getDataLayer(), 1);
+//        if (graphType == GraphType.PRIMARY)
+//            container.setComponentZOrder(((PrimaryGraph) graph).getDataLayer(), 1);
 
         CanvasPanel.instance.setupCanvasLayout();
 
