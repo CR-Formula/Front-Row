@@ -22,6 +22,7 @@ public class DatasetRowPanel extends JPanel {
     private JLabel nameFieldLabel;
     private JTextField labelField;
     private JLabel labelFieldLabel;
+    private JCheckBox autoScale;
     private JSpinner maxField;
     private JLabel maxFieldLabel;
     private JSpinner minField;
@@ -43,7 +44,7 @@ public class DatasetRowPanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(new Color(0x000000)));
 
         colorButton = new JButton(" ■ ");
-        colorButton.setFont(Theme.normalFont);
+        colorButton.setFont(Theme.mediumFont);
         colorButton.setForeground(dataset.getColor());
         colorButton.setBorder(new LineBorder(Color.BLACK));
         colorButton.setFocusPainted(false);
@@ -58,11 +59,18 @@ public class DatasetRowPanel extends JPanel {
 
         nameField = new JTextField(dataset.getName());
         nameField.setMaximumSize(new Dimension(100, (int) nameField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> dataset.setName(nameField.getText()));
 
         labelField = new JTextField(dataset.getLabel().equals("") ? "" : dataset.getLabel());
         labelField.setMaximumSize(new Dimension(100, (int) labelField.getPreferredSize().getHeight()));
-        nameField.addActionListener(event -> dataset.setLabel(labelField.getText()));
+
+        autoScale = new JCheckBox("Autoscale");
+        autoScale.setMaximumSize(autoScale.getPreferredSize());
+        autoScale.setBackground(Color.white);
+        autoScale.addActionListener(event -> {
+            dataset.autoDetectMaxMin = autoScale.isSelected();
+            maxField.setEnabled(!autoScale.isSelected());
+            minField.setEnabled(!autoScale.isSelected());
+        });
 
         SpinnerNumberModel maxNumberModel = new SpinnerNumberModel(dataset.getMax(), Integer.MIN_VALUE / 100, Integer.MAX_VALUE / 100, 1);
         maxField = new JSpinner(maxNumberModel);
@@ -92,6 +100,7 @@ public class DatasetRowPanel extends JPanel {
         add(minFieldLabel);
         add(nameField);
         add(labelField);
+        add(autoScale);
         add(maxField);
         add(minField);
 
@@ -116,7 +125,10 @@ public class DatasetRowPanel extends JPanel {
                                 .addComponent(maxFieldLabel)
                                 .addComponent(maxField)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding)
+                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding / 2)
+                                .addComponent(autoScale)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                        GroupLayout.DEFAULT_SIZE, Theme.maxDatasetRowHorizontalPadding / 2)
                                 .addComponent(minFieldLabel)
                                 .addComponent(minField)
                                 .addGap(Theme.datasetRowHorizontalPadding)
@@ -133,6 +145,7 @@ public class DatasetRowPanel extends JPanel {
                                 .addComponent(nameField)
                                 .addComponent(labelFieldLabel)
                                 .addComponent(labelField)
+                                .addComponent(autoScale)
                                 .addComponent(maxFieldLabel)
                                 .addComponent(maxField)
                                 .addComponent(minFieldLabel)
@@ -142,6 +155,10 @@ public class DatasetRowPanel extends JPanel {
         );
     }
 
+    public void confirmDatasetLabels(){
+        updateDatasetName(nameField.getText());
+        updateDatasetLabel(labelField.getText());
+    }
     public void updateDataset(Dataset dataset) {
         this.dataset = dataset;
     }

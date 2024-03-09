@@ -26,8 +26,8 @@ public class Main {
 
         OpenGLTimeDomain td1 = new OpenGLTimeDomain(0, 0, graphWidth, graphHeight);
         OpenGLTimeDomain td2 = new OpenGLTimeDomain(0, graphHeight, graphWidth, graphHeight);
-        OpenGLDial d1 = new OpenGLDial(graphWidth, 0, graphHeight, graphHeight);
-        OpenGLDial d2 = new OpenGLDial(graphWidth, graphHeight, graphHeight, graphHeight, 2, -2);
+        OpenGLDial d1 = new OpenGLDial();
+        OpenGLDial d2 = new OpenGLDial();
 
         glCanvas1.addGLEventListener(td1);
         glCanvas1.addMouseListener(td1);

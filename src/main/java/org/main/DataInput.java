@@ -5,10 +5,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import com.fazecast.jSerialComm.SerialPort;
 
 public class DataInput {
+//    public enum GraphType {TEST, UART}
     public static final String TEST = "TEST";
     public static final String UART = "UART";
     private static boolean connected;
@@ -26,6 +28,8 @@ public class DataInput {
 
     private static String[] latestTokens;
 
+    private static Date startTime;
+
     public static void connect(String type) {
         if (type.equals(TEST)) {
             if (connectionType != null && !connectionType.equals(TEST))
@@ -40,6 +44,7 @@ public class DataInput {
             connected = true;
             enableUARTConnection();
         }
+        if (connected) startTime = new Date();
     }
 
     public static void disconnect() {
@@ -69,9 +74,11 @@ public class DataInput {
 
     private static void startWaveInput() {
         if (DatasetController.getDatasets().size() == 0) {
-            DatasetController.addDataset(new Dataset("sinA", 0, new Color(255, 0, 0)));
-            DatasetController.addDataset(new Dataset("sinB", 1, new Color(0, 255, 0)));
-            DatasetController.addDataset(new Dataset("sinC", 2, new Color(0, 0, 255)));
+            Color[] colors = DatasetController.generateRandomColors(3);
+
+            DatasetController.addDataset(new Dataset("sinA", 0, colors[0]));
+            DatasetController.addDataset(new Dataset("sinB", 1, colors[1]));
+            DatasetController.addDataset(new Dataset("sinC", 2, colors[2]));
         }
 
         testThread = new Thread(() -> {
@@ -115,7 +122,7 @@ public class DataInput {
     }
 
     private static void enableUARTConnection() {
-        if (selectedUARTPort == null || selectedUARTPort.equals(""))
+        if (selectedUARTPort == null || selectedUARTPort.isEmpty())
             return;
 
         if (uartPort != null && uartPort.isOpen())
@@ -173,6 +180,7 @@ public class DataInput {
         latestTokens = null;
         if (uartThread.isAlive())
             uartThread.interrupt();
+        while (uartThread.isAlive());
     }
 
     public static boolean isConnected() {
@@ -195,4 +203,10 @@ public class DataInput {
     public static void setUARTPort(String portName) {
         selectedUARTPort = portName;
     }
+
+    public static String connectionType() {
+        return selectedUARTPort.equals(TEST) ? TEST : UART;
+    }
+
+    public Date getStartTime(){return startTime;}
 }

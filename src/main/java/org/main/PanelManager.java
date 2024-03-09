@@ -46,8 +46,4 @@ public class PanelManager extends JFrame {
         repaint();
         revalidate();
     }
-
-
-
-
 }
