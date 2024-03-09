@@ -93,7 +93,7 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
                         dataset.setRecentMax(sample);
                     if (sample < dataset.getRecentMax())
                         dataset.setRecentMin(sample);
-
+                  
                     range = maxYValue - minYValue;
 
                     double sampleX = -1 + leftMargin + ((i) * diff);
