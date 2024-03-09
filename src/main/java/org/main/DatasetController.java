@@ -74,7 +74,7 @@ public class DatasetController {
         }
     }
 
-    private static Color[] generateRandomColors(int length) {
+    static Color[] generateRandomColors(int length) {
         Color[] colors = new Color[length];
         for (int i = 0; i < length; i++) {
             float h = (float) i / (length - 1);
