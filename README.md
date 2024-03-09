@@ -3,6 +3,8 @@
 #### Cyclone Racing Formula SAE
 #### Iowa State University
 
+[![Maven Package](https://github.com/Cyclone-Racing/Front-Row/actions/workflows/maven-publish.yml/badge.svg?branch=main)](https://github.com/Cyclone-Racing/Front-Row/actions/workflows/maven-publish.yml)
+
 This Repository stores the Java Code for our custom Telemetry Viewing software, Front Row. This software allows us to take a stream of remote data from our car and graph it in real-time. The software can create multiple types of graphs to display different types of data effectively.
 
 ## Pre-Reqs For Running:
