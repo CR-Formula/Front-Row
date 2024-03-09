@@ -89,8 +89,6 @@ public class OpenGLDial extends SecondaryGraph implements GLEventListener {
             vertices[i + 2] = (-1 * (originX + ((float) Math.cos(angle) * radiusOuter[0])));
             vertices[i + 3] = (originY + ((float)Math.sin(angle) * radiusOuter[1]));
             i += 4;
-            System.out.println((-1 * (originX + ((float) Math.cos(angle) * radiusInner[0]))) + " | " + (originY + ((float)Math.sin(angle) * radiusInner[1])) + " | "
-                    + (-1 * (originX + ((float) Math.cos(angle) * radiusOuter[0]))) + " | " + (originY + ((float)Math.sin(angle) * radiusOuter[1])));
         }
     }
 

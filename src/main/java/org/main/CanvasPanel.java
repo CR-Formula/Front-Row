@@ -7,10 +7,13 @@ import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.main.InitialGraphPanel.GraphType;
@@ -30,6 +33,12 @@ public class CanvasPanel extends JPanel {
     GLCapabilities capabilities = new GLCapabilities(profile);
 
     private boolean runningSetup = false;
+
+    private boolean graphDimensionsSet = false;
+    private float primaryHeightPerc;
+    private float primaryWidthPerc;
+    private float secondaryHeightPerc;
+    private float secondaryWidthPerc;
 
 
     private CanvasPanel() {
@@ -107,8 +116,9 @@ public class CanvasPanel extends JPanel {
     }
 
     public void setupCanvasLayout() {
-        if (runningSetup) return;
+        if (runningSetup || instance == null) return;
         runningSetup = true;
+
         removeAll();
 
         for (int i = 0; i < canvasDimension.getWidth(); i++) {
@@ -140,7 +150,7 @@ public class CanvasPanel extends JPanel {
                     animator.setUpdateFPSFrames(1, null);
                     animator.start();
 
-                    container.add(newRemoveButton(container));
+                    container.add(newRemoveButton(column == 0 ? GraphType.PRIMARY : GraphType.SECONDARY, container));
                     container.add(replacement);
                 }
 
@@ -157,8 +167,23 @@ public class CanvasPanel extends JPanel {
         runningSetup = false;
     }
 
-    private JButton newRemoveButton(JLayeredPane container) {
-        JButton removeButton = new JButton("X");
+    private JButton newRemoveButton(GraphType graphType, JLayeredPane container) {
+        if (!graphDimensionsSet) {
+            if (graphType == GraphType.PRIMARY) {
+                primaryWidthPerc = (float) (container.getWidth() / (instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))));
+                secondaryWidthPerc = 1.0f - primaryWidthPerc;
+                primaryHeightPerc = (float) (container.getHeight() / (instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))));
+                secondaryHeightPerc = primaryHeightPerc;
+            } else {
+                secondaryWidthPerc = (float) (container.getWidth() / (instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))));
+                primaryWidthPerc = 1.0f - secondaryWidthPerc;
+                secondaryHeightPerc = (float) (container.getHeight() / (instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))));
+                primaryHeightPerc = secondaryHeightPerc;
+            }
+            graphDimensionsSet = true;
+        }
+
+        JButton removeButton = new JButton("x");
         removeButton.setBackground(Color.BLACK);
         removeButton.setForeground(Color.WHITE);
         removeButton.setOpaque(true);
@@ -175,9 +200,11 @@ public class CanvasPanel extends JPanel {
             }
         });
         removeButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        int buttonSize = container.getHeight() / 8;
+        int buttonSize = (int) (graphType == GraphType.PRIMARY ? ((instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))) * primaryHeightPerc)
+                                                               : ((instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))) * secondaryHeightPerc)) / 10;
+        if (buttonSize < 10) buttonSize = 10;
         removeButton.setSize(buttonSize, buttonSize);
-        removeButton.setBounds(container.getWidth() - (int) (buttonSize * 1.5), 0, removeButton.getWidth(), removeButton.getHeight());
+        removeButton.setBounds((int) (graphType == GraphType.PRIMARY ? ((instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))) * primaryWidthPerc) : ((instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))) * secondaryWidthPerc)) - (int) (buttonSize * 1.5), (int) (buttonSize * 1.5) - buttonSize, removeButton.getWidth(), removeButton.getHeight());
         removeButton.addActionListener(event -> removeGraph(container));
         return removeButton;
     }
