@@ -19,10 +19,6 @@
             <id>jogamp</id>
             <url>https://jogamp.org/deployment/maven/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -62,11 +58,6 @@
             <version>3.7.4</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.Cyclone-Racing</groupId>
-            <artifactId>Front-Row</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
 
     </dependencies>
     <build>
