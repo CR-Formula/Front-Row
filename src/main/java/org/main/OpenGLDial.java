@@ -12,7 +12,7 @@ public class OpenGLDial extends SecondaryGraph implements GLEventListener {
     private float[] vertices;
     private float maxValue;
     private float minValue;
-    private final int sampleCount = 1000;
+    private final int sampleCount = 250;
     private float[] screenMatrix = new float[16];
 
     public OpenGLDial() {

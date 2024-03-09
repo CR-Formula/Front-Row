@@ -154,6 +154,13 @@ public class CanvasPanel extends JPanel {
                     container.add(replacement);
                 }
 
+                if (graphDimensionsSet) {
+                    int width = (int) (column == 0 ? ((instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))) * primaryWidthPerc) : ((instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))) * secondaryWidthPerc));
+                    int height = (int) (column == 0 ? ((instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))) * primaryHeightPerc) : ((instance.getHeight() - (Theme.graphPadding * (canvasDimension.getHeight() + 1))) * secondaryHeightPerc));
+                    container.setMinimumSize(new Dimension(width, height));
+                    container.setMaximumSize(new Dimension(width, height));
+                }
+
                 String location = "cell " + column + " " + j + ", grow";
                 if (column == 0)
                     location = "cell " + column + " " + j + " 5 1 , grow";
