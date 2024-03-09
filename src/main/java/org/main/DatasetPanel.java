@@ -51,6 +51,9 @@ public class DatasetPanel extends JPanel {
         layout.setVerticalGroup(verticalGroup);
     }
 
-
-
+    public static void confirmChanges() {
+        for(DatasetRowPanel row : instance.datasetRowPanels){
+            row.confirmDatasetLabels();
+        }
+    }
 }

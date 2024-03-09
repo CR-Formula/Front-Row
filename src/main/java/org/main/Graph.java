@@ -1,5 +1,7 @@
 package org.main;
 
+import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 
@@ -11,23 +13,32 @@ import java.util.List;
 public class Graph extends MouseAdapter implements GLEventListener {
     protected static Point frameLocation;
 
-    protected int sampleCount = 10000;
+    protected int sampleCount = 1000;
     protected List<Dataset> datasets;
 
     protected int graphX;
     protected int graphY;
-    protected int graphWidth;
-    protected int graphHeight;
+    protected float graphWidth;
+    protected float graphHeight;
+
+    protected float leftPlotX = -1;
+    protected float rightPlotX = 1;
+    protected float topPlotY = 1;
+    protected float bottomPlotY = -1;
 
     protected static boolean mouseOnCanvas;
 
     protected boolean autoDetectMaxMin = false;
+
+    private boolean firstTime = true;
 
     public Graph(int graphX, int graphY, int graphWidth, int graphHeight) {
         this.graphX = graphX;
         this.graphY = graphY;
         this.graphWidth = graphWidth;
         this.graphHeight = graphHeight;
+    }
+    public Graph() {
     }
 
     @Override
@@ -76,12 +87,12 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     }
 
-    protected double convertPointOverHeight(double value) {
-        return ((value / graphHeight) * (2)) + -1;
+    protected float convertPointOverHeight(double value) {
+        return (float) (((value / graphHeight) * (2)) + -1);
     }
 
-    protected double convertPointOverWidth(double value) {
-        return ((value / graphWidth) * (2)) + -1;
+    protected float convertPointOverWidth(double value) {
+        return (float) (((value / graphWidth) * (2)) + -1);
     }
 
     protected double convertValueOverHeight(double value) {
@@ -96,5 +107,24 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     public void toggleAutoDetectMaxMin() {
         autoDetectMaxMin = !autoDetectMaxMin;
+    }
+
+    protected void setupOpenGL(GLAutoDrawable glAutoDrawable) {
+        if (!firstTime) return;
+        firstTime = false;
+        GL2ES3 gl = glAutoDrawable.getGL().getGL2ES3();
+        gl.glEnable(GL3.GL_BLEND);
+        gl.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
+        gl.setSwapInterval(1);
+        float scalingFactor = (int) Math.round((double) Toolkit.getDefaultToolkit().getScreenResolution() / 100.0);
+//        Theme.initialize(gl, scalingFactor);
+        OpenGL.makeAllPrograms(gl);
+        float[] screenMatrix = new float[16];
+        OpenGL.makeOrthoMatrix(screenMatrix, -1, 1, -1, 1, -10000, 10000);
+        OpenGL.useMatrix(gl, screenMatrix);
+    }
+
+    protected void printFps(GLAutoDrawable glAutoDrawable) {
+        System.out.println(glAutoDrawable.getAnimator().getLastFPS());
     }
 }

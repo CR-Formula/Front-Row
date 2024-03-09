@@ -7,6 +7,9 @@ public abstract class SecondaryGraph extends Graph{
         super(graphX, graphY, graphWidth, graphHeight);
     }
 
+    protected SecondaryGraph() {
+    }
+
     public void setDataset(Dataset dataset) {
         this.dataset = dataset;
     }
