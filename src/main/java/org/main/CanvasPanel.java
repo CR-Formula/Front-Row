@@ -2,7 +2,7 @@ package org.main;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
@@ -103,7 +103,7 @@ public class CanvasPanel extends JPanel {
 
         container.add(button, Theme.BaseLayer);
     }
-
+  
     private void createGraph(JLayeredPane container, GraphType type) {
         GLCanvas graph = new GLCanvas(capabilities);
         new InitialGraphPanel(container, graph, type);

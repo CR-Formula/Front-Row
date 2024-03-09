@@ -107,4 +107,3 @@ public class Theme {
         OpenGL.updateFontTextures(gl);
     }
 }
-

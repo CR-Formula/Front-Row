@@ -74,7 +74,7 @@ public class ToolbarPanel extends JPanel {
         bottomMarginSpinner.addChangeListener(e -> {
             PrimaryGraph.setBottomMargin((Double) bottomMarginSpinner.getValue());
         });
-
+      
         inputTypeOptions = new JComboBox<>(options);
         Dimension comboBoxAMaxSize = new Dimension((int) (inputTypeOptions.getPreferredSize().getWidth()  * 1.1), (int) inputTypeOptions.getPreferredSize().getHeight());
         inputTypeOptions.setMaximumSize(comboBoxAMaxSize);
@@ -118,7 +118,6 @@ public class ToolbarPanel extends JPanel {
             DataInput.disconnect();
             PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(disconnectButton, continueButton);
-
 //            exportButton.setVisible(false);
         });
 
