@@ -137,7 +137,8 @@ public class FarrelOpenGLTimeDomain extends PrimaryGraph implements OpenGLModel 
 
             FloatBuffer marginBuffer = Buffers.newDirectFloatBuffer(marginVertices);
             OpenGL.drawLinesXy(gl, GL3.GL_LINE_STRIP, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, marginBuffer, marginVertices.length / 2);
-
+//            System.out.println("Primary");
+//            printFps(drawable);
         } catch (ConcurrentModificationException e) {
             System.out.println("Cannot draw dataset");
         }

@@ -7,6 +7,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 //import java.awt.Dimension;
 
 import javax.imageio.ImageIO;
@@ -16,6 +17,15 @@ public class ToolbarTesting {
     private static final int DELAY = 500;
     public static void main(String[] args) throws InterruptedException, IOException {
         // TODO: Optimize the main
+        System.setProperty("--add-exports java.base/java.lang", "ALL-UNNAMED");
+        System.setProperty("--add-exports java.desktop/sun.awt", "ALL-UNNAMED");
+        System.setProperty("--add-exports java.desktop/sun.java2d", "ALL-UNNAMED");
+        System.setProperty("-Dsun.java2d.opengl", "true");
+        System.setProperty("-Djogl.GLContext.shareContextCache", "false");
+        System.setProperty("-Dsun.java2d.noddraw", "true");
+        System.setProperty("-Djogl.GLSharedContextSetter", "full");
+        System.setProperty("-Djogl.GLContext.numContentHandles", "32");
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch(Exception e){

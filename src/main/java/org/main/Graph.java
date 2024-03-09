@@ -123,4 +123,8 @@ public class Graph extends MouseAdapter implements GLEventListener {
         OpenGL.makeOrthoMatrix(screenMatrix, -1, 1, -1, 1, -10000, 10000);
         OpenGL.useMatrix(gl, screenMatrix);
     }
+
+    protected void printFps(GLAutoDrawable glAutoDrawable) {
+        System.out.println(glAutoDrawable.getAnimator().getLastFPS());
+    }
 }

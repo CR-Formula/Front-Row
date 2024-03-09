@@ -59,6 +59,8 @@ public class OpenGLDial extends SecondaryGraph implements GLEventListener {
             OpenGL.buffer.put(vertices);
             OpenGL.drawTrianglesXY(gl, GL3.GL_TRIANGLE_STRIP, datasetColor, OpenGL.buffer, (int)(percent * sampleCount));
             OpenGL.buffer.rewind();
+//            System.out.println("Secondary");
+//            printFps(glAutoDrawable);
         } catch (Exception e) {
             System.out.println("Cannot draw dataset");
         }

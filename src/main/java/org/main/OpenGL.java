@@ -1060,129 +1060,129 @@ public class OpenGL {
 
 	}
 
-//	/**
-//	 * Creates an off-screen framebuffer and corresponding multisample texture to use with it.
-//	 * The texture is configured for RGBA uint8, with min/mag filter set to nearest.
-//	 *
-//	 * @param gl               The OpenGL context.
-//	 * @param fboHandle        The FBO handle will be saved here.
-//	 * @param textureHandle    The texture handle will be saved here.
-//	 */
-//	public static void createOffscreenFramebuffer(GL2ES3 gl, int[] fboHandle, int[] textureHandle) {
-//
-//		// create and use a framebuffer
-//		gl.glGenFramebuffers(1, fboHandle, 0);
-//		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
-//
-//		// create and use a texture
-//		gl.glGenTextures(1, textureHandle, 0);
-//		if(AntialiasingLevel > 1) {
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
-//			gl.glTexImage2DMultisample(GL3.GL_TEXTURE_2D_MULTISAMPLE, AntialiasingLevel, GL3.GL_RGBA, 512, 512, true);
-//			gl.glFramebufferTexture2D(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0], 0);
-//		} else {
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
-//			gl.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA, 512, 512, 0, GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null); // dummy 512x512 texture
-//			gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
-//			gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_NEAREST);
-//			gl.glFramebufferTexture2D(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_TEXTURE_2D, textureHandle[0], 0);
-//		}
-//		gl.glDrawBuffers(1, new int[] {GL3.GL_COLOR_ATTACHMENT0}, 0);
-//
-//		// check for errors
+	/**
+	 * Creates an off-screen framebuffer and corresponding multisample texture to use with it.
+	 * The texture is configured for RGBA uint8, with min/mag filter set to nearest.
+	 *
+	 * @param gl               The OpenGL context.
+	 * @param fboHandle        The FBO handle will be saved here.
+	 * @param textureHandle    The texture handle will be saved here.
+	 */
+	public static void createOffscreenFramebuffer(GL2ES3 gl, int[] fboHandle, int[] textureHandle) {
+
+		// create and use a framebuffer
+		gl.glGenFramebuffers(1, fboHandle, 0);
+		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
+
+		// create and use a texture
+		gl.glGenTextures(1, textureHandle, 0);
+		if(AntialiasingLevel > 1) {
+			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
+			gl.glTexImage2DMultisample(GL3.GL_TEXTURE_2D_MULTISAMPLE, AntialiasingLevel, GL3.GL_RGBA, 512, 512, true);
+			gl.glFramebufferTexture2D(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0], 0);
+		} else {
+			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
+			gl.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA, 512, 512, 0, GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null); // dummy 512x512 texture
+			gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
+			gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_NEAREST);
+			gl.glFramebufferTexture2D(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_TEXTURE_2D, textureHandle[0], 0);
+		}
+		gl.glDrawBuffers(1, new int[] {GL3.GL_COLOR_ATTACHMENT0}, 0);
+
+		// check for errors
 //		if(gl.glCheckFramebufferStatus(GL3.GL_FRAMEBUFFER) != GL3.GL_FRAMEBUFFER_COMPLETE)
 //			NotificationsController.showFailureForSeconds("OpenGL Error: unable to create the framebuffer or texture.", 999, false);
-//
-//		// switch back to the screen framebuffer
-//		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, 0);
-//
-//	}
+
+		// switch back to the screen framebuffer
+		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, 0);
+
+	}
 
 	private static int[] onscreenViewport = new int[4]; // x,y,w,h
 	private static int[] onscreenScissor  = new int[4]; // x,y,w,h
 
-//	/**
-//	 * Saves the current viewport/scissor/point settings, disables the scissor test,
-//	 * switches to the off-screen framebuffer and replaces the existing texture with a new one,
-//	 * then applies the new matrix.
-//	 *
-//	 * @param gl                 The OpenGL context.
-//	 * @param offscreenMatrix    The 4x4 matrix to use.
-//	 * @param fboHandle          Handle to the FBO.
-//	 * @param textureHandle      Handle to the texture.
-//	 * @param width              Width, in pixels.
-//	 * @param height             Height, in pixels.
-//	 */
-//	public static void startDrawingOffscreen(GL2ES3 gl, float[] offscreenMatrix, int[] fboHandle, int[] textureHandle, int width, int height) {
-//
-//		// save the on-screen viewport and scissor settings
-//		gl.glGetIntegerv(GL3.GL_VIEWPORT, onscreenViewport, 0);
-//		gl.glGetIntegerv(GL3.GL_SCISSOR_BOX, onscreenScissor, 0);
-//
-//		// switch to the off-screen framebuffer and corresponding texture
-//		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
-//		if(AntialiasingLevel > 1)
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
-//		else
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
-//
-//		// replace the existing texture
-//		if(AntialiasingLevel > 1)
-//			gl.glTexImage2DMultisample(GL3.GL_TEXTURE_2D_MULTISAMPLE, AntialiasingLevel, GL3.GL_RGBA, width, height, true);
-//		else
-//			gl.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA, width, height, 0, GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
-//
-//		// set the viewport and disable the scissor test
-//		gl.glViewport(0, 0, width, height);
-//		gl.glDisable(GL3.GL_SCISSOR_TEST);
-//
-//		// set the matrix
-//		useMatrix(gl, offscreenMatrix);
-//
-//		// set the blend function
-//		gl.glBlendFuncSeparate(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA, GL3.GL_ONE, GL3.GL_ONE_MINUS_SRC_ALPHA);
-//
-//		// clear the texture
-//		gl.glClearColor(0, 0, 0, 0);
-//		gl.glClear(GL3.GL_COLOR_BUFFER_BIT);
-//
-//	}
-//
-//	/**
-//	 * Saves the current viewport/scissor/point settings, disables the scissor test,
-//	 * switches to the off-screen framebuffer and applies the new matrix.
-//	 *
-//	 * @param gl                 The OpenGL context.
-//	 * @param offscreenMatrix    The 4x4 matrix to use.
-//	 * @param fboHandle          Handle to the FBO.
-//	 * @param textureHandle      Handle to the texture.
-//	 * @param width              Width, in pixels.
-//	 * @param height             Height, in pixels.
-//	 */
-//	public static void continueDrawingOffscreen(GL2ES3 gl, float[] offscreenMatrix, int[] fboHandle, int[] textureHandle, int width, int height) {
-//
-//		// save the on-screen viewport and scissor settings
-//		gl.glGetIntegerv(GL3.GL_VIEWPORT, onscreenViewport, 0);
-//		gl.glGetIntegerv(GL3.GL_SCISSOR_BOX, onscreenScissor, 0);
-//
-//		// switch to the off-screen framebuffer and corresponding texture
-//		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
-//		if(AntialiasingLevel > 1)
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
-//		else
-//			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
-//
-//		// set the viewport and disable the scissor test
-//		gl.glViewport(0, 0, width, height);
-//		gl.glDisable(GL3.GL_SCISSOR_TEST);
-//
-//		// set the matrix
-//		useMatrix(gl, offscreenMatrix);
-//
-//		// set the blend function
-//		gl.glBlendFuncSeparate(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA, GL3.GL_ONE, GL3.GL_ONE_MINUS_SRC_ALPHA);
-//
-//	}
+	/**
+	 * Saves the current viewport/scissor/point settings, disables the scissor test,
+	 * switches to the off-screen framebuffer and replaces the existing texture with a new one,
+	 * then applies the new matrix.
+	 *
+	 * @param gl                 The OpenGL context.
+	 * @param offscreenMatrix    The 4x4 matrix to use.
+	 * @param fboHandle          Handle to the FBO.
+	 * @param textureHandle      Handle to the texture.
+	 * @param width              Width, in pixels.
+	 * @param height             Height, in pixels.
+	 */
+	public static void startDrawingOffscreen(GL2ES3 gl, float[] offscreenMatrix, int[] fboHandle, int[] textureHandle, int width, int height) {
+
+		// save the on-screen viewport and scissor settings
+		gl.glGetIntegerv(GL3.GL_VIEWPORT, onscreenViewport, 0);
+		gl.glGetIntegerv(GL3.GL_SCISSOR_BOX, onscreenScissor, 0);
+
+		// switch to the off-screen framebuffer and corresponding texture
+		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
+		if(AntialiasingLevel > 1)
+			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
+		else
+			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
+
+		// replace the existing texture
+		if(AntialiasingLevel > 1)
+			gl.glTexImage2DMultisample(GL3.GL_TEXTURE_2D_MULTISAMPLE, AntialiasingLevel, GL3.GL_RGBA, width, height, true);
+		else
+			gl.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA, width, height, 0, GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
+
+		// set the viewport and disable the scissor test
+		gl.glViewport(0, 0, width, height);
+		gl.glDisable(GL3.GL_SCISSOR_TEST);
+
+		// set the matrix
+		useMatrix(gl, offscreenMatrix);
+
+		// set the blend function
+		gl.glBlendFuncSeparate(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA, GL3.GL_ONE, GL3.GL_ONE_MINUS_SRC_ALPHA);
+
+		// clear the texture
+		gl.glClearColor(0, 0, 0, 0);
+		gl.glClear(GL3.GL_COLOR_BUFFER_BIT);
+
+	}
+
+	/**
+	 * Saves the current viewport/scissor/point settings, disables the scissor test,
+	 * switches to the off-screen framebuffer and applies the new matrix.
+	 *
+	 * @param gl                 The OpenGL context.
+	 * @param offscreenMatrix    The 4x4 matrix to use.
+	 * @param fboHandle          Handle to the FBO.
+	 * @param textureHandle      Handle to the texture.
+	 * @param width              Width, in pixels.
+	 * @param height             Height, in pixels.
+	 */
+	public static void continueDrawingOffscreen(GL2ES3 gl, float[] offscreenMatrix, int[] fboHandle, int[] textureHandle, int width, int height) {
+
+		// save the on-screen viewport and scissor settings
+		gl.glGetIntegerv(GL3.GL_VIEWPORT, onscreenViewport, 0);
+		gl.glGetIntegerv(GL3.GL_SCISSOR_BOX, onscreenScissor, 0);
+
+		// switch to the off-screen framebuffer and corresponding texture
+		gl.glBindFramebuffer(GL3.GL_FRAMEBUFFER, fboHandle[0]);
+		if(AntialiasingLevel > 1)
+			gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, textureHandle[0]);
+		else
+			gl.glBindTexture(GL3.GL_TEXTURE_2D, textureHandle[0]);
+
+		// set the viewport and disable the scissor test
+		gl.glViewport(0, 0, width, height);
+		gl.glDisable(GL3.GL_SCISSOR_TEST);
+
+		// set the matrix
+		useMatrix(gl, offscreenMatrix);
+
+		// set the blend function
+		gl.glBlendFuncSeparate(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA, GL3.GL_ONE, GL3.GL_ONE_MINUS_SRC_ALPHA);
+
+	}
 
 	/**
 	 * Switches back to the on-screen framebuffer, applies the on-screen matrix, and re-enables the scissor test.
