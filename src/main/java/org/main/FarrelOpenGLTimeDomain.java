@@ -64,6 +64,7 @@ public class FarrelOpenGLTimeDomain extends PrimaryGraph implements OpenGLModel 
         timePassed = datasets.get(0).getLength() - lastTime;
         lastTime = datasets.get(0).getLength();
 
+        OpenGL.drawBox(gl, new float[]{0.0f,0.0f,0.0f,1f}, -1,-1, 2, 2);
         try {
             for (Dataset dataset : datasets) {
 //                OpenGL.drawLargeText(gl, "Test", 0, 0, 0f);
@@ -115,10 +116,8 @@ public class FarrelOpenGLTimeDomain extends PrimaryGraph implements OpenGLModel 
                     datasetVertices[i] = verticesList.get(i);
 
                 FloatBuffer vertexBuffer = Buffers.newDirectFloatBuffer(datasetVertices);
-                OpenGL.drawBox(gl, new float[]{0.0f,0.0f,0.0f,1f}, -1,-1, 2, 2);
                 Color c = dataset.getColor();
                 OpenGL.drawLinesXy(gl, GL3.GL_LINE_STRIP, new float[]{c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f,1f}, vertexBuffer, datasetVertices.length / 2);
-
             }
 
             drawTickMarks();
