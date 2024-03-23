@@ -1,5 +1,5 @@
 ﻿# Front Row
-## Telemetry Viewing Software
+## Telemetry Visualization Software
 #### Cyclone Racing Formula SAE
 #### Iowa State University
 
