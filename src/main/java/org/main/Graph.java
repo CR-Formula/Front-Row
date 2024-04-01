@@ -5,16 +5,18 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Graph extends MouseAdapter implements GLEventListener {
     protected static Point frameLocation;
 
     protected int sampleCount = 1000;
-    protected List<Dataset> datasets;
+    protected List<Dataset> datasets = new ArrayList<Dataset>();
 
     protected int graphX;
     protected int graphY;
@@ -39,6 +41,7 @@ public class Graph extends MouseAdapter implements GLEventListener {
         this.graphHeight = graphHeight;
     }
     public Graph() {
+        this(0,0,0,0);
     }
 
     @Override
@@ -54,6 +57,9 @@ public class Graph extends MouseAdapter implements GLEventListener {
 
     public void setDatasets(List<Dataset> datasets) {
         this.datasets.addAll(datasets);
+    }
+    public List<Dataset> getDatasets(){
+        return datasets;
     }
 
     public void setPosition(int x, int y, Dimension location) {

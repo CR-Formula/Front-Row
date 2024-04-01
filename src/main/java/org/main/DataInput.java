@@ -1,24 +1,32 @@
 package org.main;
 
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-
 import com.fazecast.jSerialComm.SerialPort;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DataInput {
 //    public enum GraphType {TEST, UART}
     public static final String TEST = "TEST";
     public static final String UART = "UART";
+    public static final String CSV = "CSV";
     private static boolean connected;
     private static String connectionType;
 
     private static Thread uartThread;
     private static Thread testThread;
-    private static Thread[] threads = {testThread, uartThread};
+    private static Thread CSVThread;
+    private static Thread[] threads = {testThread, uartThread, CSVThread};
 
     private static SerialPort uartPort = null;
     private static int uartBaudRate = 115200;
@@ -28,32 +36,67 @@ public class DataInput {
 
     private static String[] latestTokens;
 
-    private static Date startTime;
+    public static File CSVFile;
+    public static File configFile;
+
+    private static List<Dataset> referenceDatasets = new ArrayList<>();
+    public static final Map<String, Class<?>> stringToGraphMap = new HashMap<>();
+    private static double timeInterval;
+    private static long startTime;
+
 
     public static void connect(String type) {
-        if (type.equals(TEST)) {
-            if (connectionType != null && !connectionType.equals(TEST))
-                DatasetController.removeAllDatasets();
-            connectionType = TEST;
-            connected = true;
-            startWaveInput();
-        } else if (type.equals(UART)) {
-            if (connectionType != null && !connectionType.equals(UART))
-                DatasetController.removeAllDatasets();
-            connectionType = UART;
-            connected = true;
-            enableUARTConnection();
+        switch (type) {
+            case TEST -> {
+                if (connectionType != null && !connectionType.equals(TEST))
+                    DatasetController.removeAllDatasets();
+                connectionType = TEST;
+                connected = true;
+                startWaveInput();
+            }
+            case UART -> {
+                if (connectionType != null && !connectionType.equals(UART))
+                    DatasetController.removeAllDatasets();
+                connectionType = UART;
+                connected = true;
+                enableUARTConnection();
+            }
+            case CSV -> {
+                if (connectionType != null && !connectionType.equals(CSV))
+                    DatasetController.removeAllDatasets();
+                connectionType = CSV;
+                connected = true;
+
+                if(DatasetController.getDatasets().size() == 0) {
+                    readCSVInput();
+                    for(Dataset dataset : DatasetController.getDatasets()){
+                        referenceDatasets.add(new Dataset(dataset));
+                        dataset.getValues().clear();
+                    }
+                    stringToGraphMap.put(new OpenGLTimeDomain(0,0,0,0).toString(), OpenGLTimeDomain.class);
+                    stringToGraphMap.put(new OpenGLDial().toString(), OpenGLDial.class);
+                }
+
+                CanvasPanel.instance.readConfig();
+                replayCSV();
+            }
         }
-        if (connected) startTime = new Date();
     }
 
     public static void disconnect() {
-        if (connectionType.equals(TEST)) {
-            connected = false;
-            stopWaveInput();
-        } else if (connectionType.equals(UART)) {
-            connected = false;
-            disableUARTConnection();
+        switch (connectionType) {
+            case TEST -> {
+                connected = false;
+                stopWaveInput();
+            }
+            case UART -> {
+                connected = false;
+                disableUARTConnection();
+            }
+            case CSV -> {
+                connected = false;
+                disableCSVInput();
+            }
         }
     }
 
@@ -70,6 +113,95 @@ public class DataInput {
 
         if (DatasetController.getDatasets().size() > 0)
             DatasetController.removeAllDatasets();
+    }
+
+    private static void readCSVInput(){
+        try (CSVParser parser = CSVParser.parse(CSVFile, Charset.defaultCharset(), CSVFormat.DEFAULT)) {
+            int lineCount = 0;
+            double timeSum = 0;
+            for (CSVRecord record : parser) {
+                switch(lineCount){
+                    case 0 -> {
+                        for(int i = 1; i < record.size(); i++){
+                            DatasetController.addDataset(new Dataset(record.get(i), i - 1, new Color(0)));
+                        }
+                    }
+                    case 1 ->{
+                        for(int i = 1; i < record.size(); i++){
+                            DatasetController.getDataset(i - 1).setLabel(record.get(i));
+                        }
+                    }
+                    case 2 ->{
+                        for(int i = 1; i < record.size(); i++){
+                            String colorString = record.get(i);
+
+                            String[] rgb = colorString.split(",");
+                            int r = Integer.parseInt(rgb[0]);
+                            int g = Integer.parseInt(rgb[1]);
+                            int b = Integer.parseInt(rgb[2]);
+
+                            DatasetController.getDataset(i - 1).setColor(new Color(r, g, b));
+                        }
+                    }
+                    default -> {
+                        timeSum += Double.parseDouble(record.get(0));
+                        for(int i = 1; i < record.size(); i++){
+                            DatasetController.getDataset(i - 1).add(Float.parseFloat(record.get(i)));
+                        }
+                    }
+                }
+                lineCount++;
+            }
+            timeInterval = timeSum / lineCount - 3;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void replayCSV(){
+        CSVThread = new Thread(() ->{
+            for(Dataset dataset : DatasetController.getDatasets()){
+                dataset.getValues().clear();
+            }
+
+            for(int k = DatasetController.getDataset(0).getLength(); k < referenceDatasets.get(0).getLength(); k++){
+                for(int i = 0; i < referenceDatasets.size(); i++)
+                    DatasetController.getDataset(i).add(referenceDatasets.get(i).getValues().get(k));
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        });
+
+        CSVThread.setName("CSV Thread");
+        CSVThread.start();
+    }
+
+    private static void disableCSVInput() {
+        if (CSVThread.isAlive())
+            CSVThread.interrupt();
+        while (CSVThread.isAlive());
+    }
+
+    public static JFileChooser openFileChooser(Container parent){
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "csv");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showSaveDialog(parent);
+
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+
+            return chooser;
+        } else {
+            System.out.println("Save command cancelled by user.");
+            return null;
+        }
     }
 
     private static void startWaveInput() {
@@ -208,5 +340,6 @@ public class DataInput {
         return selectedUARTPort.equals(TEST) ? TEST : UART;
     }
 
-    public Date getStartTime(){return startTime;}
+    public static long getStartTime(){return startTime;}
+    public static void setStartTime(long time){startTime = time;}
 }

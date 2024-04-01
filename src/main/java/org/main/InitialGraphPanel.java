@@ -6,6 +6,8 @@ import com.jogamp.opengl.util.Animator;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+
 import net.miginfocom.swing.MigLayout;
 
 public class InitialGraphPanel extends JPanel {
@@ -16,7 +18,7 @@ public class InitialGraphPanel extends JPanel {
     private Graph graph;
     private GroupLayout layout;
     private JLayeredPane container;
-    private GLCanvas graphPanel;
+    private GLCanvas graphCanvas;
     private JLabel datasetLabel;
     private JLabel graphLabel;
 
@@ -27,7 +29,7 @@ public class InitialGraphPanel extends JPanel {
         super();
 
         this.container = container;
-        this.graphPanel = graphPanel;
+        this.graphCanvas = graphPanel;
         this.graphType = type;
 
         datasetLabel = new JLabel("Datasets", SwingConstants.CENTER);
@@ -84,9 +86,16 @@ public class InitialGraphPanel extends JPanel {
         buildFrame();
     }
 
-    public void confirmChanges(){
+    InitialGraphPanel(JLayeredPane layeredPane, GraphType type, GLCanvas canvas, Graph graph, ArrayList<Dataset> datasets){
+        super();
+
+        this.container = layeredPane;
+        this.graphCanvas = canvas;
+        this.graphType = type;
+        this.graphDatasets = datasets;
+        this.graph = graph;
+
         container.removeAll();
-//        graphPanel.setOpaque(true);
 
         if(graphType == GraphType.SECONDARY){
             ((SecondaryGraph) graph).setDataset(graphDatasets.get(0));
@@ -100,20 +109,54 @@ public class InitialGraphPanel extends JPanel {
             container.add(((PrimaryGraph) graph).getDataLayer(), Theme.GraphLayer);
         }
 
-        graphPanel.addGLEventListener(graph);
-        graphPanel.addMouseListener(graph);
+        graphCanvas.addGLEventListener(graph);
+        graphCanvas.addMouseListener(graph);
 
-        Animator animator = new Animator(graphPanel);
+        Animator animator = new Animator(graphCanvas);
         animator.setUpdateFPSFrames(1, null);
         animator.start();
 
-        graphPanel.setMaximumSize(new Dimension(10, 10));
+        graphCanvas.setMaximumSize(new Dimension(10, 10));
 
-        graphPanel.setBounds(0, 0, container.getWidth(), container.getHeight());
+        graphCanvas.setBounds(0, 0, container.getWidth(), container.getHeight());
 
-        container.add(graphPanel);
+        container.add(graphCanvas);
         container.setOpaque(true);
-        container.setComponentZOrder(graphPanel, 0);
+        container.setComponentZOrder(graphCanvas, 0);
+
+        CanvasPanel.instance.setupCanvasLayout();
+    }
+
+    public void confirmChanges(){
+        container.removeAll();
+//        graphPanel.setOpaque(true);
+
+        if(graphType == GraphType.SECONDARY){
+            ((SecondaryGraph) graph).setDataset(graphDatasets.get(0));
+            graph.setDatasets(graphDatasets);
+            graph.toggleAutoDetectMaxMin();
+        }
+        else {
+            graph.setDatasets(graphDatasets);
+            graph.toggleAutoDetectMaxMin();
+            ((PrimaryGraph) graph).setDataLayer(new PrimaryGraphInfoLayer(graphDatasets));
+            ((PrimaryGraph) graph).getDataLayer().setBounds(0, 0, container.getWidth(), container.getHeight());
+            container.add(((PrimaryGraph) graph).getDataLayer(), Theme.GraphLayer);
+        }
+        graphCanvas.addGLEventListener(graph);
+        graphCanvas.addMouseListener(graph);
+
+        Animator animator = new Animator(graphCanvas);
+        animator.setUpdateFPSFrames(1, null);
+        animator.start();
+
+        graphCanvas.setMaximumSize(new Dimension(10, 10));
+
+        graphCanvas.setBounds(0, 0, container.getWidth(), container.getHeight());
+
+        container.add(graphCanvas);
+        container.setOpaque(true);
+        container.setComponentZOrder(graphCanvas, 0);
 //        if (graphType == GraphType.PRIMARY)
 //            container.setComponentZOrder(((PrimaryGraph) graph).getDataLayer(), 1);
 

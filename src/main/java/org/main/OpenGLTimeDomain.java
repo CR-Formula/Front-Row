@@ -25,7 +25,10 @@ public class OpenGLTimeDomain extends PrimaryGraph implements OpenGLModel {
 
     public OpenGLTimeDomain(int graphX, int graphY, int graphWidth, int graphHeight) {
         super(graphX, graphY, graphWidth, graphHeight);
-        this.datasets = new ArrayList<Dataset>();
+    }
+
+    public OpenGLTimeDomain(){
+        super(0,0,0,0);
     }
 
     @Override
