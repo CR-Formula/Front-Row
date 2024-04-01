@@ -34,7 +34,7 @@ public class CanvasPanel extends JPanel {
 
     public Dimension canvasDimension = new Dimension(2, 4);
 
-    final GLProfile profile = GLProfile.get(GLProfile.GL2);
+    final GLProfile profile = GLProfile.get(GLProfile.GL3);
     GLCapabilities capabilities = new GLCapabilities(profile);
 
     private boolean runningSetup = false;

@@ -65,7 +65,7 @@ public class InitialGraphPanel extends JPanel {
             }
 
             timeDomain = new JCheckBox("Time Domain");
-            timeDomain.addActionListener(event -> graph = new FarrelOpenGLTimeDomain(0, 0, 0, 0));
+            timeDomain.addActionListener(event -> graph = new OpenGLTimeDomain(0, 0, 0, 0));
             add(timeDomain, "cell 0 1, grow");
 
         } else if (graphType == GraphType.SECONDARY) {
