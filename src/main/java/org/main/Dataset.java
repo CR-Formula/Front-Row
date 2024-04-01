@@ -29,6 +29,19 @@ public class Dataset {
         this.label = "";
         this.max = 1;
         this.min = -1;
+        this.index = index;
+    }
+    public Dataset(Dataset dataset) {
+        this.values = new ArrayList<>(dataset.values);
+        this.name = dataset.name;
+        this.label = dataset.label;
+        this.color = new Color(dataset.color.getRGB());
+        this.index = dataset.index;
+        this.max = dataset.max;
+        this.min = dataset.min;
+        this.recentMax = dataset.recentMax;
+        this.recentMin = dataset.recentMin;
+        this.autoDetectMaxMin = dataset.autoDetectMaxMin;
     }
 
     public void add(float value) {
@@ -91,7 +104,6 @@ public class Dataset {
 
     public void setColor(Color color) {
         this.color = color;
-        System.out.println("Dataset: " + color.getRGB());
     }
 
     public void setMax(float max) {

@@ -73,7 +73,7 @@ public class DataInput {
                         referenceDatasets.add(new Dataset(dataset));
                         dataset.getValues().clear();
                     }
-                    stringToGraphMap.put(new FarrelOpenGLTimeDomain(0,0,0,0).toString(), FarrelOpenGLTimeDomain.class);
+                    stringToGraphMap.put(new OpenGLTimeDomain(0,0,0,0).toString(), OpenGLTimeDomain.class);
                     stringToGraphMap.put(new OpenGLDial().toString(), OpenGLDial.class);
                 }
 
