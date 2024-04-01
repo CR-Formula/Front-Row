@@ -3,20 +3,24 @@ package org.main;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.Animator;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.main.InitialGraphPanel.GraphType;
 
 public class CanvasPanel extends JPanel {
@@ -110,6 +114,11 @@ public class CanvasPanel extends JPanel {
         new InitialGraphPanel(container, graph, type);
     }
 
+    private void createGraph(JLayeredPane container, GraphType type, Graph graph, ArrayList<Dataset> datasets){
+        GLCanvas graphCanvas = new GLCanvas(capabilities);
+        new InitialGraphPanel(container, type, graphCanvas, graph, datasets);
+    }
+
     private void removeGraph(JLayeredPane container){
         container.removeAll();
         createBlankGraph(container);
@@ -175,7 +184,80 @@ public class CanvasPanel extends JPanel {
         runningSetup = false;
     }
 
-    private JButton newRemoveButton(GraphType graphType, JLayeredPane container) {
+    public void saveConfig(PrintWriter writer){
+        writer.print(canvasDimension.getWidth() + "," + canvasDimension.getHeight());
+        writer.println("");
+
+        for (int i = 0; i < canvasDimension.getWidth(); i++) {
+            List<JLayeredPane> componentList = i == 0 ? primaryGraphs : secondaryGraphs;
+            for (int j = 0; j < canvasDimension.getHeight(); j++) {
+                int index = i == 0 ? j : (int) ((i - 1) * canvasDimension.getHeight()) + j;
+
+                JLayeredPane container = componentList.get(index);
+
+                for(Component component : container.getComponents()){
+                    if(component.getClass() == GLCanvas.class){
+                        Graph graph = (Graph) ((GLCanvas) component).getGLEventListener(0);
+
+                        String datasetString = "\"";
+                        for(Dataset dataset : graph.getDatasets()){
+                            datasetString += dataset.getIndex() + ",";
+                        }
+                        if (datasetString.charAt(datasetString.length() - 1) == ',')
+                            datasetString = datasetString.substring(0, datasetString.length() - 1);
+
+                        datasetString += "\"";
+
+                        writer.print(index + "," + graph + "," + datasetString);
+                        writer.println("");
+                    }
+                }
+            }
+        }
+    }
+
+    public void readConfig() {
+        try (CSVParser parser = CSVParser.parse(DataInput.configFile, Charset.defaultCharset(), CSVFormat.DEFAULT)) {
+            boolean firstLine = true;
+            for (CSVRecord record : parser) {
+                if(firstLine){
+                    double width = Double.parseDouble(record.get(0));
+                    double height = Double.parseDouble(record.get(1));
+                    canvasDimension = new Dimension((int) width, (int) height);
+                    firstLine = false;
+                }
+                else {
+                    int index = Integer.parseInt(record.get(0));
+
+                    String graphName = record.get(1);
+                    Class<?> graphClass = DataInput.stringToGraphMap.get(graphName);
+                    Constructor<? extends Graph> constructor = (Constructor<? extends Graph>) graphClass.getConstructor();
+                    Graph graph = constructor.newInstance();
+
+                    String[] datasetIndices = record.get(2).split(",");
+
+                    ArrayList<Dataset> datasetList = new ArrayList<>();
+                    for (String datasetIndex : datasetIndices)
+                        datasetList.add(DatasetController.getDataset(Integer.parseInt(datasetIndex)));
+
+                    if(graph.getClass().getSuperclass() == PrimaryGraph.class){
+                        JLayeredPane container = primaryGraphs.get(index);
+                        createGraph(container, GraphType.PRIMARY, graph, datasetList);
+                    }
+                    else if(graph.getClass().getSuperclass() == SecondaryGraph.class){
+                        JLayeredPane container = secondaryGraphs.get(index);
+                        createGraph(container, GraphType.SECONDARY, graph, datasetList);
+                    }
+                }
+            }
+
+        } catch (IOException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+        private JButton newRemoveButton(GraphType graphType, JLayeredPane container) {
         if (!graphDimensionsSet) {
             if (graphType == GraphType.PRIMARY) {
                 primaryWidthPerc = (float) (container.getWidth() / (instance.getWidth() - (Theme.graphPadding * (canvasDimension.getWidth() + 1))));

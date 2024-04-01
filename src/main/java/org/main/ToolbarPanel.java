@@ -2,9 +2,7 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -40,11 +38,12 @@ public class ToolbarPanel extends JPanel {
         layout.setAutoCreateContainerGaps(false);
 
         String[] openPorts = DataInput.getOpenUARTPorts();
-        int optionsLength = openPorts.length + 1;
+        int optionsLength = openPorts.length + 2;
         String[] options = new String[optionsLength];
         options[0] = DataInput.TEST;
+        options[1] = DataInput.CSV;
 
-        for (int i = 1; i < options.length; i++) {
+        for (int i = 2; i < options.length; i++) {
             options[i] = openPorts[i-1];
         }
 
@@ -84,23 +83,46 @@ public class ToolbarPanel extends JPanel {
 
         connectButton = new JButton("Connect");
         connectButton.addActionListener(event -> {
-            if (selectedOption.equals(DataInput.TEST)) {
-                DataInput.connect(selectedOption);
-            } else {
-                DataInput.setUARTPort(selectedOption);
-                DataInput.connect(DataInput.UART);
-                try {
-                    DatasetController.autoDetectDatasets(DataInput.UART);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            switch (selectedOption) {
+                case DataInput.TEST -> {
+                    DataInput.connect(selectedOption);
+                    DataInput.setStartTime(System.currentTimeMillis());
+                }
+                case DataInput.UART -> {
+                    DataInput.setUARTPort(selectedOption);
+                    DataInput.connect(DataInput.UART);
+                    DataInput.setStartTime(System.currentTimeMillis());
+                    try {
+                        DatasetController.autoDetectDatasets(DataInput.UART);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case DataInput.CSV -> {
+
+                    PanelManager.instance.replaceComponent(CanvasPanel.instance, BorderLayout.CENTER);
+                    PanelManager.instance.removeComponent(CanvasPanel.instance);
+
+                    JFileChooser chooser = DataInput.openFileChooser(getParent());
+                    if(chooser != null) DataInput.CSVFile = chooser.getSelectedFile();
+
+                    chooser = DataInput.openFileChooser(getParent());
+                    if(chooser != null){
+                        DataInput.configFile = chooser.getSelectedFile();
+                        DataInput.connect(selectedOption);
+                        DataInput.setStartTime(System.currentTimeMillis());
+                    }
                 }
             }
-            JScrollPane scrollPane = new JScrollPane(DatasetPanel.instance);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-            PanelManager.instance.replaceComponent(scrollPane, BorderLayout.CENTER);
-            layout.replace(connectButton, continueButton);
+
+            if(DataInput.isConnected()){
+                JScrollPane scrollPane = new JScrollPane(DatasetPanel.instance);
+                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+                PanelManager.instance.replaceComponent(scrollPane, BorderLayout.CENTER);
+                layout.replace(connectButton, continueButton);
+            }
         });
 
         continueButton = new JButton("Continue");
@@ -118,19 +140,12 @@ public class ToolbarPanel extends JPanel {
             DataInput.disconnect();
             PanelManager.instance.replaceComponent(DatasetPanel.instance, BorderLayout.CENTER);
             layout.replace(disconnectButton, continueButton);
-//            exportButton.setVisible(false);
         });
 
         exportButton = new JButton("Export");
-//        exportButton.setVisible(false);
         exportButton.addActionListener(event -> {
             try {
-                ArrayList<Dataset> dataSets = new ArrayList<>();
-                for (Dataset dataset : DatasetController.getDatasets()) {
-                    dataSets.add(dataset);
-                }
-
-                exportToCSV(dataSets);
+                exportToCSV();
             } catch (Exception e) {
                 System.err.println("Export failed1. Error: " + e.getMessage());
             }
@@ -181,34 +196,40 @@ public class ToolbarPanel extends JPanel {
         );
     }
 
-    private void exportToCSV(ArrayList<Dataset> dataSets) {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "csv");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showSaveDialog(getParent());
+    private void exportToCSV() {
+        JFileChooser chooser = DataInput.openFileChooser(getParent());
 
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +
-                    chooser.getSelectedFile().getName());
-        };
-
-        String location = chooser.getSelectedFile().toString();
+        String location = null;
+        if(chooser != null){
+            DataInput.CSVFile = chooser.getSelectedFile();
+            location = chooser.getSelectedFile().toString();
+        }
 
         try (PrintWriter writer = new PrintWriter(location)) {
             writer.print("Timestamp (Second)");
-            for (Dataset dataset : dataSets) {
+            for (Dataset dataset : DatasetController.getDatasets()) {
                 writer.print("," + dataset.getName());
             }
             writer.println();
+            for (Dataset dataset : DatasetController.getDatasets()) {
+                writer.print("," + dataset.getLabel());
+            }
+            writer.println();
+            for (Dataset dataset : DatasetController.getDatasets()) {
+                writer.print(",\"" + dataset.getColor().getRed() + "," + dataset.getColor().getGreen() + "," + dataset.getColor().getBlue() + "\"");
+            }
+            writer.println();
 
-            double startTime = System.currentTimeMillis();
-            int maximumLength = getMaximumLength(dataSets);
+            int maximumLength = getMaximumLength((ArrayList<Dataset>) DatasetController.getDatasets());
+            long currentTime = System.currentTimeMillis();
+            long elapsedTime = currentTime - DataInput.getStartTime();
+            double increment = (double) elapsedTime / maximumLength;
+            double timestamp = 0;
 
             for (int i = 0; i < maximumLength; i++) {
-                double timestamp = (System.currentTimeMillis() - startTime) / 1000;
-                writer.print(timestamp);
+                writer.print((timestamp+=increment) / 1000);
 
-                for (Dataset dataset : dataSets) {
+                for (Dataset dataset : DatasetController.getDatasets()) {
                     if (i < dataset.getLength()) {
                         writer.print("," + dataset.getSample(i));
                     } else {
@@ -219,6 +240,19 @@ public class ToolbarPanel extends JPanel {
                 writer.println();
             }
 
+        } catch (Exception e) {
+            System.err.println("Export failed2. Error: " + e.getMessage());
+        }
+
+        chooser = DataInput.openFileChooser(getParent());
+
+        if(chooser != null){
+            DataInput.configFile = chooser.getSelectedFile();
+            location = chooser.getSelectedFile().toString();
+        }
+
+        try (PrintWriter writer = new PrintWriter(location)) {
+            CanvasPanel.instance.saveConfig(writer);
         } catch (Exception e) {
             System.err.println("Export failed2. Error: " + e.getMessage());
         }
