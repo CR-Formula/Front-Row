@@ -2,9 +2,11 @@ package org.main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ToolbarPanel extends JPanel {
 
@@ -19,7 +21,7 @@ public class ToolbarPanel extends JPanel {
     private JButton connectButton;
     private JButton continueButton;
     private JButton disconnectButton;
-
+    public JSlider datasetSlider;
     private JButton exportButton;
     private JComboBox<String> inputTypeOptions;
     private String selectedOption = DataInput.TEST;
@@ -109,6 +111,7 @@ public class ToolbarPanel extends JPanel {
                     chooser = DataInput.openFileChooser(getParent());
                     if(chooser != null){
                         DataInput.configFile = chooser.getSelectedFile();
+                        datasetSlider.setVisible(true);
                         DataInput.connect(selectedOption);
                         DataInput.setStartTime(System.currentTimeMillis());
                     }
@@ -151,6 +154,31 @@ public class ToolbarPanel extends JPanel {
             }
         });
 
+        datasetSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        datasetSlider.setMajorTickSpacing(20);
+        datasetSlider.setMinorTickSpacing(5);
+        datasetSlider.setPaintTicks(true);
+        datasetSlider.setPaintLabels(true);
+        datasetSlider.setMaximumSize(new Dimension((int) (datasetSlider.getPreferredSize().getWidth()  * 1.5), 5));
+        ChangeListener changeListener = e -> {
+            DataInput.disableCSVInput();
+
+            if(datasetSlider.getValue() > 0){
+                double index = ((double) datasetSlider.getValue() / 100) * DataInput.csvElementCount;
+                for(int i = 0; i < DatasetController.getDatasets().size(); i++){
+                    List<Float> newValues = DataInput.referenceDatasets.get(i).getValues().subList(0, (int) index);
+                    DatasetController.getDataset(i).getValues().clear();
+                    DatasetController.getDataset(i).getValues().addAll(newValues);
+                }
+            }
+
+            DataInput.replayCSV();
+        };
+        datasetSlider.addChangeListener(changeListener);
+        datasetSlider.setVisible(false);
+
+
+        add(exportButton);
         add(dimensionLabel);
         add(dimensionSelector);
         add(leftMarginLabel);
@@ -159,7 +187,7 @@ public class ToolbarPanel extends JPanel {
         add(bottomMarginSpinner);
         add(inputTypeOptions);
         add(connectButton);
-        add(exportButton);
+        add(datasetSlider);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
@@ -173,6 +201,9 @@ public class ToolbarPanel extends JPanel {
                         .addGap(Theme.toolbarPadding)
                         .addComponent(bottomMarginLabel)
                         .addComponent(bottomMarginSpinner)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
+                                GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+                        .addComponent(datasetSlider)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
                                 GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -191,6 +222,7 @@ public class ToolbarPanel extends JPanel {
                         .addComponent(leftMarginSpinner)
                         .addComponent(bottomMarginLabel)
                         .addComponent(bottomMarginSpinner)
+                        .addComponent(datasetSlider)
                         .addComponent(inputTypeOptions)
                         .addComponent(connectButton)
         );

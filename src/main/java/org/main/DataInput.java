@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
@@ -39,7 +40,8 @@ public class DataInput {
     public static File CSVFile;
     public static File configFile;
 
-    private static List<Dataset> referenceDatasets = new ArrayList<>();
+    public static List<Dataset> referenceDatasets = new ArrayList<>();
+    public static int csvElementCount;
     public static final Map<String, Class<?>> stringToGraphMap = new HashMap<>();
     private static double timeInterval;
     private static long startTime;
@@ -48,8 +50,10 @@ public class DataInput {
     public static void connect(String type) {
         switch (type) {
             case TEST -> {
-                if (connectionType != null && !connectionType.equals(TEST))
+                if (connectionType != null && !connectionType.equals(TEST)){
+                    CanvasPanel.instance.resetCanvasPanel();
                     DatasetController.removeAllDatasets();
+                }
                 connectionType = TEST;
                 connected = true;
                 startWaveInput();
@@ -62,8 +66,10 @@ public class DataInput {
                 enableUARTConnection();
             }
             case CSV -> {
-                if (connectionType != null && !connectionType.equals(CSV))
+                if (connectionType != null && !connectionType.equals(CSV)){
+                    CanvasPanel.instance.resetCanvasPanel();
                     DatasetController.removeAllDatasets();
+                }
                 connectionType = CSV;
                 connected = true;
 
@@ -153,19 +159,27 @@ public class DataInput {
                 lineCount++;
             }
             timeInterval = timeSum / lineCount - 3;
+            csvElementCount = lineCount - 3;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void replayCSV(){
+    public static void replayCSV(){
         CSVThread = new Thread(() ->{
-            for(Dataset dataset : DatasetController.getDatasets()){
-                dataset.getValues().clear();
-            }
+//            for(Dataset dataset : DatasetController.getDatasets()){
+//                dataset.getValues().clear();
+//            }
 
             for(int k = DatasetController.getDataset(0).getLength(); k < referenceDatasets.get(0).getLength(); k++){
+                if(k%10 == 0){
+                    JSlider slider = ToolbarPanel.instance.datasetSlider;
+                    ChangeListener listener = slider.getChangeListeners()[0];
+                    slider.removeChangeListener(listener);
+                    slider.setValue((int) (((double)k / csvElementCount) * 100));
+                    slider.addChangeListener(listener);
+                }
                 for(int i = 0; i < referenceDatasets.size(); i++)
                     DatasetController.getDataset(i).add(referenceDatasets.get(i).getValues().get(k));
 
@@ -181,7 +195,7 @@ public class DataInput {
         CSVThread.start();
     }
 
-    private static void disableCSVInput() {
+    public static void disableCSVInput() {
         if (CSVThread.isAlive())
             CSVThread.interrupt();
         while (CSVThread.isAlive());

@@ -311,4 +311,8 @@ public class CanvasPanel extends JPanel {
         initializePanels();
         setupCanvasLayout();
     }
+
+    public void resetCanvasPanel(){
+        instance = new CanvasPanel();
+    }
 }
