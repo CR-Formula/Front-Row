@@ -18,6 +18,9 @@ This Repository stores the Java Code for our custom Telemetry Viewing software, 
     ```
 - For each run, under run configurations update main class
 
+## Canvas Panel Demo Screenshot:
+![Screenshot](src/main/resources/demoScreenshot.png)
+
 # Links
 - [Linktree](https://linktr.ee/cycloneracing)
 - [LinkedIn](https://www.linkedin.com/company/cyclone-racing/)
